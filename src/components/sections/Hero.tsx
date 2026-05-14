@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import hero from "@/assets/hero.jpg";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export function Hero() {
+  const { open } = useBooking();
   return (
     <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
       <img
@@ -31,9 +33,9 @@ export function Hero() {
             className="mt-10 flex flex-wrap gap-4 animate-fade-up"
             style={{ animationDelay: "0.3s" }}
           >
-            <Link to="/membership" className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+            <button onClick={() => open({ title: "Join the Community" })} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
               Join the Community
-            </Link>
+            </button>
             <Link to="/events" className="btn-ghost-luxe hover:!bg-ivory hover:!text-espresso">
               View Events <ArrowRight size={14} />
             </Link>
