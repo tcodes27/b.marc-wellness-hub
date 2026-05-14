@@ -254,9 +254,10 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                     />
                   </Field>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Field label="Phone">
+                    <Field label="Phone *">
                       <input
                         type="tel"
+                        required
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         maxLength={40}
