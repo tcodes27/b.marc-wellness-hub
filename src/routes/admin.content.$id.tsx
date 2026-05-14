@@ -248,9 +248,9 @@ function EditPost() {
           <Panel title="Distribution">
             <p className="text-[11px] text-clay mb-3">Connect SendGrid/Resend, Twilio, and the member portal in a future update.</p>
             <div className="space-y-2">
-              <ComingSoonBtn>Send Email</ComingSoonBtn>
-              <ComingSoonBtn>Send SMS</ComingSoonBtn>
-              <ComingSoonBtn>Publish to Member Portal</ComingSoonBtn>
+              <ComingSoonBtn>Send Email Campaign</ComingSoonBtn>
+              <ComingSoonBtn>Send SMS Alert</ComingSoonBtn>
+              <ComingSoonBtn>Publish to Portal</ComingSoonBtn>
               <button onClick={() => persist({ status: "Archived" })} disabled={saving}
                       className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-tan/40 text-xs uppercase tracking-[0.2em] py-2 hover:bg-sand">
                 <Archive size={12} /> Archive
