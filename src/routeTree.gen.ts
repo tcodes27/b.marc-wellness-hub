@@ -22,6 +22,9 @@ import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as AdminContentNewRouteImport } from './routes/admin.content.new'
+import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -88,6 +91,21 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentNewRoute = AdminContentNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminContentRoute,
+} as any)
+const AdminContentIdRoute = AdminContentIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminContentRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -103,6 +122,8 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +131,7 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -117,6 +139,8 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -126,6 +150,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
@@ -133,6 +158,8 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin_/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -143,6 +170,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/content'
     | '/admin/events'
     | '/admin/exports'
     | '/admin/leads'
@@ -150,6 +178,8 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/login'
     | '/admin/'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -157,6 +187,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/content'
     | '/admin/events'
     | '/admin/exports'
     | '/admin/leads'
@@ -164,6 +195,8 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/login'
     | '/admin'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   id:
     | '__root__'
     | '/'
@@ -172,6 +205,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/content'
     | '/admin/events'
     | '/admin/exports'
     | '/admin/leads'
@@ -179,6 +213,8 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin_/login'
     | '/admin/'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -284,10 +320,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content/new': {
+      id: '/admin/content/new'
+      path: '/new'
+      fullPath: '/admin/content/new'
+      preLoaderRoute: typeof AdminContentNewRouteImport
+      parentRoute: typeof AdminContentRoute
+    }
+    '/admin/content/$id': {
+      id: '/admin/content/$id'
+      path: '/$id'
+      fullPath: '/admin/content/$id'
+      preLoaderRoute: typeof AdminContentIdRouteImport
+      parentRoute: typeof AdminContentRoute
+    }
   }
 }
 
+interface AdminContentRouteChildren {
+  AdminContentIdRoute: typeof AdminContentIdRoute
+  AdminContentNewRoute: typeof AdminContentNewRoute
+}
+
+const AdminContentRouteChildren: AdminContentRouteChildren = {
+  AdminContentIdRoute: AdminContentIdRoute,
+  AdminContentNewRoute: AdminContentNewRoute,
+}
+
+const AdminContentRouteWithChildren = AdminContentRoute._addFileChildren(
+  AdminContentRouteChildren,
+)
+
 interface AdminRouteChildren {
+  AdminContentRoute: typeof AdminContentRouteWithChildren
   AdminEventsRoute: typeof AdminEventsRoute
   AdminExportsRoute: typeof AdminExportsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
@@ -297,6 +369,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminContentRoute: AdminContentRouteWithChildren,
   AdminEventsRoute: AdminEventsRoute,
   AdminExportsRoute: AdminExportsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
