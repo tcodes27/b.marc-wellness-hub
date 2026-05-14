@@ -1,26 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SiteLayout } from "@/components/SiteLayout";
+import { Hero } from "@/components/sections/Hero";
+import { AboutMovement } from "@/components/sections/AboutMovement";
+import { EventsPreview } from "@/components/sections/EventsPreview";
+import { MembershipPreview } from "@/components/sections/MembershipPreview";
+import { Gallery } from "@/components/sections/Gallery";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { EmailSignup } from "@/components/sections/EmailSignup";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "B.MARC Pilates — A Wellness Culture for Modern Women" },
+      {
+        name: "description",
+        content:
+          "B.MARC Pilates is a luxury wellness community for modern women. Join in-person Pilates events, online classes and a movement built on intention.",
+      },
+      { property: "og:title", content: "B.MARC Pilates — A Wellness Culture" },
+      { property: "og:description", content: "Movement, connection, and intentional living for modern women." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <SiteLayout>
+      <Hero />
+      <AboutMovement />
+      <EventsPreview />
+      <MembershipPreview />
+      <Gallery />
+      <Testimonials />
+      <EmailSignup />
+    </SiteLayout>
+  );
 }
