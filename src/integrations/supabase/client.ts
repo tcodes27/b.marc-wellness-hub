@@ -41,6 +41,11 @@ export type CommunityMember = {
   interests: string[] | null;
   source: string | null;
   consent_marketing: boolean;
+  email_consent: boolean;
+  sms_consent: boolean;
+  sms_opted_out: boolean;
+  opted_out_at: string | null;
+  consent_timestamp: string | null;
   status: MemberStatus;
   notes: string | null;
   created_at: string;
