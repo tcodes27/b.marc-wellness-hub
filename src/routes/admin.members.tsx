@@ -152,16 +152,26 @@ function MembersPage() {
           <table className="w-full text-sm">
             <thead className="bg-sand/40 text-clay text-[0.65rem] uppercase tracking-[0.2em]">
               <tr>
-                <Th>Name</Th><Th>Email</Th><Th>City</Th><Th>Status</Th><Th>Interests</Th><Th>Joined</Th>
+                <Th>First Name</Th>
+                <Th>Last Name</Th>
+                <Th>Email</Th>
+                <Th>Phone</Th>
+                <Th>City</Th>
+                <Th>Instagram</Th>
+                <Th>Interests</Th>
+                <Th>Consent</Th>
+                <Th>Status</Th>
+                <Th>Notes</Th>
+                <Th>Joined Date</Th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={6} className="p-8 text-center text-clay">
+                <tr><td colSpan={11} className="p-8 text-center text-clay">
                   <Loader2 size={16} className="inline animate-spin mr-2" />Loading members…
                 </td></tr>
               ) : loadError ? (
-                <tr><td colSpan={6} className="p-8 text-center">
+                <tr><td colSpan={11} className="p-8 text-center">
                   <div className="inline-flex items-start gap-2 text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 text-left">
                     <AlertCircle size={16} className="mt-0.5" />
                     <div>
@@ -172,21 +182,32 @@ function MembersPage() {
                   </div>
                 </td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={6} className="p-8 text-center text-clay">
+                <tr><td colSpan={11} className="p-8 text-center text-clay">
                   {members.length === 0 ? "No community members yet." : "No members match the current filters."}
                 </td></tr>
               ) : (
                 filtered.map((m) => (
                   <tr key={m.id} onClick={() => setSelected(m)} className="border-t border-tan/15 hover:bg-sand/30 cursor-pointer">
-                    <Td>{m.first_name} {m.last_name}</Td>
+                    <Td>{m.first_name}</Td>
+                    <Td>{m.last_name}</Td>
                     <Td>{m.email}</Td>
+                    <Td>{m.phone ?? "—"}</Td>
                     <Td>{m.city ?? "—"}</Td>
+                    <Td>{m.instagram_handle ?? "—"}</Td>
+                    <Td>{(m.interests ?? []).slice(0, 2).join(", ") || "—"}{(m.interests?.length ?? 0) > 2 ? "…" : ""}</Td>
+                    <Td>{m.consent_marketing ? "Yes" : "No"}</Td>
                     <Td>
                       <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider ${ADMIN_STATUS_COLORS[m.status] ?? "bg-sand"}`}>
                         {m.status}
                       </span>
                     </Td>
-                    <Td>{(m.interests ?? []).slice(0, 2).join(", ") || "—"}{(m.interests?.length ?? 0) > 2 ? "…" : ""}</Td>
+                    <Td>
+                      {m.notes ? (
+                        <span title={m.notes} className="text-xs text-clay">
+                          {m.notes.length > 30 ? `${m.notes.slice(0, 30)}…` : m.notes}
+                        </span>
+                      ) : "—"}
+                    </Td>
                     <Td>{new Date(m.created_at).toLocaleDateString()}</Td>
                   </tr>
                 ))
