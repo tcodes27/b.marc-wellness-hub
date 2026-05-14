@@ -85,7 +85,7 @@ function AdminLayout() {
           setBootError(`getSession: ${sessionErr.message}`);
         }
         if (!sessionData.session) {
-          navigate({ to: "/admin_/login" });
+          navigate({ to: "/admin/login" });
           return;
         }
         const uid = sessionData.session.user.id;
@@ -122,7 +122,7 @@ function AdminLayout() {
       }
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
-      if (!session) navigate({ to: "/admin_/login" });
+      if (!session) navigate({ to: "/admin/login" });
     });
     return () => {
       cancelled = true;
@@ -136,7 +136,7 @@ function AdminLayout() {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    navigate({ to: "/admin_/login" });
+    navigate({ to: "/admin/login" });
   };
 
   if (!authChecked) {
