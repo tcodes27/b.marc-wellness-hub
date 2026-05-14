@@ -15,7 +15,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -48,7 +48,7 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
+  id: '/admin_/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
@@ -78,7 +78,7 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin/login': typeof AdminLoginRoute
+  '/admin_/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
@@ -107,7 +107,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
-    | '/admin/login'
+    | '/admin_/login'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -165,8 +165,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/login': {
-      id: '/admin/login'
+    '/admin_/login': {
+      id: '/admin_/login'
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
@@ -187,3 +187,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
