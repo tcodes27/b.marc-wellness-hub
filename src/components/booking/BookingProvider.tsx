@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { trackBookingClick } from "@/integrations/supabase/client";
 
 type BookingDetails = {
   title?: string;
@@ -32,6 +33,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
     setDetails(d);
     setIframeLoaded(false);
     setIsOpen(true);
+    void trackBookingClick(d?.title ?? "Booking modal opened");
   }, []);
 
   const close = useCallback(() => setIsOpen(false), []);

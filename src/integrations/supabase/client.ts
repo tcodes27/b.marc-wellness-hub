@@ -12,12 +12,15 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   },
 });
 
+export const SUPABASE_PUBLIC_URL = SUPABASE_URL;
+
 export const MEMBER_STATUSES = [
   "New",
   "Contacted",
   "VIP",
   "Event Attendee",
   "Sponsor Lead",
+  "Archived",
 ] as const;
 export type MemberStatus = (typeof MEMBER_STATUSES)[number];
 
@@ -36,3 +39,60 @@ export type CommunityMember = {
   notes: string | null;
   created_at: string;
 };
+
+export const CONTENT_TYPES = [
+  "Community Update",
+  "Event Announcement",
+  "Wellness Tip",
+  "Pilates Education",
+  "Sponsor Feature",
+  "Behind the Scenes",
+  "Member Note",
+] as const;
+export type ContentType = (typeof CONTENT_TYPES)[number];
+
+export const AUDIENCE_OPTIONS = [
+  "All Community Members",
+  "Pilates events",
+  "Wellness community",
+  "Online classes",
+  "Beginner Pilates",
+  "Brand updates",
+  "Sponsorship/collaboration",
+  "VIP",
+  "Sponsor Lead",
+] as const;
+export type AudienceOption = (typeof AUDIENCE_OPTIONS)[number];
+
+export const POST_STATUSES = ["Draft", "Scheduled", "Published", "Archived"] as const;
+export type PostStatus = (typeof POST_STATUSES)[number];
+
+export type ContentPost = {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  slug: string;
+  body: unknown; // Tiptap JSON
+  featured_image_url: string | null;
+  gallery_images: string[] | null;
+  content_type: ContentType;
+  audience: AudienceOption;
+  status: PostStatus;
+  scheduled_at: string | null;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+};
+
+export async function trackBookingClick(label: string) {
+  try {
+    await supabase.from("booking_clicks").insert({
+      event_label: label.slice(0, 200),
+      source_path: typeof window !== "undefined" ? window.location.pathname : null,
+      user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 400) : null,
+    });
+  } catch {
+    // silent — analytics shouldn't block UX
+  }
+}

@@ -12,10 +12,19 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminMembersRouteImport } from './routes/admin.members'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminExportsRouteImport } from './routes/admin.exports'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as AdminContentNewRouteImport } from './routes/admin.content.new'
+import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -32,6 +41,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -43,24 +57,73 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
+  id: '/admin_/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminExportsRoute = AdminExportsRouteImport.update({
+  id: '/exports',
+  path: '/exports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentNewRoute = AdminContentNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminContentRoute,
+} as any)
+const AdminContentIdRoute = AdminContentIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminContentRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,29 +131,55 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin/login': typeof AdminLoginRoute
+  '/admin/content': typeof AdminContentRouteWithChildren
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin_/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/content/new': typeof AdminContentNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/content'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
     | '/admin/login'
     | '/admin/'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,27 +187,44 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/content'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
     | '/admin/login'
     | '/admin'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/events'
     | '/membership'
     | '/sitemap.xml'
-    | '/admin/login'
+    | '/admin/content'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
+    | '/admin_/login'
     | '/admin/'
+    | '/admin/content/$id'
+    | '/admin/content/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   EventsRoute: typeof EventsRoute
   MembershipRoute: typeof MembershipRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
-  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -144,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -160,29 +273,121 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/admin/login': {
-      id: '/admin/login'
+    '/admin_/login': {
+      id: '/admin_/login'
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/exports': {
+      id: '/admin/exports'
+      path: '/exports'
+      fullPath: '/admin/exports'
+      preLoaderRoute: typeof AdminExportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/content/new': {
+      id: '/admin/content/new'
+      path: '/new'
+      fullPath: '/admin/content/new'
+      preLoaderRoute: typeof AdminContentNewRouteImport
+      parentRoute: typeof AdminContentRoute
+    }
+    '/admin/content/$id': {
+      id: '/admin/content/$id'
+      path: '/$id'
+      fullPath: '/admin/content/$id'
+      preLoaderRoute: typeof AdminContentIdRouteImport
+      parentRoute: typeof AdminContentRoute
+    }
   }
 }
+
+interface AdminContentRouteChildren {
+  AdminContentIdRoute: typeof AdminContentIdRoute
+  AdminContentNewRoute: typeof AdminContentNewRoute
+}
+
+const AdminContentRouteChildren: AdminContentRouteChildren = {
+  AdminContentIdRoute: AdminContentIdRoute,
+  AdminContentNewRoute: AdminContentNewRoute,
+}
+
+const AdminContentRouteWithChildren = AdminContentRoute._addFileChildren(
+  AdminContentRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminContentRoute: typeof AdminContentRouteWithChildren
+  AdminEventsRoute: typeof AdminEventsRoute
+  AdminExportsRoute: typeof AdminExportsRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminMembersRoute: typeof AdminMembersRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminContentRoute: AdminContentRouteWithChildren,
+  AdminEventsRoute: AdminEventsRoute,
+  AdminExportsRoute: AdminExportsRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminMembersRoute: AdminMembersRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   EventsRoute: EventsRoute,
   MembershipRoute: MembershipRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
-  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
