@@ -4,7 +4,7 @@ import hero from "@/assets/hero.jpg";
 
 export function Hero() {
   return (
-    <section className="relative h-screen min-h-[680px] w-full overflow-hidden">
+    <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
       <img
         src={hero}
         alt="Woman practicing Pilates in a sunlit studio"
@@ -14,10 +14,10 @@ export function Hero() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-espresso/30 via-espresso/20 to-espresso/70" />
 
-      <div className="relative h-full container-luxe flex flex-col justify-end pt-28 pb-24 md:pb-32">
+      <div className="relative h-full container-luxe flex flex-col justify-end pt-32 md:pt-36 pb-24 md:pb-32">
         <div className="max-w-3xl">
           <span className="eyebrow !text-ivory/80 animate-fade-in">B.MARC Pilates</span>
-          <h1 className="mt-6 font-serif text-ivory text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.05] animate-fade-up">
+          <h1 className="mt-6 font-serif text-ivory text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] animate-fade-up">
             More Than Pilates.<br />
             <em className="font-light">A Wellness Culture.</em>
           </h1>
