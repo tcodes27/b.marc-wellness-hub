@@ -31,7 +31,7 @@ export function MembershipPreview() {
           </ul>
 
           <div className="mt-10">
-            <button onClick={() => open("membership-preview")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+            <button onClick={goToUscreen} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
               Start Your Journey
             </button>
           </div>
