@@ -74,24 +74,39 @@ export function NewPostModal({ open, onClose, onCreated, userId }: Props) {
   const create = async (opts: { openFullEditor: boolean }) => {
     setSaving(true);
     setError(null);
-    const payload = {
+    const basePayload: Record<string, unknown> = {
       title: title.trim() || "Untitled",
       subtitle: subtitle.trim() || null,
       slug: slugify(title || `post-${Date.now()}`),
       body,
       content_type: contentType,
       audience,
-      audience_tags: audienceTags,
-      delivery_channels: channels,
-      status: "Draft" as const,
-      send_status: "draft" as const,
+      status: "Draft",
       created_by: userId,
     };
-    const { data, error: err } = await supabase
+    // Optional distribution columns — only included if the DB migration
+    // (db/content_distribution.sql) has been applied. We retry without them
+    // if the schema cache reports them as missing.
+    const distribution = {
+      audience_tags: audienceTags,
+      delivery_channels: channels,
+      send_status: "draft",
+    };
+
+    let { data, error: err } = await supabase
       .from("content_posts")
-      .insert(payload)
+      .insert({ ...basePayload, ...distribution })
       .select("id")
       .single();
+
+    if (err && /column|schema cache/i.test(err.message)) {
+      console.warn("[new-post-modal] distribution columns missing, retrying with base payload", err.message);
+      ({ data, error: err } = await supabase
+        .from("content_posts")
+        .insert(basePayload)
+        .select("id")
+        .single());
+    }
     setSaving(false);
     if (err) {
       console.error("[new-post-modal] insert error", err);
