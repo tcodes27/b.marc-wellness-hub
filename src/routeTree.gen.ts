@@ -27,7 +27,6 @@ import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
-import { Route as AdminContentNewRouteImport } from './routes/admin.content.new'
 import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -121,11 +120,6 @@ const ApiPublicTwilioSmsWebhookRoute =
     path: '/api/public/twilio-sms-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminContentNewRoute = AdminContentNewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => AdminContentRoute,
-} as any)
 const AdminContentIdRoute = AdminContentIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -151,7 +145,6 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
-  '/admin/content/new': typeof AdminContentNewRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -172,7 +165,6 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
-  '/admin/content/new': typeof AdminContentNewRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRoutesById {
@@ -195,7 +187,6 @@ export interface FileRoutesById {
   '/admin_/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
-  '/admin/content/new': typeof AdminContentNewRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRouteTypes {
@@ -219,7 +210,6 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/'
     | '/admin/content/$id'
-    | '/admin/content/new'
     | '/api/public/twilio-sms-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -240,7 +230,6 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin'
     | '/admin/content/$id'
-    | '/admin/content/new'
     | '/api/public/twilio-sms-webhook'
   id:
     | '__root__'
@@ -262,7 +251,6 @@ export interface FileRouteTypes {
     | '/admin_/login'
     | '/admin/'
     | '/admin/content/$id'
-    | '/admin/content/new'
     | '/api/public/twilio-sms-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -408,13 +396,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTwilioSmsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/content/new': {
-      id: '/admin/content/new'
-      path: '/new'
-      fullPath: '/admin/content/new'
-      preLoaderRoute: typeof AdminContentNewRouteImport
-      parentRoute: typeof AdminContentRoute
-    }
     '/admin/content/$id': {
       id: '/admin/content/$id'
       path: '/$id'
@@ -427,12 +408,10 @@ declare module '@tanstack/react-router' {
 
 interface AdminContentRouteChildren {
   AdminContentIdRoute: typeof AdminContentIdRoute
-  AdminContentNewRoute: typeof AdminContentNewRoute
 }
 
 const AdminContentRouteChildren: AdminContentRouteChildren = {
   AdminContentIdRoute: AdminContentIdRoute,
-  AdminContentNewRoute: AdminContentNewRoute,
 }
 
 const AdminContentRouteWithChildren = AdminContentRoute._addFileChildren(
@@ -477,3 +456,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
