@@ -66,6 +66,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [welcomeBack, setWelcomeBack] = useState(false);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
   const open = useCallback((src?: string) => {
@@ -73,6 +74,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     setForm(empty);
     setDone(false);
     setError(null);
+    setWelcomeBack(false);
     setIsOpen(true);
   }, []);
 
@@ -129,10 +131,14 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     setSubmitting(false);
     if (insertError || !inserted) {
       if (insertError?.code === "23505") {
-        setError("This email is already on our list. Welcome back.");
-      } else {
-        setError(insertError?.message || "Something went wrong. Please try again.");
+        setWelcomeBack(true);
+        toast.success(`Welcome back, ${parsed.data.first_name}.`, {
+          description: "You're already part of the B.MARC community",
+          duration: 6000,
+        });
+        return;
       }
+      setError(insertError?.message || "Something went wrong. Please try again.");
       return;
     }
     toast.success(`Welcome, ${inserted.first_name}.`, {
@@ -224,7 +230,10 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                       type="email"
                       required
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      onChange={(e) => {
+                        setForm({ ...form, email: e.target.value });
+                        if (welcomeBack) setWelcomeBack(false);
+                      }}
                       maxLength={255}
                       className={inputClass}
                     />
@@ -305,13 +314,25 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                   )}
 
                   <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className="btn-luxe btn-luxe-hover w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {submitting ? "Joining…" : "Join the Community"}
-                    </button>
+                    {welcomeBack ? (
+                      <button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-espresso/30 bg-sand/60 text-espresso/80 font-serif text-sm tracking-[0.18em] uppercase cursor-not-allowed"
+                      >
+                        <Check size={14} className="opacity-70" />
+                        Welcome back
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-luxe btn-luxe-hover w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {submitting ? "Joining…" : "Join the Community"}
+                      </button>
+                    )}
                   </div>
                 </form>
               )}
