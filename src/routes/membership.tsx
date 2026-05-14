@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
-import { useBooking } from "@/components/booking/BookingProvider";
-import { useCommunity } from "@/components/community/CommunityProvider";
+import { goToUscreen } from "@/lib/uscreen";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
