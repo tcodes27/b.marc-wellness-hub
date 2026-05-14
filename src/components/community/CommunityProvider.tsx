@@ -311,6 +311,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                   <label className="flex items-start gap-3 pt-2 cursor-pointer">
                     <input
                       type="checkbox"
+                      required
                       checked={form.consent_marketing}
                       onChange={(e) =>
                         setForm({ ...form, consent_marketing: e.target.checked })
