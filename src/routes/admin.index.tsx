@@ -1,6 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { supabase, type CommunityMember } from "@/integrations/supabase/client";
+import {
+  supabase,
+  type CommunityMember,
+  type MemberStatus,
+  MEMBER_STATUSES,
+} from "@/integrations/supabase/client";
 import { LogOut, Search, Download, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
@@ -13,6 +18,14 @@ export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
 });
 
+const STATUS_COLORS: Record<MemberStatus, string> = {
+  New: "bg-blue-100 text-blue-700",
+  Contacted: "bg-amber-100 text-amber-800",
+  VIP: "bg-purple-100 text-purple-700",
+  "Event Attendee": "bg-emerald-100 text-emerald-700",
+  "Sponsor Lead": "bg-rose-100 text-rose-700",
+};
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const [authChecked, setAuthChecked] = useState(false);
@@ -21,9 +34,11 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-  const [sourceFilter, setSourceFilter] = useState<string>("all");
-  const [consentFilter, setConsentFilter] = useState<"all" | "yes" | "no">("all");
+  const [interestFilter, setInterestFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | MemberStatus>("all");
   const [selected, setSelected] = useState<CommunityMember | null>(null);
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -59,6 +74,10 @@ function AdminDashboard() {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    setNotesDraft(selected?.notes ?? "");
+  }, [selected?.id, selected?.notes]);
+
   const loadMembers = async () => {
     setLoading(true);
     setLoadError(null);
@@ -75,18 +94,17 @@ function AdminDashboard() {
     setLoading(false);
   };
 
-  const sources = useMemo(() => {
+  const allInterests = useMemo(() => {
     const s = new Set<string>();
-    members.forEach((m) => m.source && s.add(m.source));
+    members.forEach((m) => (m.interests ?? []).forEach((i) => s.add(i)));
     return Array.from(s).sort();
   }, [members]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return members.filter((m) => {
-      if (sourceFilter !== "all" && (m.source ?? "") !== sourceFilter) return false;
-      if (consentFilter === "yes" && !m.consent_marketing) return false;
-      if (consentFilter === "no" && m.consent_marketing) return false;
+      if (statusFilter !== "all" && m.status !== statusFilter) return false;
+      if (interestFilter !== "all" && !(m.interests ?? []).includes(interestFilter)) return false;
       if (!q) return true;
       return (
         m.first_name.toLowerCase().includes(q) ||
@@ -96,21 +114,65 @@ function AdminDashboard() {
         (m.instagram_handle ?? "").toLowerCase().includes(q)
       );
     });
-  }, [members, search, sourceFilter, consentFilter]);
+  }, [members, search, interestFilter, statusFilter]);
 
   const stats = useMemo(() => {
     const now = Date.now();
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const interestCounts = new Map<string, number>();
+    members.forEach((m) =>
+      (m.interests ?? []).forEach((i) => interestCounts.set(i, (interestCounts.get(i) ?? 0) + 1))
+    );
+    const interestBreakdown = Array.from(interestCounts.entries()).sort((a, b) => b[1] - a[1]);
+    const recent = [...members]
+      .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))
+      .slice(0, 5);
     return {
       total: members.length,
       newThisWeek: members.filter((m) => new Date(m.created_at).getTime() >= weekAgo).length,
       consented: members.filter((m) => m.consent_marketing).length,
+      interestBreakdown,
+      recent,
     };
   }, [members]);
 
+  const updateStatus = async (member: CommunityMember, status: MemberStatus) => {
+    const prev = member.status;
+    setMembers((arr) => arr.map((m) => (m.id === member.id ? { ...m, status } : m)));
+    if (selected?.id === member.id) setSelected({ ...member, status });
+    const { error } = await supabase
+      .from("community_members")
+      .update({ status })
+      .eq("id", member.id);
+    if (error) {
+      setMembers((arr) => arr.map((m) => (m.id === member.id ? { ...m, status: prev } : m)));
+      if (selected?.id === member.id) setSelected({ ...member, status: prev });
+      alert(`Couldn't update status: ${error.message}`);
+    }
+  };
+
+  const saveNotes = async () => {
+    if (!selected) return;
+    setSavingNotes(true);
+    const { error } = await supabase
+      .from("community_members")
+      .update({ notes: notesDraft || null })
+      .eq("id", selected.id);
+    setSavingNotes(false);
+    if (error) {
+      alert(`Couldn't save notes: ${error.message}`);
+      return;
+    }
+    setMembers((arr) =>
+      arr.map((m) => (m.id === selected.id ? { ...m, notes: notesDraft || null } : m))
+    );
+    setSelected({ ...selected, notes: notesDraft || null });
+  };
+
   const exportCsv = () => {
     const headers = [
-      "id","first_name","last_name","email","phone","city","instagram_handle","interests","source","consent_marketing","created_at",
+      "id","first_name","last_name","email","phone","city","instagram_handle",
+      "interests","source","consent_marketing","status","notes","created_at",
     ];
     const rows = filtered.map((m) => [
       m.id, m.first_name, m.last_name, m.email,
@@ -118,6 +180,8 @@ function AdminDashboard() {
       (m.interests ?? []).join("; "),
       m.source ?? "",
       m.consent_marketing ? "yes" : "no",
+      m.status,
+      m.notes ?? "",
       m.created_at,
     ]);
     const escape = (v: string) => `"${String(v).replace(/"/g, '""')}"`;
@@ -187,6 +251,51 @@ function AdminDashboard() {
           <StatCard label="Marketing consented" value={stats.consented} />
         </div>
 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-5 lg:col-span-2">
+            <div className="text-xs uppercase tracking-wide text-slate-500 mb-4">Interest breakdown</div>
+            {stats.interestBreakdown.length === 0 ? (
+              <p className="text-sm text-slate-500">No interest data yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {stats.interestBreakdown.map(([name, count]) => {
+                  const pct = stats.total ? Math.round((count / stats.total) * 100) : 0;
+                  return (
+                    <li key={name} className="flex items-center gap-3 text-sm">
+                      <div className="w-44 truncate text-slate-700">{name}</div>
+                      <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div className="bg-slate-900 h-full" style={{ width: `${pct}%` }} />
+                      </div>
+                      <div className="w-16 text-right text-slate-600 tabular-nums">{count} · {pct}%</div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-5">
+            <div className="text-xs uppercase tracking-wide text-slate-500 mb-4">Recent signups</div>
+            {stats.recent.length === 0 ? (
+              <p className="text-sm text-slate-500">No signups yet.</p>
+            ) : (
+              <ul className="divide-y divide-slate-100">
+                {stats.recent.map((m) => (
+                  <li
+                    key={m.id}
+                    onClick={() => setSelected(m)}
+                    className="py-2 cursor-pointer hover:bg-slate-50 -mx-2 px-2 rounded"
+                  >
+                    <div className="text-sm text-slate-900">{m.first_name} {m.last_name}</div>
+                    <div className="text-xs text-slate-500">
+                      {new Date(m.created_at).toLocaleString()}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+
         <div className="bg-white border border-slate-200 rounded-xl">
           <div className="p-4 border-b border-slate-200 flex flex-wrap gap-3 items-center justify-between">
             <div className="flex flex-wrap gap-2 items-center flex-1">
@@ -200,23 +309,24 @@ function AdminDashboard() {
                 />
               </div>
               <select
-                value={sourceFilter}
-                onChange={(e) => setSourceFilter(e.target.value)}
+                value={interestFilter}
+                onChange={(e) => setInterestFilter(e.target.value)}
                 className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
               >
-                <option value="all">All sources</option>
-                {sources.map((s) => (
-                  <option key={s} value={s}>{s}</option>
+                <option value="all">All interests</option>
+                {allInterests.map((i) => (
+                  <option key={i} value={i}>{i}</option>
                 ))}
               </select>
               <select
-                value={consentFilter}
-                onChange={(e) => setConsentFilter(e.target.value as "all" | "yes" | "no")}
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as "all" | MemberStatus)}
                 className="rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
               >
-                <option value="all">All consent</option>
-                <option value="yes">Consented</option>
-                <option value="no">Not consented</option>
+                <option value="all">All statuses</option>
+                {MEMBER_STATUSES.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
               </select>
             </div>
             <button
@@ -241,16 +351,15 @@ function AdminDashboard() {
                     <Th>Name</Th>
                     <Th>Email</Th>
                     <Th>City</Th>
-                    <Th>Source</Th>
+                    <Th>Status</Th>
                     <Th>Interests</Th>
-                    <Th>Consent</Th>
                     <Th>Joined</Th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-500">
+                      <td colSpan={6} className="p-8 text-center text-slate-500">
                         No members match your filters.
                       </td>
                     </tr>
@@ -264,15 +373,12 @@ function AdminDashboard() {
                         <Td>{m.first_name} {m.last_name}</Td>
                         <Td>{m.email}</Td>
                         <Td>{m.city ?? "—"}</Td>
-                        <Td>{m.source ?? "—"}</Td>
-                        <Td>{(m.interests ?? []).slice(0, 2).join(", ") || "—"}{(m.interests?.length ?? 0) > 2 ? "…" : ""}</Td>
                         <Td>
-                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${
-                            m.consent_marketing ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"
-                          }`}>
-                            {m.consent_marketing ? "Yes" : "No"}
+                          <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${STATUS_COLORS[m.status] ?? "bg-slate-100 text-slate-700"}`}>
+                            {m.status}
                           </span>
                         </Td>
+                        <Td>{(m.interests ?? []).slice(0, 2).join(", ") || "—"}{(m.interests?.length ?? 0) > 2 ? "…" : ""}</Td>
                         <Td>{new Date(m.created_at).toLocaleDateString()}</Td>
                       </tr>
                     ))
@@ -301,6 +407,20 @@ function AdminDashboard() {
               </div>
               <button onClick={() => setSelected(null)} className="text-slate-400 hover:text-slate-700 text-sm">Close</button>
             </div>
+
+            <div className="mt-6">
+              <label className="block text-xs uppercase tracking-wide text-slate-500 mb-2">Status</label>
+              <select
+                value={selected.status}
+                onChange={(e) => updateStatus(selected, e.target.value as MemberStatus)}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white"
+              >
+                {MEMBER_STATUSES.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+
             <dl className="mt-6 space-y-4 text-sm">
               <Row label="Phone" value={selected.phone ?? "—"} />
               <Row label="City" value={selected.city ?? "—"} />
@@ -311,6 +431,26 @@ function AdminDashboard() {
               <Row label="Joined" value={new Date(selected.created_at).toLocaleString()} />
               <Row label="ID" value={<span className="font-mono text-xs">{selected.id}</span>} />
             </dl>
+
+            <div className="mt-6">
+              <label className="block text-xs uppercase tracking-wide text-slate-500 mb-2">Internal notes</label>
+              <textarea
+                value={notesDraft}
+                onChange={(e) => setNotesDraft(e.target.value)}
+                rows={5}
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:border-slate-900"
+                placeholder="Private notes for the team…"
+              />
+              <div className="mt-2 flex justify-end">
+                <button
+                  onClick={saveNotes}
+                  disabled={savingNotes || (notesDraft || "") === (selected.notes ?? "")}
+                  className="rounded-lg bg-slate-900 text-white text-sm px-4 py-2 disabled:opacity-50"
+                >
+                  {savingNotes ? "Saving…" : "Save notes"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

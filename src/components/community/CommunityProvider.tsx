@@ -17,12 +17,12 @@ export function useCommunity() {
 }
 
 const INTEREST_OPTIONS = [
-  "Pilates Events",
-  "Online Classes",
-  "Retreats",
-  "Wellness Workshops",
-  "Membership",
-  "Community Meetups",
+  "Pilates events",
+  "Wellness community",
+  "Online classes",
+  "Beginner Pilates",
+  "Brand updates",
+  "Sponsorship/collaboration",
 ];
 
 const schema = z.object({
@@ -180,9 +180,9 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                   <div className="mx-auto h-14 w-14 rounded-full bg-espresso text-ivory flex items-center justify-center">
                     <Check size={22} />
                   </div>
-                  <h3 className="mt-6 font-serif text-2xl text-espresso">You're in.</h3>
+                  <h3 className="mt-6 font-serif text-2xl text-espresso">Welcome to the B.MARC community.</h3>
                   <p className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                    Welcome home. We'll be in touch with intention, not noise.
+                    You'll be the first to know about upcoming events and experiences.
                   </p>
                   <button onClick={close} className="btn-luxe btn-luxe-hover mt-8">
                     Close
@@ -284,8 +284,8 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                       className="mt-1 h-4 w-4 accent-espresso"
                     />
                     <span className="text-xs text-muted-foreground leading-relaxed">
-                      I agree to receive emails from B.MARC Pilates about events, classes, and
-                      community updates. You can unsubscribe at any time.
+                      I agree to receive occasional B.MARC Pilates updates about events,
+                      community experiences, and wellness content. No spam.
                     </span>
                   </label>
 
