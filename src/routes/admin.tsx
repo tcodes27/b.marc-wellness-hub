@@ -56,6 +56,7 @@ function AdminLayout() {
   const [userId, setUserId] = useState<string>("");
   const [members, setMembers] = useState<CommunityMember[]>([]);
   const [navOpen, setNavOpen] = useState(false);
+  const [bootError, setBootError] = useState<string | null>(null);
 
   const loadMembers = async () => {
     try {
@@ -63,10 +64,14 @@ function AdminLayout() {
         .from("community_members")
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) console.error("[admin] loadMembers error:", error);
+      if (error) {
+        console.error("[admin] loadMembers error:", error);
+        setBootError(`community_members: ${error.message}`);
+      }
       setMembers((data ?? []) as CommunityMember[]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("[admin] loadMembers threw:", err);
+      setBootError(`community_members threw: ${err?.message ?? String(err)}`);
     }
   };
 
@@ -75,7 +80,10 @@ function AdminLayout() {
     (async () => {
       try {
         const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-        if (sessionErr) console.error("[admin] getSession error:", sessionErr);
+        if (sessionErr) {
+          console.error("[admin] getSession error:", sessionErr);
+          setBootError(`getSession: ${sessionErr.message}`);
+        }
         if (!sessionData.session) {
           navigate({ to: "/admin_/login" });
           return;
@@ -87,7 +95,15 @@ function AdminLayout() {
           .eq("user_id", uid)
           .eq("role", "admin")
           .maybeSingle();
-        if (roleErr) console.error("[admin] user_roles error:", roleErr);
+        if (roleErr) {
+          console.error("[admin] user_roles error:", roleErr);
+          setBootError(`user_roles: ${roleErr.message} (code ${roleErr.code ?? "?"})`);
+          if (!cancelled) {
+            setIsAdmin(false);
+            setAuthChecked(true);
+          }
+          return;
+        }
         if (cancelled) return;
         if (!roleRow) {
           setIsAdmin(false);
@@ -98,8 +114,9 @@ function AdminLayout() {
         setIsAdmin(true);
         setAuthChecked(true);
         await loadMembers();
-      } catch (err) {
+      } catch (err: any) {
         console.error("[admin] auth bootstrap threw:", err);
+        setBootError(`bootstrap threw: ${err?.message ?? String(err)}`);
         if (!cancelled) setAuthChecked(true);
       }
     })();
