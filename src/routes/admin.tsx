@@ -89,15 +89,16 @@ function AdminLayout() {
           return;
         }
         const uid = sessionData.session.user.id;
-        const { data: roleRow, error: roleErr } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", uid)
-          .eq("role", "admin")
-          .maybeSingle();
+        const { data: isAdminRpc, error: roleErr } = await supabase.rpc("has_role", {
+          _user_id: uid,
+          _role: "admin",
+        });
         if (roleErr) {
-          console.error("[admin] user_roles error:", roleErr);
-          setBootError(`user_roles: ${roleErr.message} (code ${roleErr.code ?? "?"})`);
+          console.error("[admin] has_role error:", roleErr);
+          setBootError(
+            `has_role: ${roleErr.message} (code ${roleErr.code ?? "?"}). ` +
+              `Did you run db/admin_roles.sql in your Supabase SQL editor?`
+          );
           if (!cancelled) {
             setIsAdmin(false);
             setAuthChecked(true);
@@ -105,7 +106,7 @@ function AdminLayout() {
           return;
         }
         if (cancelled) return;
-        if (!roleRow) {
+        if (!isAdminRpc) {
           setIsAdmin(false);
           setAuthChecked(true);
           return;
@@ -236,11 +237,6 @@ function AdminLayout() {
           </header>
 
           <main className="flex-1 p-5 sm:p-8 max-w-6xl w-full mx-auto">
-            {bootError && (
-              <pre className="mb-4 text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
-                {bootError}
-              </pre>
-            )}
             <Outlet />
           </main>
         </div>
