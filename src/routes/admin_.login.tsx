@@ -21,20 +21,37 @@ function AdminLogin() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
+      console.log("[admin-auth] login mount", {
+        hasSession: !!data.session,
+        userId: data.session?.user.id ?? null,
+      });
       if (data.session) navigate({ to: "/admin" });
     });
   }, [navigate]);
+
+  const maskEmail = (e: string) => {
+    const [user, domain] = e.split("@");
+    if (!domain) return "***";
+    return `${user.slice(0, 1)}***@${domain}`;
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    console.log("[admin-auth] signIn attempt", { email: maskEmail(email) });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
+    console.log("[admin-auth] signIn result", {
+      ok: !error,
+      userId: data?.user?.id ?? null,
+      error: error?.message ?? null,
+    });
     if (error) {
       setError(error.message);
       return;
     }
+    console.log("[admin-auth] signIn success, navigating to /admin");
     navigate({ to: "/admin" });
   };
 

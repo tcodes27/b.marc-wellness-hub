@@ -76,22 +76,44 @@ function AdminLayout() {
   };
 
   useEffect(() => {
+    console.log("[admin-auth] mount", { pathname });
+    if (typeof window !== "undefined") {
+      const keys = Object.keys(window.localStorage);
+      const supaKey = keys.find((k) => k.startsWith("sb-") && k.endsWith("-auth-token")) ?? null;
+      console.log("[admin-auth] localStorage probe", {
+        hasSupabaseKey: !!supaKey,
+        keyName: supaKey,
+      });
+    }
     let cancelled = false;
     (async () => {
       try {
         const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+        const session = sessionData.session;
+        console.log("[admin-auth] getSession ->", {
+          hasSession: !!session,
+          userId: session?.user.id ?? null,
+          expiresAt: session?.expires_at ?? null,
+          accessTokenPreview: session?.access_token?.slice(0, 12) ?? null,
+          error: sessionErr?.message ?? null,
+        });
         if (sessionErr) {
           console.error("[admin] getSession error:", sessionErr);
           setBootError(`getSession: ${sessionErr.message}`);
         }
-        if (!sessionData.session) {
+        if (!session) {
+          console.log("[admin-auth] no session, redirecting to /admin/login");
           navigate({ to: "/admin/login" });
           return;
         }
-        const uid = sessionData.session.user.id;
+        const uid = session.user.id;
         const { data: isAdminRpc, error: roleErr } = await supabase.rpc("has_role", {
           _user_id: uid,
           _role: "admin",
+        });
+        console.log("[admin-auth] has_role ->", {
+          isAdminRpc,
+          error: roleErr?.message ?? null,
         });
         if (roleErr) {
           console.error("[admin] has_role error:", roleErr);
@@ -121,13 +143,20 @@ function AdminLayout() {
         if (!cancelled) setAuthChecked(true);
       }
     })();
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((evt, session) => {
+      console.log("[admin-auth] authStateChange", {
+        event: evt,
+        hasSession: !!session,
+        userId: session?.user.id ?? null,
+      });
       if (!session) navigate({ to: "/admin/login" });
     });
     return () => {
+      console.log("[admin-auth] cleanup");
       cancelled = true;
       sub.subscription.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   useEffect(() => {
@@ -135,7 +164,9 @@ function AdminLayout() {
   }, [pathname]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    console.log("[admin-auth] signOut clicked");
+    const { error } = await supabase.auth.signOut();
+    console.log("[admin-auth] signOut result", { error: error?.message ?? null });
     navigate({ to: "/admin/login" });
   };
 
