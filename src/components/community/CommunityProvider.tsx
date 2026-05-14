@@ -34,7 +34,8 @@ const schema = z.object({
   city: z.string().trim().max(120).optional().or(z.literal("")),
   instagram_handle: z.string().trim().max(80).optional().or(z.literal("")),
   interests: z.array(z.string().max(80)).max(20),
-  consent_marketing: z.literal(true, { errorMap: () => ({ message: "Please agree to receive updates to continue." }) }),
+  email_consent: z.literal(true, { errorMap: () => ({ message: "Please agree to receive emails to continue." }) }),
+  sms_consent: z.boolean(),
 });
 
 type FormState = {
@@ -45,7 +46,8 @@ type FormState = {
   city: string;
   instagram_handle: string;
   interests: string[];
-  consent_marketing: boolean;
+  email_consent: boolean;
+  sms_consent: boolean;
 };
 
 const empty: FormState = {
@@ -56,7 +58,8 @@ const empty: FormState = {
   city: "",
   instagram_handle: "",
   interests: [],
-  consent_marketing: false,
+  email_consent: false,
+  sms_consent: false,
 };
 
 export function CommunityProvider({ children }: { children: React.ReactNode }) {
