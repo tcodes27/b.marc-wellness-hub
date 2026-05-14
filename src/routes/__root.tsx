@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { BookingProvider } from "@/components/booking/BookingProvider";
 import { CommunityProvider } from "@/components/community/CommunityProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
