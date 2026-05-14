@@ -22,6 +22,7 @@ type Props = {
 
 export function RichEditor({ value, onChange, onInsertImage, placeholder }: Props) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Underline,
