@@ -236,6 +236,11 @@ function AdminLayout() {
           </header>
 
           <main className="flex-1 p-5 sm:p-8 max-w-6xl w-full mx-auto">
+            {bootError && (
+              <pre className="mb-4 text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
+                {bootError}
+              </pre>
+            )}
             <Outlet />
           </main>
         </div>
