@@ -104,29 +104,31 @@ function PlaceholderCard({ post }: { post: Post }) {
   );
 }
 
-function InstagramEmbedSlot({ embedCode }: { embedCode: string }) {
+function InstagramEmbedSlot({
+  embedCode,
+  refreshKey,
+}: {
+  embedCode: string;
+  refreshKey: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Re-execute any <script> tags pasted inside the embed (Elfsight, LightWidget, etc.)
+  // Re-render markup AND re-execute any <script> tags whenever refreshKey changes.
+  // Many widgets (Elfsight, LightWidget, oEmbed) cache by element identity, so
+  // wiping innerHTML + re-injecting scripts forces a fresh fetch.
   useEffect(() => {
     if (!embedCode || !ref.current) return;
-    const scripts = ref.current.querySelectorAll("script");
-    scripts.forEach((old) => {
+    const host = ref.current;
+    host.innerHTML = embedCode;
+    host.querySelectorAll("script").forEach((old) => {
       const s = document.createElement("script");
       Array.from(old.attributes).forEach((a) => s.setAttribute(a.name, a.value));
       s.text = old.text;
       old.parentNode?.replaceChild(s, old);
     });
-  }, [embedCode]);
+  }, [embedCode, refreshKey]);
 
-  return (
-    <div
-      ref={ref}
-      className="instagram-embed-slot w-full"
-      // Provider markup is trusted (you paste it). Required to inject iframes/widgets.
-      dangerouslySetInnerHTML={{ __html: embedCode }}
-    />
-  );
+  return <div ref={ref} className="instagram-embed-slot w-full" />;
 }
 
 function PlaceholderCarousel() {
