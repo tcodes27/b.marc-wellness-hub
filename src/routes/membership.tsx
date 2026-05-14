@@ -183,7 +183,7 @@ function MembershipPage() {
                 </ul>
 
                 <button
-                  onClick={() => open({ title: t.name, description: `${t.price} ${t.cadence}` })}
+                  onClick={goToUscreen}
                   className={`mt-10 w-full rounded-full py-4 text-[0.7rem] uppercase tracking-[0.3em] font-medium transition-all duration-500 ${
                     t.highlight
                       ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"
