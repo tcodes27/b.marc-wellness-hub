@@ -322,19 +322,22 @@ function PreviewModal({ form, onClose }: { form: FormState; onClose: () => void 
 function jsonToSimpleHtml(node: any): string {
   if (!node) return "";
   if (Array.isArray(node)) return node.map(jsonToSimpleHtml).join("");
+  const align = node.attrs?.textAlign && node.attrs.textAlign !== "left" ? ` style="text-align:${node.attrs.textAlign}"` : "";
   if (node.type === "doc") return jsonToSimpleHtml(node.content);
-  if (node.type === "paragraph") return `<p>${jsonToSimpleHtml(node.content)}</p>`;
-  if (node.type === "heading") return `<h${node.attrs?.level ?? 2}>${jsonToSimpleHtml(node.content)}</h${node.attrs?.level ?? 2}>`;
+  if (node.type === "paragraph") return `<p${align}>${jsonToSimpleHtml(node.content)}</p>`;
+  if (node.type === "heading") return `<h${node.attrs?.level ?? 2}${align}>${jsonToSimpleHtml(node.content)}</h${node.attrs?.level ?? 2}>`;
   if (node.type === "bulletList") return `<ul>${jsonToSimpleHtml(node.content)}</ul>`;
   if (node.type === "orderedList") return `<ol>${jsonToSimpleHtml(node.content)}</ol>`;
   if (node.type === "listItem") return `<li>${jsonToSimpleHtml(node.content)}</li>`;
-  if (node.type === "blockquote") return `<blockquote>${jsonToSimpleHtml(node.content)}</blockquote>`;
-  if (node.type === "image") return `<img src="${node.attrs?.src ?? ""}" alt="" />`;
+  if (node.type === "blockquote") return `<blockquote style="border-left:2px solid rgba(0,0,0,.2);padding-left:1rem;font-style:italic;color:#7a6a5a">${jsonToSimpleHtml(node.content)}</blockquote>`;
+  if (node.type === "horizontalRule") return `<hr style="margin:2rem 0;border:0;border-top:1px solid rgba(0,0,0,.15)" />`;
+  if (node.type === "image") return `<img src="${node.attrs?.src ?? ""}" alt="" style="border-radius:1rem;margin:1.5rem 0" />`;
   if (node.type === "text") {
     let t = escapeHtml(node.text ?? "");
     for (const m of node.marks ?? []) {
       if (m.type === "bold") t = `<strong>${t}</strong>`;
       if (m.type === "italic") t = `<em>${t}</em>`;
+      if (m.type === "underline") t = `<u>${t}</u>`;
       if (m.type === "link") t = `<a href="${escapeHtml(m.attrs?.href ?? "#")}">${t}</a>`;
     }
     return t;
