@@ -17,7 +17,7 @@ export function Hero() {
       <div className="relative h-full container-luxe flex flex-col justify-end pt-32 md:pt-36 pb-24 md:pb-32">
         <div className="max-w-3xl">
           <span className="eyebrow !text-ivory/80 animate-fade-in">B.MARC Pilates</span>
-          <h1 className="mt-6 font-serif text-ivory text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] animate-fade-up">
+          <h1 className="mt-5 font-serif text-ivory text-[2.25rem] leading-[1.08] xs:text-[2.5rem] sm:text-5xl sm:leading-[1.06] md:text-6xl md:leading-[1.05] lg:text-7xl lg:leading-[1.04] tracking-[-0.01em] animate-fade-up">
             More Than Pilates.<br />
             <em className="font-light">A Wellness Culture.</em>
           </h1>
