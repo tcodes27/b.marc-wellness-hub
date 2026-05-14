@@ -117,7 +117,9 @@ function LeadsPage() {
               active === name ? "border-espresso ring-1 ring-espresso" : "border-tan/30 hover:border-tan"
             }`}
           >
-            <div className="text-[0.65rem] uppercase tracking-[0.25em] text-clay">{name}</div>
+            <div className="text-[0.6rem] sm:text-[0.65rem] uppercase tracking-[0.18em] sm:tracking-[0.22em] text-clay break-words leading-snug">
+              {name}
+            </div>
             <div className="mt-2 font-serif text-3xl">{count}</div>
             <div className="mt-1 text-xs text-clay">members</div>
           </button>
