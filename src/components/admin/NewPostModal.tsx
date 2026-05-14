@@ -82,7 +82,7 @@ export function NewPostModal({ open, onClose, onCreated, userId }: Props) {
       content_type: contentType,
       audience,
       status: "Draft",
-      created_by: userId,
+      created_by: userId || null,
     };
     // Optional distribution columns — only included if the DB migration
     // (db/content_distribution.sql) has been applied. We retry without them
