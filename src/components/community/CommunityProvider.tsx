@@ -230,7 +230,10 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                       type="email"
                       required
                       value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      onChange={(e) => {
+                        setForm({ ...form, email: e.target.value });
+                        if (welcomeBack) setWelcomeBack(false);
+                      }}
                       maxLength={255}
                       className={inputClass}
                     />
