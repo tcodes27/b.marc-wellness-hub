@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
-import { useBooking } from "@/components/booking/BookingProvider";
-import { useCommunity } from "@/components/community/CommunityProvider";
+import { goToUscreen } from "@/lib/uscreen";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
@@ -82,8 +81,6 @@ const inside = [
 ];
 
 function MembershipPage() {
-  const { open } = useBooking();
-  const { open: openCommunity } = useCommunity();
   return (
     <SiteLayout>
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
@@ -97,7 +94,7 @@ function MembershipPage() {
               Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => openCommunity("membership-page")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={goToUscreen} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
           </div>
@@ -186,7 +183,7 @@ function MembershipPage() {
                 </ul>
 
                 <button
-                  onClick={() => open({ title: t.name, description: `${t.price} ${t.cadence}` })}
+                  onClick={goToUscreen}
                   className={`mt-10 w-full rounded-full py-4 text-[0.7rem] uppercase tracking-[0.3em] font-medium transition-all duration-500 ${
                     t.highlight
                       ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"
