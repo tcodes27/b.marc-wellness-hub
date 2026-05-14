@@ -31,6 +31,14 @@ const INSTAGRAM_URL = "https://www.instagram.com/bmarcpilates/";
  */
 const INSTAGRAM_EMBED_CODE = "";
 
+/**
+ * How often (in minutes) to silently re-mount the embed so cached widgets
+ * pick up new posts. Set to 0 to disable. Default: 10 minutes.
+ * The refresh only runs when the section is visible in the viewport and
+ * the browser tab is active, so it never wastes bandwidth in the background.
+ */
+const INSTAGRAM_REFRESH_MINUTES = 10;
+
 type Post = {
   src: string;
   alt: string;
@@ -96,29 +104,31 @@ function PlaceholderCard({ post }: { post: Post }) {
   );
 }
 
-function InstagramEmbedSlot({ embedCode }: { embedCode: string }) {
+function InstagramEmbedSlot({
+  embedCode,
+  refreshKey,
+}: {
+  embedCode: string;
+  refreshKey: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Re-execute any <script> tags pasted inside the embed (Elfsight, LightWidget, etc.)
+  // Re-render markup AND re-execute any <script> tags whenever refreshKey changes.
+  // Many widgets (Elfsight, LightWidget, oEmbed) cache by element identity, so
+  // wiping innerHTML + re-injecting scripts forces a fresh fetch.
   useEffect(() => {
     if (!embedCode || !ref.current) return;
-    const scripts = ref.current.querySelectorAll("script");
-    scripts.forEach((old) => {
+    const host = ref.current;
+    host.innerHTML = embedCode;
+    host.querySelectorAll("script").forEach((old) => {
       const s = document.createElement("script");
       Array.from(old.attributes).forEach((a) => s.setAttribute(a.name, a.value));
       s.text = old.text;
       old.parentNode?.replaceChild(s, old);
     });
-  }, [embedCode]);
+  }, [embedCode, refreshKey]);
 
-  return (
-    <div
-      ref={ref}
-      className="instagram-embed-slot w-full"
-      // Provider markup is trusted (you paste it). Required to inject iframes/widgets.
-      dangerouslySetInnerHTML={{ __html: embedCode }}
-    />
-  );
+  return <div ref={ref} className="instagram-embed-slot w-full" />;
 }
 
 function PlaceholderCarousel() {
@@ -143,9 +153,56 @@ function PlaceholderCarousel() {
 
 export function CommunityFeed() {
   const [hasEmbed] = useState(() => INSTAGRAM_EMBED_CODE.trim().length > 0);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Auto-refresh: re-mount the embed every N minutes, but only when the
+  // section is visible AND the tab is active. Also refreshes immediately
+  // when the user returns to the tab after >N minutes away.
+  useEffect(() => {
+    if (!hasEmbed || INSTAGRAM_REFRESH_MINUTES <= 0) return;
+
+    const intervalMs = INSTAGRAM_REFRESH_MINUTES * 60 * 1000;
+    let isVisible = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.1 },
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+
+    const tick = () => {
+      if (isVisible && document.visibilityState === "visible") {
+        setRefreshKey((k) => k + 1);
+        setLastRefreshed(new Date());
+      }
+    };
+    const id = window.setInterval(tick, intervalMs);
+
+    const onVisibility = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastRefreshed.getTime() >= intervalMs) tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+      observer.disconnect();
+    };
+  }, [hasEmbed, lastRefreshed]);
+
+  const manualRefresh = () => {
+    setRefreshKey((k) => k + 1);
+    setLastRefreshed(new Date());
+  };
 
   return (
     <section
+      ref={sectionRef}
       id="instagram"
       className="py-28 md:py-36 bg-gradient-to-b from-ivory via-sand/40 to-ivory overflow-hidden"
     >
@@ -186,7 +243,22 @@ export function CommunityFeed() {
         {hasEmbed ? (
           <div className="container-luxe">
             <div className="rounded-[2rem] bg-ivory/60 backdrop-blur-sm p-4 md:p-6 shadow-[0_40px_100px_-40px_oklch(0.28_0.035_40_/_0.3)]">
-              <InstagramEmbedSlot embedCode={INSTAGRAM_EMBED_CODE} />
+              <InstagramEmbedSlot
+                embedCode={INSTAGRAM_EMBED_CODE}
+                refreshKey={refreshKey}
+              />
+              <div className="mt-4 flex items-center justify-end gap-4 text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
+                <span>
+                  Updated {lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </span>
+                <button
+                  type="button"
+                  onClick={manualRefresh}
+                  className="link-underline"
+                >
+                  Refresh
+                </button>
+              </div>
             </div>
           </div>
         ) : (
