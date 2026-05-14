@@ -1,6 +1,5 @@
-import { Link } from "@tanstack/react-router";
 import membership from "@/assets/membership.jpg";
-import { useCommunity } from "@/components/community/CommunityProvider";
+import { goToUscreen } from "@/lib/uscreen";
 
 const features = [
   { t: "On-Demand Classes", d: "Reformer, mat & sculpt sessions, anywhere." },
