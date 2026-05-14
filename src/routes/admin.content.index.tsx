@@ -6,7 +6,7 @@ import {
 import { useAdmin } from "./admin";
 import { Plus, Loader2, Trash2, Eye, Pencil, Copy, Search, FileText } from "lucide-react";
 
-export const Route = createFileRoute("/admin/content")({
+export const Route = createFileRoute("/admin/content/")({
   component: ContentList,
 });
 
