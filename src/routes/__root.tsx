@@ -118,6 +118,18 @@ function RootComponent() {
       <BookingProvider>
         <CommunityProvider>
           <Outlet />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "!bg-ivory !border !border-tan/40 !text-espresso !rounded-2xl !shadow-[0_30px_80px_-30px_oklch(0.28_0.035_40_/_0.45)] !font-serif",
+                title: "!font-serif !text-espresso !text-base !tracking-wide",
+                description: "!text-clay !text-xs !tracking-[0.12em] !uppercase",
+                icon: "!text-espresso",
+              },
+            }}
+          />
         </CommunityProvider>
       </BookingProvider>
     </QueryClientProvider>
