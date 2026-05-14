@@ -1,51 +1,30 @@
-## Goal
+## Root cause
 
-Make `/admin` work end-to-end on Supabase: visiting `/admin` while signed-out redirects to `/admin/login`, signing in lands on `/admin`, and the dashboard renders with all sub-sections (members, events, leads, content, exports, settings).
+After signing out (or visiting `/admin` without a session) the admin layout calls:
 
-## Root cause of the current error
+```ts
+navigate({ to: "/admin_/login" })
+```
 
-The dashboard code in `src/routes/admin.tsx` queries `public.user_roles` to verify admin access. That table (and the `app_role` enum + `has_role()` SECURITY DEFINER function) does not yet exist in your Supabase project, so the query errors and the layout falls through to "Not authorized" / shows a `bootError`. Same story for the protected reads (`community_members`, etc.) — without RLS policies that allow admins, they return empty/error.
+The login route file is `admin_.login.tsx`. The trailing `_` in `admin_` is a TanStack flat-route convention that escapes the parent `admin` layout — the resulting **URL** is `/admin/login`, while `/admin_/login` is only the route **id**.
 
-## Plan
+TanStack accepts both strings in the typed `to` union, but uses the value literally as the URL. So the redirect lands on `/admin_/login`, which doesn't exist → root `notFoundComponent` renders the 404 page. Login also can't be reached, and after signing in successfully `signOut`/auth listener bounces the user back to the same broken URL.
 
-### 1. Database migration (Supabase)
+I confirmed this in the preview: visiting `/admin` briefly shows the loading spinner, then the URL flips to `/admin_/login` and the 404 page renders. No XHR to Supabase ever fires because the user is on the 404 screen.
 
-Create a migration that:
+## Fix
 
-- Creates `public.app_role` enum (`admin`, `moderator`, `user`).
-- Creates `public.user_roles (id, user_id → auth.users, role, unique(user_id, role))`.
-- Enables RLS on `user_roles` and adds policy: a user can `SELECT` their own roles.
-- Creates `public.has_role(_user_id uuid, _role app_role)` as `SECURITY DEFINER STABLE` with `search_path = public`.
-- Seeds the admin role for the current account (UUID you've been testing with).
-- Adds RLS policies on existing admin-managed tables (`community_members`, `events`, `leads`/tags, `content_*`) so that `has_role(auth.uid(),'admin')` grants full access. Anon insert remains for the public lead-capture form on `community_members` (kept as-is if already present).
+Replace the three `to: "/admin_/login"` occurrences in `src/routes/admin.tsx` with the actual path `to: "/admin/login"`:
 
-### 2. Routing / auth flow cleanup (`src/routes/admin.tsx`, `src/routes/admin_.login.tsx`)
+- line 88 — initial unauth redirect
+- line 125 — `onAuthStateChange` sign-out redirect
+- line 139 — manual `signOut` button
 
-- Keep `/admin/login` as a public route (already correct via `admin_.login.tsx` — URL is `/admin/login`, outside the admin layout).
-- In `admin.tsx`:
-  - Replace the direct `user_roles` SELECT with a call to the `has_role` RPC (`supabase.rpc('has_role', { _user_id, _role: 'admin' })`) — works regardless of RLS on `user_roles` and matches the security pattern.
-  - On no session → redirect to `/admin/login`.
-  - On session but not admin → show "Not authorized" with sign-out (current behavior).
-  - On admin → render layout + `<Outlet />`.
-  - Remove the noisy red `bootError` panel from the happy-path dashboard view; keep it only on the not-authorized screen for diagnostics.
-- In `admin_.login.tsx`: on successful sign-in, navigate to `/admin` (already correct). Keep the "already-signed-in → /admin" effect.
+No other files need changes. The login route itself (`admin_.login.tsx`) keeps its `createFileRoute("/admin_/login")` declaration — that's the file-id contract; only the navigation calls were using the wrong string.
 
-### 3. Sub-routes sanity check
+## Verification
 
-Confirm each tab route exists and renders inside the admin layout via `<Outlet />`:
-`/admin` (overview), `/admin/members`, `/admin/events`, `/admin/leads`, `/admin/content`, `/admin/content/new`, `/admin/content/:id`, `/admin/exports`, `/admin/settings`. No new pages — just verify nothing broke.
-
-### 4. Verification
-
-- Visit `/admin` signed-out → redirected to `/admin/login`.
-- Sign in with the admin UUID account → land on `/admin` overview, sidebar visible, all tabs navigable.
-- Sign in with a non-admin account → "Not authorized" screen.
-- Refresh on `/admin/members` while signed-in → stays on the page (no redirect loop).
-
-## Files touched
-
-- `supabase/migrations/<timestamp>_admin_roles.sql` (new)
-- `src/routes/admin.tsx` (swap SELECT → RPC, clean error UI)
-- `src/routes/admin_.login.tsx` (minor — confirm redirect target)
-
-No changes to Lovable Cloud — pure Supabase via the existing publishable-key client.
+After the edit, navigate to `/admin` in the preview:
+1. Spinner → URL changes to `/admin/login` → login form renders.
+2. Sign in → redirects to `/admin` → dashboard loads with members list.
+3. Sign-out button returns to `/admin/login`.
