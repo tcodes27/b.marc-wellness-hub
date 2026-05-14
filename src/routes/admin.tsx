@@ -89,15 +89,16 @@ function AdminLayout() {
           return;
         }
         const uid = sessionData.session.user.id;
-        const { data: roleRow, error: roleErr } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", uid)
-          .eq("role", "admin")
-          .maybeSingle();
+        const { data: isAdminRpc, error: roleErr } = await supabase.rpc("has_role", {
+          _user_id: uid,
+          _role: "admin",
+        });
         if (roleErr) {
-          console.error("[admin] user_roles error:", roleErr);
-          setBootError(`user_roles: ${roleErr.message} (code ${roleErr.code ?? "?"})`);
+          console.error("[admin] has_role error:", roleErr);
+          setBootError(
+            `has_role: ${roleErr.message} (code ${roleErr.code ?? "?"}). ` +
+              `Did you run db/admin_roles.sql in your Supabase SQL editor?`
+          );
           if (!cancelled) {
             setIsAdmin(false);
             setAuthChecked(true);
@@ -105,7 +106,7 @@ function AdminLayout() {
           return;
         }
         if (cancelled) return;
-        if (!roleRow) {
+        if (!isAdminRpc) {
           setIsAdmin(false);
           setAuthChecked(true);
           return;
