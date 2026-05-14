@@ -83,6 +83,13 @@ function EventsPage() {
                 </div>
               </article>
             ))}
+            <article className="rounded-3xl border border-dashed border-border/70 bg-sand/30 flex items-center justify-center text-center p-10 min-h-[320px] transition-colors hover:bg-sand/60">
+              <div>
+                <span className="eyebrow text-clay">Coming Soon</span>
+                <p className="mt-4 font-serif text-2xl leading-snug text-espresso">More gatherings<br/>on the horizon.</p>
+                <p className="mt-3 text-sm text-muted-foreground">New events are added each season. Join the community to be the first to know.</p>
+              </div>
+            </article>
           </div>
         </div>
       </section>
