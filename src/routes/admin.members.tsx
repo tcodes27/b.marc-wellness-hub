@@ -1,15 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { useAdmin, ADMIN_STATUS_COLORS, ALL_MEMBER_STATUSES } from "./admin";
 import { supabase, type CommunityMember, type MemberStatus } from "@/integrations/supabase/client";
-import { Search } from "lucide-react";
+import { Search, Loader2, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin/members")({
   component: MembersPage,
 });
 
 function MembersPage() {
-  const { members, reloadMembers } = useAdmin();
+  const { members: ctxMembers, userId, reloadMembers: ctxReload } = useAdmin();
+  const [members, setMembers] = useState<CommunityMember[]>(ctxMembers);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [interestFilter, setInterestFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | MemberStatus>("all");
@@ -17,6 +20,38 @@ function MembersPage() {
   const [selected, setSelected] = useState<CommunityMember | null>(null);
   const [notesDraft, setNotesDraft] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
+
+  const fetchMembers = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    const { data, error, count } = await supabase
+      .from("community_members")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false });
+    console.log("[admin/members] fetch", {
+      userId,
+      count,
+      returned: data?.length ?? 0,
+      error: error?.message ?? null,
+      filters: { search, interestFilter, statusFilter },
+    });
+    if (error) {
+      setLoadError(error.message);
+      setMembers([]);
+    } else {
+      setMembers((data ?? []) as CommunityMember[]);
+    }
+    setLoading(false);
+  }, [userId, search, interestFilter, statusFilter]);
+
+  useEffect(() => {
+    fetchMembers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const reloadMembers = async () => {
+    await Promise.all([fetchMembers(), ctxReload()]);
+  };
 
   useEffect(() => {
     setNotesDraft(selected?.notes ?? "");
