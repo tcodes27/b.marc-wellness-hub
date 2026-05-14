@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import e1 from "@/assets/event-1.jpg";
 import e2 from "@/assets/event-2.jpg";
 import e3 from "@/assets/event-3.jpg";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export const upcomingEvents = [
   {
@@ -35,6 +36,7 @@ export const upcomingEvents = [
 ];
 
 export function EventsPreview() {
+  const { open } = useBooking();
   return (
     <section className="py-28 md:py-36">
       <div className="container-luxe">
@@ -73,8 +75,11 @@ export function EventsPreview() {
                 <div className="mt-3 text-sm text-muted-foreground">
                   {e.date} · {e.location}
                 </div>
-                <button className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] font-medium link-underline">
-                  Reserve <ArrowUpRight size={14} />
+                <button
+                  onClick={() => open({ title: e.title, date: `${e.date} · ${e.location}`, description: `${e.category} · ${e.price}` })}
+                  className="mt-6 inline-flex items-center gap-2 text-sm uppercase tracking-[0.22em] font-medium link-underline"
+                >
+                  Reserve Your Spot <ArrowUpRight size={14} />
                 </button>
               </div>
             </article>
