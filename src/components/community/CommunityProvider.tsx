@@ -131,10 +131,14 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     setSubmitting(false);
     if (insertError || !inserted) {
       if (insertError?.code === "23505") {
-        setError("This email is already on our list. Welcome back.");
-      } else {
-        setError(insertError?.message || "Something went wrong. Please try again.");
+        setWelcomeBack(true);
+        toast.success(`Welcome back, ${parsed.data.first_name}.`, {
+          description: "You're already part of the B.MARC community",
+          duration: 6000,
+        });
+        return;
       }
+      setError(insertError?.message || "Something went wrong. Please try again.");
       return;
     }
     toast.success(`Welcome, ${inserted.first_name}.`, {
