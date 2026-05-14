@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { X, Loader2, Save, ArrowUpRight, Mail, MessageSquare } from "lucide-react";
+import { toast } from "sonner";
 import {
   supabase, CONTENT_TYPES, AUDIENCE_OPTIONS,
   type ContentType, type AudienceOption, type DeliveryChannel,
@@ -110,9 +111,12 @@ export function NewPostModal({ open, onClose, onCreated, userId }: Props) {
     setSaving(false);
     if (err || !data) {
       console.error("[new-post-modal] insert error", err);
-      setError(err?.message ?? "Failed to create post");
+      const msg = err?.message ?? "Failed to create post";
+      setError(msg);
+      toast.error("Couldn't create post", { description: msg });
       return;
     }
+    toast.success("Post created");
     console.log("[new-post-modal] created", data.id);
     onCreated(data.id);
     if (opts.openFullEditor) {
