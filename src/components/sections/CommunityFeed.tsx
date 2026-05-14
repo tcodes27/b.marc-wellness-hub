@@ -31,6 +31,14 @@ const INSTAGRAM_URL = "https://www.instagram.com/bmarcpilates/";
  */
 const INSTAGRAM_EMBED_CODE = "";
 
+/**
+ * How often (in minutes) to silently re-mount the embed so cached widgets
+ * pick up new posts. Set to 0 to disable. Default: 10 minutes.
+ * The refresh only runs when the section is visible in the viewport and
+ * the browser tab is active, so it never wastes bandwidth in the background.
+ */
+const INSTAGRAM_REFRESH_MINUTES = 10;
+
 type Post = {
   src: string;
   alt: string;
