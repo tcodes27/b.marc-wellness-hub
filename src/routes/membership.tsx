@@ -122,46 +122,73 @@ function MembershipPage() {
         </div>
       </section>
 
-      <section id="plans" className="py-28">
+      <section id="plans" className="py-32 md:py-40 bg-gradient-to-b from-ivory via-sand/30 to-ivory">
         <div className="container-luxe">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="eyebrow">Plans</span>
-            <h2 className="mt-5 text-4xl md:text-5xl">Choose your rhythm.</h2>
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <span className="eyebrow">Membership</span>
+            <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl">
+              Three ways to <em className="font-light">belong.</em>
+            </h2>
+            <p className="mt-6 text-muted-foreground leading-relaxed">
+              Curated tiers for every stage of your practice, from quiet entry to flagship access.
+            </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+
+          <div className="grid gap-7 lg:gap-8 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
             {tiers.map((t) => (
               <div
                 key={t.name}
-                className={`relative rounded-3xl p-8 border transition-all duration-500 hover:-translate-y-1 ${
+                className={`group relative flex flex-col rounded-[2rem] p-10 transition-all duration-500 hover:-translate-y-2 ${
                   t.highlight
-                    ? "bg-espresso text-ivory border-espresso shadow-[0_30px_70px_-30px_oklch(0.28_0.035_40_/_0.4)]"
-                    : "bg-card border-border"
+                    ? "bg-espresso text-ivory border border-tan/40 shadow-[0_50px_120px_-30px_oklch(0.28_0.035_40_/_0.55)] md:scale-[1.04] md:-my-2 z-10"
+                    : "bg-ivory border border-border/70 hover:border-tan/50 hover:shadow-[0_40px_90px_-40px_oklch(0.28_0.035_40_/_0.25)]"
                 }`}
               >
-                {t.note && (
-                  <span className="absolute top-5 right-5 text-[0.6rem] uppercase tracking-[0.25em] bg-tan text-ivory px-3 py-1 rounded-full">
-                    {t.note}
-                  </span>
+                {t.highlight && (
+                  <div className="absolute -top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <span className="inline-flex items-center gap-2 bg-gradient-to-r from-tan to-clay text-ivory text-[0.6rem] uppercase tracking-[0.32em] px-5 py-2 rounded-full shadow-[0_10px_30px_-10px_oklch(0.28_0.035_40_/_0.5)]">
+                      <span className="h-1 w-1 rounded-full bg-ivory/80" />
+                      {t.note}
+                    </span>
+                  </div>
                 )}
-                <div className="font-serif text-2xl">{t.name}</div>
-                <div className="mt-5 flex items-baseline gap-1">
-                  <span className="font-serif text-5xl">{t.price}</span>
-                  <span className={`text-sm ${t.highlight ? "text-ivory/65" : "text-muted-foreground"}`}>{t.cadence}</span>
+
+                <div>
+                  <div className="font-serif text-[1.65rem] leading-tight">{t.name}</div>
+                  <div className={`mt-2 text-sm italic ${t.highlight ? "text-ivory/70" : "text-clay"}`}>
+                    {t.tagline}
+                  </div>
                 </div>
-                <ul className="mt-7 space-y-3">
+
+                <div className="mt-8 pb-8 border-b border-dashed border-current/15">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-serif text-[3.5rem] leading-none tracking-[-0.02em]">{t.price}</span>
+                    <span className={`text-sm ${t.highlight ? "text-ivory/65" : "text-muted-foreground"}`}>
+                      {t.cadence}
+                    </span>
+                  </div>
+                  {t.valueNote && (
+                    <div className={`mt-3 text-[0.7rem] uppercase tracking-[0.28em] ${t.highlight ? "text-tan" : "text-clay"}`}>
+                      {t.valueNote}
+                    </div>
+                  )}
+                </div>
+
+                <ul className="mt-8 space-y-4 flex-1">
                   {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm">
-                      <Check size={15} className="mt-0.5 shrink-0" />
-                      <span>{f}</span>
+                    <li key={f} className="flex items-start gap-3 text-[0.92rem] leading-relaxed">
+                      <Check size={14} className={`mt-1 shrink-0 ${t.highlight ? "text-tan" : "text-clay"}`} />
+                      <span className={t.highlight ? "text-ivory/90" : "text-espresso/85"}>{f}</span>
                     </li>
                   ))}
                 </ul>
+
                 <button
-                  onClick={() => open({ title: t.name + " Membership", description: `${t.price} ${t.cadence}` })}
-                  className={`mt-8 w-full rounded-full py-3.5 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-400 ${
+                  onClick={() => open({ title: t.name, description: `${t.price} ${t.cadence}` })}
+                  className={`mt-10 w-full rounded-full py-4 text-[0.7rem] uppercase tracking-[0.3em] font-medium transition-all duration-500 ${
                     t.highlight
                       ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"
-                      : "bg-espresso text-ivory hover:bg-clay"
+                      : "bg-espresso text-ivory hover:bg-clay border border-espresso"
                   }`}
                 >
                   {t.cta}
@@ -169,6 +196,10 @@ function MembershipPage() {
               </div>
             ))}
           </div>
+
+          <p className="mt-14 text-center text-xs uppercase tracking-[0.32em] text-clay">
+            By invitation · Cancel anytime · Billed in USD
+          </p>
         </div>
       </section>
     </SiteLayout>
