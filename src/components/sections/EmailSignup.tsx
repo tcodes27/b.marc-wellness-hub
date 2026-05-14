@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
 
 const schema = z.object({
   email: z.string().trim().email().max(255),
@@ -10,8 +11,9 @@ export function EmailSignup() {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const r = schema.safeParse({ email });
     if (!r.success) {
@@ -19,6 +21,20 @@ export function EmailSignup() {
       return;
     }
     setErr(null);
+    setLoading(true);
+    const value = r.data.email.toLowerCase();
+    const { error } = await supabase.from("community_members").insert({
+      first_name: "Newsletter",
+      last_name: "Subscriber",
+      email: value,
+      source: "newsletter",
+      consent_marketing: true,
+    });
+    setLoading(false);
+    if (error && error.code !== "23505") {
+      setErr(error.message);
+      return;
+    }
     setDone(true);
   };
 
@@ -56,7 +72,8 @@ export function EmailSignup() {
                   />
                   <button
                     type="submit"
-                    className="size-12 rounded-full bg-ivory text-espresso flex items-center justify-center hover:bg-tan hover:text-ivory transition-all duration-500"
+                    disabled={loading}
+                    className="size-12 rounded-full bg-ivory text-espresso flex items-center justify-center hover:bg-tan hover:text-ivory transition-all duration-500 disabled:opacity-60"
                     aria-label="Subscribe"
                   >
                     <ArrowRight size={16} />
