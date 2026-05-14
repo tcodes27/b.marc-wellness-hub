@@ -314,21 +314,34 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
 
-                  <label className="flex items-start gap-3 pt-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      required
-                      checked={form.consent_marketing}
-                      onChange={(e) =>
-                        setForm({ ...form, consent_marketing: e.target.checked })
-                      }
-                      className="mt-1 h-4 w-4 accent-espresso"
-                    />
-                    <span className="text-xs text-muted-foreground leading-relaxed">
-                      I agree to receive occasional B.MARC Pilates updates about events,
-                      community experiences, and wellness content. No spam.
-                    </span>
-                  </label>
+                  <div className="space-y-3 pt-2 border-t border-tan/20">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        required
+                        checked={form.email_consent}
+                        onChange={(e) => setForm({ ...form, email_consent: e.target.checked })}
+                        className="mt-1 h-4 w-4 accent-espresso"
+                      />
+                      <span className="text-xs text-muted-foreground leading-relaxed">
+                        I agree to receive occasional B.MARC Pilates emails about events,
+                        wellness content, and community updates.
+                      </span>
+                    </label>
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.sms_consent}
+                        onChange={(e) => setForm({ ...form, sms_consent: e.target.checked })}
+                        className="mt-1 h-4 w-4 accent-espresso"
+                      />
+                      <span className="text-xs text-muted-foreground leading-relaxed">
+                        I agree to receive occasional B.MARC Pilates text messages about
+                        events, wellness content, and community updates. Message and data
+                        rates may apply. Reply STOP to unsubscribe.
+                      </span>
+                    </label>
+                  </div>
 
                   {error && (
                     <p className="text-sm text-clay bg-clay/10 border border-clay/20 rounded-lg px-4 py-3">
