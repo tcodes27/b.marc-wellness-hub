@@ -96,8 +96,9 @@ function ContentList() {
           </p>
         </div>
         <button
-          onClick={() => { console.log("[content] New post clicked"); navigate({ to: "/admin/content/$id", params: { id: "new" } }); }}
-          className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-6 py-3 hover:bg-espresso/90 transition-colors shadow-sm"
+          type="button"
+          onClick={() => { console.log("[content] New post clicked"); setModalOpen(true); }}
+          className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-6 py-3 hover:bg-espresso/90 transition-colors shadow-sm cursor-pointer"
         >
           <Plus size={14} /> New post
         </button>
