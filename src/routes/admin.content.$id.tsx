@@ -91,38 +91,53 @@ function EditPost() {
   const [recipientsLoading, setRecipientsLoading] = useState(false);
   const [integrations, setIntegrations] = useState<IntegrationStatus | null>(null);
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   useEffect(() => {
-    if (isNew) return;
+    console.log("[content-editor] mount", { id, isNew, userId });
+    if (isNew) {
+      console.log("[content-editor] initialized in CREATE mode with blank defaults");
+      return;
+    }
     (async () => {
-      const { data } = await supabase.from("content_posts").select("*").eq("id", id).single();
-      if (data) {
-        const p = data as ContentPost;
-        setForm({
-          title: p.title,
-          subtitle: p.subtitle ?? "",
-          slug: p.slug,
-          body: p.body ?? { type: "doc", content: [{ type: "paragraph" }] },
-          featured_image_url: p.featured_image_url ?? "",
-          gallery_images: p.gallery_images ?? [],
-          content_type: p.content_type,
-          audience: p.audience,
-          status: p.status,
-          scheduled_at: p.scheduled_at ?? "",
-          audience_tags: p.audience_tags ?? [],
-          delivery_channels: (p.delivery_channels ?? []) as DeliveryChannel[],
-          email_subject: p.email_subject ?? "",
-          sms_text: p.sms_text ?? "",
-          media_images: p.media_images ?? [],
-          media_videos: p.media_videos ?? [],
-          media_audio: p.media_audio ?? [],
-          cta_label: p.cta_label ?? "",
-          cta_url: p.cta_url ?? "",
-          send_status: (p.send_status ?? "draft") as SendStatus,
-        });
+      try {
+        const { data, error } = await supabase.from("content_posts").select("*").eq("id", id).single();
+        if (error) {
+          console.error("[content-editor] fetch error", error);
+          setLoadError(error.message);
+        } else if (data) {
+          const p = data as ContentPost;
+          setForm({
+            title: p.title,
+            subtitle: p.subtitle ?? "",
+            slug: p.slug,
+            body: p.body ?? { type: "doc", content: [{ type: "paragraph" }] },
+            featured_image_url: p.featured_image_url ?? "",
+            gallery_images: p.gallery_images ?? [],
+            content_type: p.content_type,
+            audience: p.audience,
+            status: p.status,
+            scheduled_at: p.scheduled_at ?? "",
+            audience_tags: p.audience_tags ?? [],
+            delivery_channels: (p.delivery_channels ?? []) as DeliveryChannel[],
+            email_subject: p.email_subject ?? "",
+            sms_text: p.sms_text ?? "",
+            media_images: p.media_images ?? [],
+            media_videos: p.media_videos ?? [],
+            media_audio: p.media_audio ?? [],
+            cta_label: p.cta_label ?? "",
+            cta_url: p.cta_url ?? "",
+            send_status: (p.send_status ?? "draft") as SendStatus,
+          });
+        }
+      } catch (err: any) {
+        console.error("[content-editor] fetch threw", err);
+        setLoadError(err?.message ?? String(err));
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     })();
-  }, [id, isNew]);
+  }, [id, isNew, userId]);
 
   useEffect(() => {
     getIntegrationStatus().then(setIntegrations).catch(() => setIntegrations(null));
