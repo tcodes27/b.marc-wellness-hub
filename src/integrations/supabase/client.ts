@@ -12,6 +12,15 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   },
 });
 
+export const MEMBER_STATUSES = [
+  "New",
+  "Contacted",
+  "VIP",
+  "Event Attendee",
+  "Sponsor Lead",
+] as const;
+export type MemberStatus = (typeof MEMBER_STATUSES)[number];
+
 export type CommunityMember = {
   id: string;
   first_name: string;
@@ -23,5 +32,7 @@ export type CommunityMember = {
   interests: string[] | null;
   source: string | null;
   consent_marketing: boolean;
+  status: MemberStatus;
+  notes: string | null;
   created_at: string;
 };
