@@ -10,6 +10,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { BookingProvider } from "@/components/booking/BookingProvider";
+import { CommunityProvider } from "@/components/community/CommunityProvider";
 
 function NotFoundComponent() {
   return (
@@ -114,7 +115,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <BookingProvider>
-        <Outlet />
+        <CommunityProvider>
+          <Outlet />
+        </CommunityProvider>
       </BookingProvider>
     </QueryClientProvider>
   );
