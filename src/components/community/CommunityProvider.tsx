@@ -191,15 +191,30 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
 
             <div className="overflow-y-auto px-6 sm:px-10 py-8">
               {done ? (
-                <div className="text-center py-12">
-                  <div className="mx-auto h-14 w-14 rounded-full bg-espresso text-ivory flex items-center justify-center">
+                <div className="text-center py-12 animate-fade-in" style={{ animationDuration: "0.7s", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}>
+                  <div
+                    className="mx-auto h-14 w-14 rounded-full bg-espresso text-ivory flex items-center justify-center animate-scale-in"
+                    style={{ animationDuration: "0.6s", animationDelay: "0.1s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  >
                     <Check size={22} />
                   </div>
-                  <h3 className="mt-6 font-serif text-2xl text-espresso">Welcome to the B.MARC community.</h3>
-                  <p className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                  <h3
+                    className="mt-6 font-serif text-2xl text-espresso animate-fade-in"
+                    style={{ animationDuration: "0.8s", animationDelay: "0.25s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  >
+                    Welcome to the B.MARC community.
+                  </h3>
+                  <p
+                    className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed animate-fade-in"
+                    style={{ animationDuration: "0.8s", animationDelay: "0.4s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  >
                     You'll be the first to know about upcoming events and experiences.
                   </p>
-                  <button onClick={close} className="btn-luxe btn-luxe-hover mt-8">
+                  <button
+                    onClick={close}
+                    className="btn-luxe btn-luxe-hover mt-8 animate-fade-in"
+                    style={{ animationDuration: "0.8s", animationDelay: "0.55s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  >
                     Close
                   </button>
                 </div>
