@@ -41,6 +41,11 @@ export type CommunityMember = {
   interests: string[] | null;
   source: string | null;
   consent_marketing: boolean;
+  email_consent: boolean;
+  sms_consent: boolean;
+  sms_opted_out: boolean;
+  opted_out_at: string | null;
+  consent_timestamp: string | null;
   status: MemberStatus;
   notes: string | null;
   created_at: string;
@@ -72,6 +77,11 @@ export type AudienceOption = (typeof AUDIENCE_OPTIONS)[number] | string;
 export const POST_STATUSES = ["Draft", "Scheduled", "Published", "Archived"] as const;
 export type PostStatus = (typeof POST_STATUSES)[number];
 
+export const SEND_STATUSES = ["draft", "scheduled", "sending", "sent", "failed"] as const;
+export type SendStatus = (typeof SEND_STATUSES)[number];
+
+export type DeliveryChannel = "email" | "sms";
+
 export type ContentPost = {
   id: string;
   title: string;
@@ -88,6 +98,31 @@ export type ContentPost = {
   created_at: string;
   updated_at: string;
   created_by: string | null;
+  // Distribution
+  audience_tags: string[];
+  delivery_channels: DeliveryChannel[];
+  email_subject: string | null;
+  sms_text: string | null;
+  media_images: string[];
+  media_videos: string[];
+  media_audio: string[];
+  cta_label: string | null;
+  cta_url: string | null;
+  send_status: SendStatus;
+  sent_at: string | null;
+};
+
+export type ContentDelivery = {
+  id: string;
+  content_post_id: string;
+  member_id: string | null;
+  delivery_channel: DeliveryChannel;
+  recipient_email: string | null;
+  recipient_phone: string | null;
+  status: "queued" | "sent" | "failed" | "skipped";
+  error_message: string | null;
+  sent_at: string | null;
+  created_at: string;
 };
 
 export async function trackBookingClick(label: string) {
