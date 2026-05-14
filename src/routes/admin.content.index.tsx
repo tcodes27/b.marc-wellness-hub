@@ -27,6 +27,7 @@ function ContentList() {
   const [audience, setAudience] = useState<"all" | string>("all");
   const [type, setType] = useState<"all" | string>("all");
   const [q, setQ] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
