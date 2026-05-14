@@ -14,10 +14,10 @@ export function Hero() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-espresso/30 via-espresso/20 to-espresso/70" />
 
-      <div className="relative h-full container-luxe flex flex-col justify-end pb-24 md:pb-32">
+      <div className="relative h-full container-luxe flex flex-col justify-end pt-28 pb-24 md:pb-32">
         <div className="max-w-3xl">
           <span className="eyebrow !text-ivory/80 animate-fade-in">B.MARC Pilates</span>
-          <h1 className="mt-6 font-serif text-ivory text-5xl md:text-7xl lg:text-8xl leading-[1.02] animate-fade-up">
+          <h1 className="mt-6 font-serif text-ivory text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.05] animate-fade-up">
             More Than Pilates.<br />
             <em className="font-light">A Wellness Culture.</em>
           </h1>
