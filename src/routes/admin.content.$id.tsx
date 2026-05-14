@@ -168,6 +168,88 @@ function EditPost() {
     return () => clearTimeout(t);
   }, [form.audience_tags]);
 
+  // ── Restore unsaved draft from localStorage ──────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (loading) return; // wait until any server fetch completed
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { skipAutosaveRef.current = true; return; }
+      const parsed = JSON.parse(raw) as { form?: FormState; at?: number };
+      if (!parsed?.form) { skipAutosaveRef.current = true; return; }
+      const when = parsed.at ? new Date(parsed.at).toLocaleString() : "earlier";
+      const ok = isNew
+        ? true // silently restore for brand-new drafts
+        : window.confirm(`Recover unsaved changes from ${when}?`);
+      if (ok) {
+        console.log("[content-editor] restored draft from localStorage", { id, at: parsed.at });
+        setForm(parsed.form);
+        setAutosave({ status: "saved", at: parsed.at ?? Date.now() });
+      } else {
+        window.localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (err) {
+      console.error("[content-editor] restore failed", err);
+    }
+    // The setForm above will trigger the autosave effect once — skip it.
+    skipAutosaveRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, id]);
+
+  // ── Autosave: debounced localStorage + silent server update ──────────────
+  useEffect(() => {
+    if (loading) return;
+    if (skipAutosaveRef.current) { skipAutosaveRef.current = false; return; }
+    if (typeof window === "undefined") return;
+    setAutosave((a) => ({ ...a, status: "saving" }));
+    const t = setTimeout(async () => {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, at: Date.now() }));
+        if (postId) {
+          const { error } = await supabase.from("content_posts").update({
+            title: form.title || "Untitled",
+            subtitle: form.subtitle || null,
+            slug: form.slug || slugify(form.title || `post-${Date.now()}`),
+            body: form.body,
+            featured_image_url: form.featured_image_url || null,
+            gallery_images: form.gallery_images,
+            content_type: form.content_type,
+            audience: form.audience,
+            status: form.status,
+            scheduled_at: form.scheduled_at || null,
+            audience_tags: form.audience_tags,
+            delivery_channels: form.delivery_channels,
+            email_subject: form.email_subject || null,
+            sms_text: form.sms_text || null,
+            media_images: form.media_images,
+            media_videos: form.media_videos,
+            media_audio: form.media_audio,
+            cta_label: form.cta_label || null,
+            cta_url: form.cta_url || null,
+            send_status: form.send_status,
+          }).eq("id", postId);
+          if (error) throw error;
+        }
+        setAutosave({ status: "saved", at: Date.now() });
+      } catch (err: any) {
+        console.error("[content-editor] autosave error", err);
+        setAutosave({ status: "error", at: Date.now(), error: err?.message ?? String(err) });
+      }
+    }, 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, postId, loading]);
+
+  // Flush local cache on tab close so nothing in-flight is lost
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onBeforeUnload = () => {
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, at: Date.now() })); } catch {}
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [form, STORAGE_KEY]);
+
   const persist = async (override?: Partial<FormState>) => {
     setSaving(true);
     const merged = { ...form, ...override };
