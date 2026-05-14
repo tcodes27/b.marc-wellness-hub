@@ -153,9 +153,56 @@ function PlaceholderCarousel() {
 
 export function CommunityFeed() {
   const [hasEmbed] = useState(() => INSTAGRAM_EMBED_CODE.trim().length > 0);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [lastRefreshed, setLastRefreshed] = useState<Date>(() => new Date());
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Auto-refresh: re-mount the embed every N minutes, but only when the
+  // section is visible AND the tab is active. Also refreshes immediately
+  // when the user returns to the tab after >N minutes away.
+  useEffect(() => {
+    if (!hasEmbed || INSTAGRAM_REFRESH_MINUTES <= 0) return;
+
+    const intervalMs = INSTAGRAM_REFRESH_MINUTES * 60 * 1000;
+    let isVisible = false;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.1 },
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
+
+    const tick = () => {
+      if (isVisible && document.visibilityState === "visible") {
+        setRefreshKey((k) => k + 1);
+        setLastRefreshed(new Date());
+      }
+    };
+    const id = window.setInterval(tick, intervalMs);
+
+    const onVisibility = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastRefreshed.getTime() >= intervalMs) tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+      observer.disconnect();
+    };
+  }, [hasEmbed, lastRefreshed]);
+
+  const manualRefresh = () => {
+    setRefreshKey((k) => k + 1);
+    setLastRefreshed(new Date());
+  };
 
   return (
     <section
+      ref={sectionRef}
       id="instagram"
       className="py-28 md:py-36 bg-gradient-to-b from-ivory via-sand/40 to-ivory overflow-hidden"
     >
@@ -196,7 +243,22 @@ export function CommunityFeed() {
         {hasEmbed ? (
           <div className="container-luxe">
             <div className="rounded-[2rem] bg-ivory/60 backdrop-blur-sm p-4 md:p-6 shadow-[0_40px_100px_-40px_oklch(0.28_0.035_40_/_0.3)]">
-              <InstagramEmbedSlot embedCode={INSTAGRAM_EMBED_CODE} />
+              <InstagramEmbedSlot
+                embedCode={INSTAGRAM_EMBED_CODE}
+                refreshKey={refreshKey}
+              />
+              <div className="mt-4 flex items-center justify-end gap-4 text-[0.65rem] uppercase tracking-[0.28em] text-muted-foreground">
+                <span>
+                  Updated {lastRefreshed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                </span>
+                <button
+                  type="button"
+                  onClick={manualRefresh}
+                  className="link-underline"
+                >
+                  Refresh
+                </button>
+              </div>
             </div>
           </div>
         ) : (
