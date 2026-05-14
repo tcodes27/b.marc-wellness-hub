@@ -94,7 +94,7 @@ function MembershipPage() {
               Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => openCommunity("membership-page")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={goToUscreen} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
           </div>
