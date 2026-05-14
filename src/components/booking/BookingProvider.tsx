@@ -14,7 +14,7 @@ type BookingContextValue = {
 
 const BookingContext = createContext<BookingContextValue | null>(null);
 
-const ACUITY_SRC = "https://app.acuityscheduling.com/schedule.php?owner=39322079&ref=embedded_csp";
+const CAL_SRC = "https://cal.com/bmarcpilates?embed=true&theme=light";
 
 export function useBooking() {
   const ctx = useContext(BookingContext);
@@ -108,8 +108,8 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
                 </div>
               )}
               <iframe
-                key={ACUITY_SRC}
-                src={ACUITY_SRC}
+                key={CAL_SRC}
+                src={CAL_SRC}
                 title="Schedule Appointment"
                 onLoad={() => setIframeLoaded(true)}
                 allow="payment"
