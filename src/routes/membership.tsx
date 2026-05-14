@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
@@ -51,6 +52,7 @@ const inside = [
 ];
 
 function MembershipPage() {
+  const { open } = useBooking();
   return (
     <SiteLayout>
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
@@ -64,7 +66,7 @@ function MembershipPage() {
               Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <a href="#plans" className="btn-luxe btn-luxe-hover">Start Your Journey</a>
+              <button onClick={() => open({ title: "Join the Community" })} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
           </div>
@@ -126,6 +128,7 @@ function MembershipPage() {
                   ))}
                 </ul>
                 <button
+                  onClick={() => open({ title: t.name + " Membership", description: `${t.price} ${t.cadence}` })}
                   className={`mt-8 w-full rounded-full py-3.5 text-xs uppercase tracking-[0.25em] font-medium transition-all duration-400 ${
                     t.highlight
                       ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { upcomingEvents } from "@/components/sections/EventsPreview";
 import { ArrowUpRight } from "lucide-react";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export const Route = createFileRoute("/events")({
   head: () => ({
@@ -27,6 +28,7 @@ const allEvents = [
 
 function EventsPage() {
   const [active, setActive] = useState<(typeof filters)[number]>("All");
+  const { open } = useBooking();
   const visible = active === "All" ? allEvents : allEvents.filter((e) => e.category === active);
 
   return (
@@ -77,8 +79,11 @@ function EventsPage() {
                   </div>
                   <h3 className="mt-4 text-2xl">{e.title}</h3>
                   <div className="mt-3 text-sm text-muted-foreground">{e.date} · {e.location}</div>
-                  <button className="mt-6 btn-luxe btn-luxe-hover w-full">
-                    Book & Pay <ArrowUpRight size={14} />
+                  <button
+                    onClick={() => open({ title: e.title, date: `${e.date} · ${e.location}`, description: `${e.category} · ${e.price}` })}
+                    className="mt-6 btn-luxe btn-luxe-hover w-full"
+                  >
+                    Book Event <ArrowUpRight size={14} />
                   </button>
                 </div>
               </article>

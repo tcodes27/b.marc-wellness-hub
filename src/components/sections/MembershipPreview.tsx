@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import membership from "@/assets/membership.jpg";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 const features = [
   { t: "On-Demand Classes", d: "Reformer, mat & sculpt sessions, anywhere." },
@@ -9,6 +10,7 @@ const features = [
 ];
 
 export function MembershipPreview() {
+  const { open } = useBooking();
   return (
     <section className="py-28 md:py-36 bg-espresso text-ivory">
       <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
@@ -31,9 +33,9 @@ export function MembershipPreview() {
           </ul>
 
           <div className="mt-10">
-            <Link to="/membership" className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+            <button onClick={() => open({ title: "Join the Community" })} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
               Start Your Journey
-            </Link>
+            </button>
           </div>
         </div>
 
