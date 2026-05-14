@@ -111,26 +111,34 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setSubmitting(true);
-    const { error: insertError } = await supabase.from("community_members").insert({
-      first_name: parsed.data.first_name,
-      last_name: parsed.data.last_name,
-      email: parsed.data.email.toLowerCase(),
-      phone: parsed.data.phone || null,
-      city: parsed.data.city || null,
-      instagram_handle: parsed.data.instagram_handle || null,
-      interests: parsed.data.interests,
-      source: source ?? "website",
-      consent_marketing: parsed.data.consent_marketing,
-    });
+    const { data: inserted, error: insertError } = await supabase
+      .from("community_members")
+      .insert({
+        first_name: parsed.data.first_name,
+        last_name: parsed.data.last_name,
+        email: parsed.data.email.toLowerCase(),
+        phone: parsed.data.phone || null,
+        city: parsed.data.city || null,
+        instagram_handle: parsed.data.instagram_handle || null,
+        interests: parsed.data.interests,
+        source: source ?? "website",
+        consent_marketing: parsed.data.consent_marketing,
+      })
+      .select("id, first_name")
+      .single();
     setSubmitting(false);
-    if (insertError) {
-      if (insertError.code === "23505") {
+    if (insertError || !inserted) {
+      if (insertError?.code === "23505") {
         setError("This email is already on our list. Welcome back.");
       } else {
-        setError(insertError.message || "Something went wrong. Please try again.");
+        setError(insertError?.message || "Something went wrong. Please try again.");
       }
       return;
     }
+    toast.success(`Welcome, ${inserted.first_name}.`, {
+      description: "Your place in the B.MARC community is confirmed",
+      duration: 6000,
+    });
     setDone(true);
   };
 
