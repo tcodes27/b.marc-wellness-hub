@@ -6,9 +6,9 @@ import membership from "@/assets/membership.jpg";
 export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
-      { title: "Membership — B.MARC Pilates" },
+      { title: "Membership, B.MARC Pilates" },
       { name: "description", content: "Unlimited online Pilates classes, wellness rituals and community access. The B.MARC membership, powered by Uscreen." },
-      { property: "og:title", content: "Membership — B.MARC Pilates" },
+      { property: "og:title", content: "Membership, B.MARC Pilates" },
       { property: "og:description", content: "Your studio, in your pocket. On-demand Pilates and wellness for modern women." },
     ],
   }),
@@ -61,7 +61,7 @@ function MembershipPage() {
               The studio that <em className="font-light">moves with you.</em>
             </h1>
             <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-              Unlimited on-demand Pilates, wellness rituals, and a soft community of women — powered by Uscreen, ready when you are.
+              Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
               <a href="#plans" className="btn-luxe btn-luxe-hover">Start Your Journey</a>

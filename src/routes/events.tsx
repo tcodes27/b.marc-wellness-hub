@@ -7,9 +7,9 @@ import { ArrowUpRight } from "lucide-react";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
-      { title: "Events — B.MARC Pilates" },
+      { title: "Events, B.MARC Pilates" },
       { name: "description", content: "Reserve your place at B.MARC Pilates events: candlelit reformer flows, coastal retreats, wellness workshops and community meetups." },
-      { property: "og:title", content: "Events — B.MARC Pilates" },
+      { property: "og:title", content: "Events, B.MARC Pilates" },
       { property: "og:description", content: "In-person Pilates and wellness experiences for modern women." },
     ],
   }),
@@ -38,7 +38,7 @@ function EventsPage() {
             Gatherings rooted in <em className="font-light">movement.</em>
           </h1>
           <p className="mt-6 text-muted-foreground leading-relaxed">
-            From candlelit reformer flows to coastal retreats — every B.MARC experience is curated with intention.
+            From candlelit reformer flows to coastal retreats, every B.MARC experience is curated with intention.
           </p>
         </div>
       </section>

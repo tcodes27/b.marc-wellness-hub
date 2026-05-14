@@ -7,9 +7,9 @@ import g5 from "@/assets/gallery-5.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — B.MARC Pilates" },
-      { name: "description", content: "The story, vision and values behind B.MARC Pilates — a wellness culture built around movement, intention and feminine community." },
-      { property: "og:title", content: "About — B.MARC Pilates" },
+      { title: "About, B.MARC Pilates" },
+      { name: "description", content: "The story, vision and values behind B.MARC Pilates, a wellness culture built around movement, intention and feminine community." },
+      { property: "og:title", content: "About, B.MARC Pilates" },
       { property: "og:description", content: "A movement designed for modern women. Built on Pilates, presence and community." },
     ],
   }),
@@ -35,7 +35,7 @@ function AboutPage() {
           </div>
           <div className="md:col-span-5 md:pt-16 space-y-6 text-lg leading-[1.7] text-foreground/85 font-light">
             <p>
-              B.MARC began with a simple idea — that the way we move shapes the way we live. What started as a single Pilates session in a small Los Angeles loft grew into a community of women practicing presence together.
+              B.MARC began with a simple idea, that the way we move shapes the way we live. What started as a single Pilates session in a small Los Angeles loft grew into a community of women practicing presence together.
             </p>
             <p>
               Today, B.MARC is a brand, a studio, and a culture. A space where strength and softness coexist. Where you arrive for the workout and stay for the women.
@@ -50,7 +50,7 @@ function AboutPage() {
             <span className="eyebrow">The Vision</span>
             <h2 className="mt-5 text-4xl md:text-5xl">A community of <em className="font-light">intentional women.</em></h2>
             <p className="mt-7 text-muted-foreground leading-relaxed">
-              We're building something quieter and more lasting than a fitness brand. B.MARC is a soft place to land — a movement that invites women to come home to themselves through Pilates, ritual and shared breath.
+              We're building something quieter and more lasting than a fitness brand. B.MARC is a soft place to land, a movement that invites women to come home to themselves through Pilates, ritual and shared breath.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-5">
@@ -68,7 +68,7 @@ function AboutPage() {
         <div className="container-luxe">
           <div className="grid md:grid-cols-3 gap-12">
             {[
-              { n: "01", t: "Move with intention", d: "Every breath, every rep — chosen, not rushed." },
+              { n: "01", t: "Move with intention", d: "Every breath, every rep, chosen, not rushed." },
               { n: "02", t: "Hold space for women", d: "A community that softens, lifts and stays." },
               { n: "03", t: "Live the practice", d: "Wellness as a daily ritual, not a routine." },
             ].map((v) => (

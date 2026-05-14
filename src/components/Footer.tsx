@@ -8,7 +8,7 @@ export function Footer() {
         <div>
           <div className="font-serif text-2xl tracking-[0.3em] text-espresso">B.MARC</div>
           <p className="mt-5 text-sm leading-relaxed text-muted-foreground max-w-sm">
-            A movement, a community, a way of living. Pilates, wellness and intention — designed for the modern woman.
+            A movement, a community, a way of living. Pilates, wellness and intention, designed for the modern woman.
           </p>
         </div>
         <div>

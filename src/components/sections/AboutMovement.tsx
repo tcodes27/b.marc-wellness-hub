@@ -27,7 +27,7 @@ export function AboutMovement() {
             A practice of <em className="font-light">presence</em>, a culture of <em className="font-light">care</em>.
           </h2>
           <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-            B.MARC was born from a simple belief — that movement is a love language. We build strength on the mat and a softer, more intentional life off of it. This is Pilates as ritual, community as medicine.
+            B.MARC was born from a simple belief, that movement is a love language. We build strength on the mat and a softer, more intentional life off of it. This is Pilates as ritual, community as medicine.
           </p>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 max-w-md">
             {pillars.map((p) => (

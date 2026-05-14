@@ -72,8 +72,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "B.MARC Pilates — A Wellness Culture for Modern Women" },
-      { name: "description", content: "B.MARC Pilates is a luxury wellness community for modern women — Pilates events, online classes and intentional living." },
+      { title: "B.MARC Pilates, A Wellness Culture for Modern Women" },
+      { name: "description", content: "B.MARC Pilates is a luxury wellness community for modern women, Pilates events, online classes and intentional living." },
       { name: "author", content: "B.MARC Pilates" },
       { property: "og:title", content: "B.MARC Pilates" },
       { property: "og:description", content: "Movement, connection, and intentional living for modern women." },
