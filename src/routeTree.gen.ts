@@ -26,6 +26,7 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
 import { Route as AdminContentNewRouteImport } from './routes/admin.content.new'
 import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 
@@ -114,6 +115,12 @@ const AdminContentRoute = AdminContentRouteImport.update({
   path: '/content',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicTwilioSmsWebhookRoute =
+  ApiPublicTwilioSmsWebhookRouteImport.update({
+    id: '/api/public/twilio-sms-webhook',
+    path: '/api/public/twilio-sms-webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminContentNewRoute = AdminContentNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -145,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/admin/content/new': typeof AdminContentNewRoute
+  '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/admin/content/new': typeof AdminContentNewRoute
+  '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/admin/content/new': typeof AdminContentNewRoute
+  '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/content/$id'
     | '/admin/content/new'
+    | '/api/public/twilio-sms-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/content/$id'
     | '/admin/content/new'
+    | '/api/public/twilio-sms-webhook'
   id:
     | '__root__'
     | '/'
@@ -251,6 +263,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/content/$id'
     | '/admin/content/new'
+    | '/api/public/twilio-sms-webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -264,6 +277,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  ApiPublicTwilioSmsWebhookRoute: typeof ApiPublicTwilioSmsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -387,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContentRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/twilio-sms-webhook': {
+      id: '/api/public/twilio-sms-webhook'
+      path: '/api/public/twilio-sms-webhook'
+      fullPath: '/api/public/twilio-sms-webhook'
+      preLoaderRoute: typeof ApiPublicTwilioSmsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/content/new': {
       id: '/admin/content/new'
       path: '/new'
@@ -451,6 +472,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
+  ApiPublicTwilioSmsWebhookRoute: ApiPublicTwilioSmsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
