@@ -108,9 +108,9 @@ export function NewPostModal({ open, onClose, onCreated, userId }: Props) {
         .single());
     }
     setSaving(false);
-    if (err) {
+    if (err || !data) {
       console.error("[new-post-modal] insert error", err);
-      setError(err.message);
+      setError(err?.message ?? "Failed to create post");
       return;
     }
     console.log("[new-post-modal] created", data.id);
