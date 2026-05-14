@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link, useParams } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   supabase, CONTENT_TYPES, AUDIENCE_OPTIONS, POST_STATUSES,
   type ContentPost, type ContentType, type AudienceOption, type PostStatus,
@@ -17,6 +17,7 @@ import { getIntegrationStatus, type IntegrationStatus } from "@/lib/integrations
 import {
   Loader2, ArrowLeft, Save, Send, Clock, Archive, Eye, X,
   Image as ImageIcon, Film, Music, Mail, MessageSquare, Users, Link as LinkIcon,
+  Check, CloudOff, RefreshCw,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/$id")({
@@ -93,6 +94,15 @@ function EditPost() {
 
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  // ── Autosave state ─────────────────────────────────────────────────────────
+  const STORAGE_KEY = `bmarc:content-draft:${id}`;
+  const NEW_KEY = "bmarc:content-draft:new";
+  type AutosaveStatus = "idle" | "saving" | "saved" | "error";
+  const [autosave, setAutosave] = useState<{ status: AutosaveStatus; at: number | null; error?: string }>({
+    status: "idle", at: null,
+  });
+  const skipAutosaveRef = useRef(true); // skip the very first form effect after mount/restore
+
   useEffect(() => {
     console.log("[content-editor] mount", { id, isNew, userId });
     if (isNew) {
@@ -158,6 +168,88 @@ function EditPost() {
     return () => clearTimeout(t);
   }, [form.audience_tags]);
 
+  // ── Restore unsaved draft from localStorage ──────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (loading) return; // wait until any server fetch completed
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) { skipAutosaveRef.current = true; return; }
+      const parsed = JSON.parse(raw) as { form?: FormState; at?: number };
+      if (!parsed?.form) { skipAutosaveRef.current = true; return; }
+      const when = parsed.at ? new Date(parsed.at).toLocaleString() : "earlier";
+      const ok = isNew
+        ? true // silently restore for brand-new drafts
+        : window.confirm(`Recover unsaved changes from ${when}?`);
+      if (ok) {
+        console.log("[content-editor] restored draft from localStorage", { id, at: parsed.at });
+        setForm(parsed.form);
+        setAutosave({ status: "saved", at: parsed.at ?? Date.now() });
+      } else {
+        window.localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch (err) {
+      console.error("[content-editor] restore failed", err);
+    }
+    // The setForm above will trigger the autosave effect once — skip it.
+    skipAutosaveRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, id]);
+
+  // ── Autosave: debounced localStorage + silent server update ──────────────
+  useEffect(() => {
+    if (loading) return;
+    if (skipAutosaveRef.current) { skipAutosaveRef.current = false; return; }
+    if (typeof window === "undefined") return;
+    setAutosave((a) => ({ ...a, status: "saving" }));
+    const t = setTimeout(async () => {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, at: Date.now() }));
+        if (postId) {
+          const { error } = await supabase.from("content_posts").update({
+            title: form.title || "Untitled",
+            subtitle: form.subtitle || null,
+            slug: form.slug || slugify(form.title || `post-${Date.now()}`),
+            body: form.body,
+            featured_image_url: form.featured_image_url || null,
+            gallery_images: form.gallery_images,
+            content_type: form.content_type,
+            audience: form.audience,
+            status: form.status,
+            scheduled_at: form.scheduled_at || null,
+            audience_tags: form.audience_tags,
+            delivery_channels: form.delivery_channels,
+            email_subject: form.email_subject || null,
+            sms_text: form.sms_text || null,
+            media_images: form.media_images,
+            media_videos: form.media_videos,
+            media_audio: form.media_audio,
+            cta_label: form.cta_label || null,
+            cta_url: form.cta_url || null,
+            send_status: form.send_status,
+          }).eq("id", postId);
+          if (error) throw error;
+        }
+        setAutosave({ status: "saved", at: Date.now() });
+      } catch (err: any) {
+        console.error("[content-editor] autosave error", err);
+        setAutosave({ status: "error", at: Date.now(), error: err?.message ?? String(err) });
+      }
+    }, 1500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, postId, loading]);
+
+  // Flush local cache on tab close so nothing in-flight is lost
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onBeforeUnload = () => {
+      try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ form, at: Date.now() })); } catch {}
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [form, STORAGE_KEY]);
+
   const persist = async (override?: Partial<FormState>) => {
     setSaving(true);
     const merged = { ...form, ...override };
@@ -192,14 +284,22 @@ function EditPost() {
         .select("id")
         .single();
       setSaving(false);
-      if (error) { alert(error.message); return; }
+      if (error) { alert(error.message); setAutosave({ status: "error", at: Date.now(), error: error.message }); return; }
       savedId = data.id;
       setPostId(savedId);
+      try {
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem(NEW_KEY);
+          window.localStorage.setItem(`bmarc:content-draft:${savedId}`, JSON.stringify({ form: { ...form, ...(override ?? {}) }, at: Date.now() }));
+        }
+      } catch {}
+      setAutosave({ status: "saved", at: Date.now() });
       navigate({ to: "/admin/content/$id", params: { id: savedId! }, replace: true });
     } else {
       const { error } = await supabase.from("content_posts").update(payload).eq("id", postId);
       setSaving(false);
-      if (error) { alert(error.message); return; }
+      if (error) { alert(error.message); setAutosave({ status: "error", at: Date.now(), error: error.message }); return; }
+      setAutosave({ status: "saved", at: Date.now() });
     }
     if (override) setForm(merged);
   };
@@ -272,6 +372,7 @@ function EditPost() {
         <Link to="/admin/content" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-clay">
           <ArrowLeft size={14} /> Back
         </Link>
+        <AutosaveIndicator status={autosave.status} at={autosave.at} error={autosave.error} />
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setPreviewing(true)} className="inline-flex items-center gap-2 rounded-full border border-tan/40 text-xs uppercase tracking-[0.2em] px-4 py-2">
             <Eye size={12} /> Preview
@@ -550,6 +651,34 @@ function EditPost() {
 
 const inputCls = "w-full rounded-lg border border-tan/40 px-3 py-2 text-sm bg-white text-espresso placeholder:text-clay/50 focus:outline-none focus:border-espresso";
 const selectCls = inputCls;
+
+function AutosaveIndicator({
+  status, at, error,
+}: { status: "idle" | "saving" | "saved" | "error"; at: number | null; error?: string }) {
+  const time = at ? new Date(at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : null;
+  if (status === "saving") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-clay">
+        <RefreshCw size={11} className="animate-spin" /> Saving…
+      </span>
+    );
+  }
+  if (status === "error") {
+    return (
+      <span title={error} className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-rose-700">
+        <CloudOff size={11} /> Autosave failed
+      </span>
+    );
+  }
+  if (status === "saved" && time) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-emerald-700">
+        <Check size={11} /> Saved {time}
+      </span>
+    );
+  }
+  return <span className="text-[11px] uppercase tracking-[0.2em] text-clay/60">Autosave on</span>;
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
