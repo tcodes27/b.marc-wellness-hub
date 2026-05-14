@@ -30,11 +30,11 @@ const schema = z.object({
   first_name: z.string().trim().min(1, "Required").max(80),
   last_name: z.string().trim().min(1, "Required").max(80),
   email: z.string().trim().email("Invalid email").max(255),
-  phone: z.string().trim().max(40).optional().or(z.literal("")),
+  phone: z.string().trim().min(1, "Required").max(40),
   city: z.string().trim().max(120).optional().or(z.literal("")),
   instagram_handle: z.string().trim().max(80).optional().or(z.literal("")),
   interests: z.array(z.string().max(80)).max(20),
-  consent_marketing: z.boolean(),
+  consent_marketing: z.literal(true, { errorMap: () => ({ message: "Please agree to receive updates to continue." }) }),
 });
 
 type FormState = {
