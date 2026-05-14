@@ -19,12 +19,7 @@ export const Route = createFileRoute("/events")({
 
 const filters = ["All", "Pilates", "Wellness", "Community", "Workshops"] as const;
 
-const allEvents = [
-  ...upcomingEvents,
-  { ...upcomingEvents[0], id: "breath-workshop", title: "Breathwork & Mobility Workshop", category: "Workshops", date: "July 9, 2026", price: "$60" },
-  { ...upcomingEvents[1], id: "summer-series", title: "Summer Movement Series", category: "Pilates", date: "July 22, 2026", price: "$48" },
-  { ...upcomingEvents[2], id: "garden-social", title: "Garden Wellness Social", category: "Community", date: "Aug 3, 2026", price: "Free" },
-];
+const allEvents = [...upcomingEvents];
 
 function EventsPage() {
   const [active, setActive] = useState<(typeof filters)[number]>("All");
@@ -88,6 +83,13 @@ function EventsPage() {
                 </div>
               </article>
             ))}
+            <article className="rounded-3xl border border-dashed border-border/70 bg-sand/30 flex items-center justify-center text-center p-10 min-h-[320px] transition-colors hover:bg-sand/60">
+              <div>
+                <span className="eyebrow text-clay">Coming Soon</span>
+                <p className="mt-4 font-serif text-2xl leading-snug text-espresso">More gatherings<br/>on the horizon.</p>
+                <p className="mt-3 text-sm text-muted-foreground">New events are added each season. Join the community to be the first to know.</p>
+              </div>
+            </article>
           </div>
         </div>
       </section>
