@@ -58,38 +58,50 @@ function AdminLayout() {
   const [navOpen, setNavOpen] = useState(false);
 
   const loadMembers = async () => {
-    const { data } = await supabase
-      .from("community_members")
-      .select("*")
-      .order("created_at", { ascending: false });
-    setMembers((data ?? []) as CommunityMember[]);
+    try {
+      const { data, error } = await supabase
+        .from("community_members")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) console.error("[admin] loadMembers error:", error);
+      setMembers((data ?? []) as CommunityMember[]);
+    } catch (err) {
+      console.error("[admin] loadMembers threw:", err);
+    }
   };
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
-        navigate({ to: "/admin_/login" });
-        return;
-      }
-      const uid = sessionData.session.user.id;
-      const { data: roleRow } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", uid)
-        .eq("role", "admin")
-        .maybeSingle();
-      if (cancelled) return;
-      if (!roleRow) {
-        setIsAdmin(false);
+      try {
+        const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
+        if (sessionErr) console.error("[admin] getSession error:", sessionErr);
+        if (!sessionData.session) {
+          navigate({ to: "/admin_/login" });
+          return;
+        }
+        const uid = sessionData.session.user.id;
+        const { data: roleRow, error: roleErr } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", uid)
+          .eq("role", "admin")
+          .maybeSingle();
+        if (roleErr) console.error("[admin] user_roles error:", roleErr);
+        if (cancelled) return;
+        if (!roleRow) {
+          setIsAdmin(false);
+          setAuthChecked(true);
+          return;
+        }
+        setUserId(uid);
+        setIsAdmin(true);
         setAuthChecked(true);
-        return;
+        await loadMembers();
+      } catch (err) {
+        console.error("[admin] auth bootstrap threw:", err);
+        if (!cancelled) setAuthChecked(true);
       }
-      setUserId(uid);
-      setIsAdmin(true);
-      setAuthChecked(true);
-      await loadMembers();
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
       if (!session) navigate({ to: "/admin_/login" });

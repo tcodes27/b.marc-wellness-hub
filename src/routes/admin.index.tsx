@@ -14,10 +14,16 @@ function Overview() {
   const [events, setEvents] = useState<CalEventType[]>([]);
 
   useEffect(() => {
-    supabase.from("booking_clicks").select("id", { count: "exact", head: true }).then(({ count }) => {
-      setClicks(count ?? 0);
-    });
-    getCalEventTypes().then((r) => setEvents(r.eventTypes ?? [])).catch(() => {});
+    supabase
+      .from("booking_clicks")
+      .select("id", { count: "exact", head: true })
+      .then(({ count, error }) => {
+        if (error) console.error("[admin/overview] booking_clicks error:", error);
+        setClicks(count ?? 0);
+      });
+    getCalEventTypes()
+      .then((r) => setEvents(r.eventTypes ?? []))
+      .catch((err) => console.error("[admin/overview] getCalEventTypes threw:", err));
   }, []);
 
   const now = Date.now();
