@@ -108,8 +108,8 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
                 </div>
               )}
               <iframe
-                key={ACUITY_SRC}
-                src={ACUITY_SRC}
+                key={CAL_SRC}
+                src={CAL_SRC}
                 title="Schedule Appointment"
                 onLoad={() => setIframeLoaded(true)}
                 allow="payment"
