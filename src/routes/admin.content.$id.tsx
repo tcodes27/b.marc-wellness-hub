@@ -284,14 +284,22 @@ function EditPost() {
         .select("id")
         .single();
       setSaving(false);
-      if (error) { alert(error.message); return; }
+      if (error) { alert(error.message); setAutosave({ status: "error", at: Date.now(), error: error.message }); return; }
       savedId = data.id;
       setPostId(savedId);
+      try {
+        if (typeof window !== "undefined") {
+          window.localStorage.removeItem(NEW_KEY);
+          window.localStorage.setItem(`bmarc:content-draft:${savedId}`, JSON.stringify({ form: { ...form, ...(override ?? {}) }, at: Date.now() }));
+        }
+      } catch {}
+      setAutosave({ status: "saved", at: Date.now() });
       navigate({ to: "/admin/content/$id", params: { id: savedId! }, replace: true });
     } else {
       const { error } = await supabase.from("content_posts").update(payload).eq("id", postId);
       setSaving(false);
-      if (error) { alert(error.message); return; }
+      if (error) { alert(error.message); setAutosave({ status: "error", at: Date.now(), error: error.message }); return; }
+      setAutosave({ status: "saved", at: Date.now() });
     }
     if (override) setForm(merged);
   };
