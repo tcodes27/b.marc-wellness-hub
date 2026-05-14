@@ -4,6 +4,7 @@ import {
   supabase, type ContentPost, POST_STATUSES, AUDIENCE_OPTIONS, CONTENT_TYPES,
 } from "@/integrations/supabase/client";
 import { useAdmin } from "./admin";
+import { NewPostModal } from "@/components/admin/NewPostModal";
 import { Plus, Loader2, Trash2, Eye, Pencil, Copy, Search, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/")({
@@ -26,6 +27,7 @@ function ContentList() {
   const [audience, setAudience] = useState<"all" | string>("all");
   const [type, setType] = useState<"all" | string>("all");
   const [q, setQ] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -94,8 +96,9 @@ function ContentList() {
           </p>
         </div>
         <button
-          onClick={() => { console.log("[content] New post clicked"); navigate({ to: "/admin/content/$id", params: { id: "new" } }); }}
-          className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-6 py-3 hover:bg-espresso/90 transition-colors shadow-sm"
+          type="button"
+          onClick={() => { console.log("[content] New post clicked"); setModalOpen(true); }}
+          className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-6 py-3 hover:bg-espresso/90 transition-colors shadow-sm cursor-pointer"
         >
           <Plus size={14} /> New post
         </button>
@@ -140,9 +143,13 @@ function ContentList() {
             <p className="mt-4 text-sm text-clay">
               {posts.length === 0 ? "Your editorial library is empty." : "No posts match the current filters."}
             </p>
-            <Link to="/admin/content/$id" params={{ id: "new" }} onClick={() => console.log("[content] Create your first post clicked")} className="mt-5 inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-5 py-2.5">
+            <button
+              type="button"
+              onClick={() => { console.log("[content] Create your first post clicked"); setModalOpen(true); }}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-5 py-2.5 hover:bg-espresso/90 transition-colors cursor-pointer"
+            >
               <Plus size={12} /> Create your first post
-            </Link>
+            </button>
           </div>
         ) : (
           <ul className="divide-y divide-tan/20">
@@ -185,6 +192,13 @@ function ContentList() {
           </ul>
         )}
       </div>
+
+      <NewPostModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={() => { void load(); }}
+        userId={userId}
+      />
     </div>
   );
 }
