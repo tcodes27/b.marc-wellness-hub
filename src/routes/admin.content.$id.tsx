@@ -372,6 +372,7 @@ function EditPost() {
         <Link to="/admin/content" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-clay">
           <ArrowLeft size={14} /> Back
         </Link>
+        <AutosaveIndicator status={autosave.status} at={autosave.at} error={autosave.error} />
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setPreviewing(true)} className="inline-flex items-center gap-2 rounded-full border border-tan/40 text-xs uppercase tracking-[0.2em] px-4 py-2">
             <Eye size={12} /> Preview
