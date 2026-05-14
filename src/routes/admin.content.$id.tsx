@@ -652,6 +652,34 @@ function EditPost() {
 const inputCls = "w-full rounded-lg border border-tan/40 px-3 py-2 text-sm bg-white text-espresso placeholder:text-clay/50 focus:outline-none focus:border-espresso";
 const selectCls = inputCls;
 
+function AutosaveIndicator({
+  status, at, error,
+}: { status: "idle" | "saving" | "saved" | "error"; at: number | null; error?: string }) {
+  const time = at ? new Date(at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : null;
+  if (status === "saving") {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-clay">
+        <RefreshCw size={11} className="animate-spin" /> Saving…
+      </span>
+    );
+  }
+  if (status === "error") {
+    return (
+      <span title={error} className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-rose-700">
+        <CloudOff size={11} /> Autosave failed
+      </span>
+    );
+  }
+  if (status === "saved" && time) {
+    return (
+      <span className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-emerald-700">
+        <Check size={11} /> Saved {time}
+      </span>
+    );
+  }
+  return <span className="text-[11px] uppercase tracking-[0.2em] text-clay/60">Autosave on</span>;
+}
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
