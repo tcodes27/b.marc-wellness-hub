@@ -256,6 +256,15 @@ function EditPost() {
   if (loading) {
     return <div className="flex justify-center p-12"><Loader2 className="animate-spin text-clay" /></div>;
   }
+  if (loadError) {
+    return (
+      <div className="max-w-md mx-auto bg-rose-50 border border-rose-200 rounded-2xl p-6 text-sm text-rose-800">
+        <p className="font-serif text-lg mb-2">Couldn't load this post</p>
+        <p>{loadError}</p>
+        <Link to="/admin/content" className="mt-4 inline-block underline">Back to library</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
