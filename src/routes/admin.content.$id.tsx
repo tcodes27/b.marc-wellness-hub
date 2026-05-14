@@ -94,6 +94,15 @@ function EditPost() {
 
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  // ── Autosave state ─────────────────────────────────────────────────────────
+  const STORAGE_KEY = `bmarc:content-draft:${id}`;
+  const NEW_KEY = "bmarc:content-draft:new";
+  type AutosaveStatus = "idle" | "saving" | "saved" | "error";
+  const [autosave, setAutosave] = useState<{ status: AutosaveStatus; at: number | null; error?: string }>({
+    status: "idle", at: null,
+  });
+  const skipAutosaveRef = useRef(true); // skip the very first form effect after mount/restore
+
   useEffect(() => {
     console.log("[content-editor] mount", { id, isNew, userId });
     if (isNew) {
