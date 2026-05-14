@@ -214,7 +214,7 @@ function AdminLayout() {
     exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
 
   return (
-    <AdminContext.Provider value={{ userId, members, reloadMembers: loadMembers }}>
+    <AdminContext.Provider value={ctxValue}>
       <div className="min-h-screen bg-ivory text-espresso flex">
         {/* Sidebar */}
         <aside
