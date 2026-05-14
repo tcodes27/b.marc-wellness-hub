@@ -42,27 +42,26 @@ export type CommunityMember = {
 
 export const CONTENT_TYPES = [
   "Community Update",
-  "Event Announcement",
-  "Wellness Tip",
   "Pilates Education",
+  "Wellness Tips",
+  "Event Announcement",
   "Sponsor Feature",
-  "Behind the Scenes",
-  "Member Note",
+  "Founder Note",
+  "Behind The Scenes",
+  "Lifestyle Post",
 ] as const;
-export type ContentType = (typeof CONTENT_TYPES)[number];
+export type ContentType = (typeof CONTENT_TYPES)[number] | string;
 
 export const AUDIENCE_OPTIONS = [
-  "All Community Members",
-  "Pilates events",
-  "Wellness community",
-  "Online classes",
+  "All Members",
+  "Pilates Event Members",
   "Beginner Pilates",
-  "Brand updates",
-  "Sponsorship/collaboration",
+  "Online Classes",
   "VIP",
-  "Sponsor Lead",
+  "Sponsor Leads",
+  "Wellness Community",
 ] as const;
-export type AudienceOption = (typeof AUDIENCE_OPTIONS)[number];
+export type AudienceOption = (typeof AUDIENCE_OPTIONS)[number] | string;
 
 export const POST_STATUSES = ["Draft", "Scheduled", "Published", "Archived"] as const;
 export type PostStatus = (typeof POST_STATUSES)[number];
