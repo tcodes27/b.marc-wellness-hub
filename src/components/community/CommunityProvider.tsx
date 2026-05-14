@@ -30,11 +30,11 @@ const schema = z.object({
   first_name: z.string().trim().min(1, "Required").max(80),
   last_name: z.string().trim().min(1, "Required").max(80),
   email: z.string().trim().email("Invalid email").max(255),
-  phone: z.string().trim().max(40).optional().or(z.literal("")),
+  phone: z.string().trim().min(1, "Required").max(40),
   city: z.string().trim().max(120).optional().or(z.literal("")),
   instagram_handle: z.string().trim().max(80).optional().or(z.literal("")),
   interests: z.array(z.string().max(80)).max(20),
-  consent_marketing: z.boolean(),
+  consent_marketing: z.literal(true, { errorMap: () => ({ message: "Please agree to receive updates to continue." }) }),
 });
 
 type FormState = {
@@ -254,9 +254,10 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                     />
                   </Field>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Field label="Phone">
+                    <Field label="Phone *">
                       <input
                         type="tel"
+                        required
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         maxLength={40}
@@ -310,6 +311,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                   <label className="flex items-start gap-3 pt-2 cursor-pointer">
                     <input
                       type="checkbox"
+                      required
                       checked={form.consent_marketing}
                       onChange={(e) =>
                         setForm({ ...form, consent_marketing: e.target.checked })
