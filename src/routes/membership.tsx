@@ -81,8 +81,6 @@ const inside = [
 ];
 
 function MembershipPage() {
-  const { open } = useBooking();
-  const { open: openCommunity } = useCommunity();
   return (
     <SiteLayout>
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
