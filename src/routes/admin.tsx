@@ -31,11 +31,13 @@ type AdminCtx = {
   reloadMembers: () => Promise<void>;
 };
 
-const AdminContext = createContext<AdminCtx | null>(null);
+const AdminContext = createContext<AdminCtx>({
+  userId: "",
+  members: [],
+  reloadMembers: async () => {},
+});
 export function useAdmin() {
-  const ctx = useContext(AdminContext);
-  if (!ctx) throw new Error("useAdmin must be used inside admin layout");
-  return ctx;
+  return useContext(AdminContext);
 }
 
 const NAV = [
@@ -170,35 +172,41 @@ function AdminLayout() {
     navigate({ to: "/admin/login" });
   };
 
+  const ctxValue = { userId, members, reloadMembers: loadMembers };
+
   if (!authChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ivory">
-        <Loader2 className="animate-spin text-clay" />
-      </div>
+      <AdminContext.Provider value={ctxValue}>
+        <div className="min-h-screen flex items-center justify-center bg-ivory">
+          <Loader2 className="animate-spin text-clay" />
+        </div>
+      </AdminContext.Provider>
     );
   }
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-ivory px-4">
-        <div className="max-w-lg text-center bg-white border border-tan/30 rounded-2xl p-8 shadow-sm">
-          <h1 className="font-serif text-2xl text-espresso">Not authorized</h1>
-          <p className="mt-2 text-sm text-clay">
-            Your account doesn't have admin access. Contact the site owner to be granted the admin role.
-          </p>
-          {bootError && (
-            <pre className="mt-4 text-left text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
-              {bootError}
-            </pre>
-          )}
-          <button
-            onClick={signOut}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5"
-          >
-            <LogOut size={14} /> Sign out
-          </button>
+      <AdminContext.Provider value={ctxValue}>
+        <div className="min-h-screen flex items-center justify-center bg-ivory px-4">
+          <div className="max-w-lg text-center bg-white border border-tan/30 rounded-2xl p-8 shadow-sm">
+            <h1 className="font-serif text-2xl text-espresso">Not authorized</h1>
+            <p className="mt-2 text-sm text-clay">
+              Your account doesn't have admin access. Contact the site owner to be granted the admin role.
+            </p>
+            {bootError && (
+              <pre className="mt-4 text-left text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
+                {bootError}
+              </pre>
+            )}
+            <button
+              onClick={signOut}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5"
+            >
+              <LogOut size={14} /> Sign out
+            </button>
+          </div>
         </div>
-      </div>
+      </AdminContext.Provider>
     );
   }
 
@@ -206,7 +214,7 @@ function AdminLayout() {
     exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
 
   return (
-    <AdminContext.Provider value={{ userId, members, reloadMembers: loadMembers }}>
+    <AdminContext.Provider value={ctxValue}>
       <div className="min-h-screen bg-ivory text-espresso flex">
         {/* Sidebar */}
         <aside
