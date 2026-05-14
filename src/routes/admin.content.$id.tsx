@@ -46,7 +46,7 @@ function EditPost() {
     featured_image_url: "",
     gallery_images: [],
     content_type: "Community Update",
-    audience: "All Community Members",
+    audience: "All Members",
     status: "Draft",
     scheduled_at: "",
   });
