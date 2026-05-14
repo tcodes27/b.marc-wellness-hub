@@ -94,7 +94,7 @@ function ContentList() {
           </p>
         </div>
         <button
-          onClick={() => navigate({ to: "/admin/content/new" })}
+          onClick={() => { console.log("[content] New post clicked"); navigate({ to: "/admin/content/$id", params: { id: "new" } }); }}
           className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.25em] px-6 py-3 hover:bg-espresso/90 transition-colors shadow-sm"
         >
           <Plus size={14} /> New post
