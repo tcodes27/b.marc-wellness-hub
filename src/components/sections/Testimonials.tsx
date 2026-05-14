@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
 const quotes = [
   {
-    q: "B.MARC didn't just change my body — it changed the way I show up for myself. The community holds you with such grace.",
+    q: "B.MARC didn't just change my body, it changed the way I show up for myself. The community holds you with such grace.",
     n: "Isabella M.",
     r: "Member since 2024",
   },
@@ -13,7 +13,7 @@ const quotes = [
     r: "Studio Regular",
   },
   {
-    q: "I came for the Pilates and stayed for the women. This is more than a workout — it's a way of living I didn't know I needed.",
+    q: "I came for the Pilates and stayed for the women. This is more than a workout, it's a way of living I didn't know I needed.",
     n: "Camille R.",
     r: "Online Member",
   },
