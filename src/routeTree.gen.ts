@@ -17,6 +17,11 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminMembersRouteImport } from './routes/admin.members'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminExportsRouteImport } from './routes/admin.exports'
+import { Route as AdminEventsRouteImport } from './routes/admin.events'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -58,6 +63,31 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminExportsRoute = AdminExportsRouteImport.update({
+  id: '/exports',
+  path: '/exports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEventsRoute = AdminEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -66,6 +96,11 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -75,6 +110,11 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -86,6 +126,11 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/membership': typeof MembershipRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/events': typeof AdminEventsRoute
+  '/admin/exports': typeof AdminExportsRoute
+  '/admin/leads': typeof AdminLeadsRoute
+  '/admin/members': typeof AdminMembersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin_/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -98,6 +143,11 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
     | '/admin/login'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -107,6 +157,11 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
     | '/admin/login'
     | '/admin'
   id:
@@ -117,6 +172,11 @@ export interface FileRouteTypes {
     | '/events'
     | '/membership'
     | '/sitemap.xml'
+    | '/admin/events'
+    | '/admin/exports'
+    | '/admin/leads'
+    | '/admin/members'
+    | '/admin/settings'
     | '/admin_/login'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -189,14 +249,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/exports': {
+      id: '/admin/exports'
+      path: '/exports'
+      fullPath: '/admin/exports'
+      preLoaderRoute: typeof AdminExportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/events': {
+      id: '/admin/events'
+      path: '/events'
+      fullPath: '/admin/events'
+      preLoaderRoute: typeof AdminEventsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminEventsRoute: typeof AdminEventsRoute
+  AdminExportsRoute: typeof AdminExportsRoute
+  AdminLeadsRoute: typeof AdminLeadsRoute
+  AdminMembersRoute: typeof AdminMembersRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminEventsRoute: AdminEventsRoute,
+  AdminExportsRoute: AdminExportsRoute,
+  AdminLeadsRoute: AdminLeadsRoute,
+  AdminMembersRoute: AdminMembersRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -214,3 +319,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
