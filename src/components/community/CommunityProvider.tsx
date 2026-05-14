@@ -127,7 +127,10 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
         instagram_handle: parsed.data.instagram_handle || null,
         interests: parsed.data.interests,
         source: source ?? "website",
-        consent_marketing: parsed.data.consent_marketing,
+        consent_marketing: parsed.data.email_consent,
+        email_consent: parsed.data.email_consent,
+        sms_consent: parsed.data.sms_consent,
+        consent_timestamp: new Date().toISOString(),
       })
       .select("id, first_name")
       .single();
