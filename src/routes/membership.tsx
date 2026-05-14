@@ -3,6 +3,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
 import { useBooking } from "@/components/booking/BookingProvider";
+import { useCommunity } from "@/components/community/CommunityProvider";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
@@ -82,6 +83,7 @@ const inside = [
 
 function MembershipPage() {
   const { open } = useBooking();
+  const { open: openCommunity } = useCommunity();
   return (
     <SiteLayout>
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
@@ -95,7 +97,7 @@ function MembershipPage() {
               Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => open({ title: "Join the Community" })} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={() => openCommunity("membership-page")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
           </div>
