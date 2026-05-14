@@ -1,30 +1,48 @@
-## Root cause
+## Goal
 
-After signing out (or visiting `/admin` without a session) the admin layout calls:
+Add temporary, clearly-prefixed console logging to trace the Supabase auth flow on the admin routes, so we can verify session persistence and redirect behavior across refreshes.
 
-```ts
-navigate({ to: "/admin_/login" })
-```
+## What gets logged
 
-The login route file is `admin_.login.tsx`. The trailing `_` in `admin_` is a TanStack flat-route convention that escapes the parent `admin` layout — the resulting **URL** is `/admin/login`, while `/admin_/login` is only the route **id**.
+All logs prefixed with `[admin-auth]` so they're easy to filter and remove later.
 
-TanStack accepts both strings in the typed `to` union, but uses the value literally as the URL. So the redirect lands on `/admin_/login`, which doesn't exist → root `notFoundComponent` renders the 404 page. Login also can't be reached, and after signing in successfully `signOut`/auth listener bounces the user back to the same broken URL.
+### `src/routes/admin.tsx` (AdminLayout effect)
 
-I confirmed this in the preview: visiting `/admin` briefly shows the loading spinner, then the URL flips to `/admin_/login` and the 404 page renders. No XHR to Supabase ever fires because the user is on the 404 screen.
+- On mount: `mount, pathname=…`
+- After `getSession()`: `getSession ->` `{ hasSession, userId, expiresAt, accessTokenPreview }` (token preview = first 12 chars only, never full token)
+- If no session: `no session, redirecting to /admin/login`
+- After `has_role` rpc: `has_role ->` `{ isAdminRpc, error }`
+- On `onAuthStateChange`: `authStateChange event=<event> hasSession=<bool> userId=<uid|null>`
+- On unmount/cleanup: `cleanup`
 
-## Fix
+### `src/routes/admin_.login.tsx` (AdminLogin)
 
-Replace the three `to: "/admin_/login"` occurrences in `src/routes/admin.tsx` with the actual path `to: "/admin/login"`:
+- On mount `getSession()`: `login mount, hasSession=<bool> userId=<uid|null>`
+- On submit start: `signIn attempt email=<masked>` (mask: keep first char + domain)
+- On submit result: `signIn result ->` `{ ok, error, userId }`
+- After successful navigate: `signIn success, navigating to /admin`
 
-- line 88 — initial unauth redirect
-- line 125 — `onAuthStateChange` sign-out redirect
-- line 139 — manual `signOut` button
+### `src/integrations/supabase/client.ts`
 
-No other files need changes. The login route itself (`admin_.login.tsx`) keeps its `createFileRoute("/admin_/login")` declaration — that's the file-id contract; only the navigation calls were using the wrong string.
+Add a one-time module-load log so we can confirm the storage adapter:
+- `client init, storage=<localStorage|none>, hasWindow=<bool>`
 
-## Verification
+### Refresh-persistence trace
 
-After the edit, navigate to `/admin` in the preview:
-1. Spinner → URL changes to `/admin/login` → login form renders.
-2. Sign in → redirects to `/admin` → dashboard loads with members list.
-3. Sign-out button returns to `/admin/login`.
+Add a small `useEffect` in `__root.tsx` (or AdminLayout — whichever already runs on every page) that on mount reads `localStorage` for the supabase auth key and logs:
+- `localStorage probe -> hasSupabaseKey=<bool> keyName=<string|null>`
+
+This shows whether the token actually persisted across the hard refresh.
+
+## What stays unchanged
+
+- No behavior changes — only `console.log` / `console.warn` calls.
+- No tokens, passwords, or full emails written to logs.
+- Logs will be removed in a follow-up once the issue is confirmed fixed.
+
+## Verification steps after the edit
+
+1. Open `/admin` while signed out → expect: client init log, mount log, `getSession -> hasSession=false`, redirect log, login mount log.
+2. Sign in → expect: `signIn attempt`, `signIn result ok=true`, navigate log, AdminLayout mount, `getSession -> hasSession=true`, `has_role -> isAdminRpc=true`.
+3. Hard-refresh `/admin` → expect: `localStorage probe hasSupabaseKey=true`, `getSession -> hasSession=true` (no redirect).
+4. Sign out → expect: `authStateChange event=SIGNED_OUT`, redirect to login.
