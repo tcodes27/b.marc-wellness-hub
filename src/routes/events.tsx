@@ -19,12 +19,7 @@ export const Route = createFileRoute("/events")({
 
 const filters = ["All", "Pilates", "Wellness", "Community", "Workshops"] as const;
 
-const allEvents = [
-  ...upcomingEvents,
-  { ...upcomingEvents[0], id: "breath-workshop", title: "Breathwork & Mobility Workshop", category: "Workshops", date: "July 9, 2026", price: "$60" },
-  { ...upcomingEvents[1], id: "summer-series", title: "Summer Movement Series", category: "Pilates", date: "July 22, 2026", price: "$48" },
-  { ...upcomingEvents[2], id: "garden-social", title: "Garden Wellness Social", category: "Community", date: "Aug 3, 2026", price: "Free" },
-];
+const allEvents = [...upcomingEvents];
 
 function EventsPage() {
   const [active, setActive] = useState<(typeof filters)[number]>("All");
