@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MembersRouteImport } from './routes/members'
+import { Route as LeadsRouteImport } from './routes/leads'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -46,6 +47,11 @@ const MembershipRoute = MembershipRouteImport.update({
 const MembersRoute = MembersRouteImport.update({
   id: '/members',
   path: '/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadsRoute = LeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/events': typeof EventsRoute
+  '/leads': typeof LeadsRoute
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
   '/settings': typeof SettingsRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/events': typeof EventsRoute
+  '/leads': typeof LeadsRoute
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
   '/settings': typeof SettingsRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/events': typeof EventsRoute
+  '/leads': typeof LeadsRoute
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
   '/settings': typeof SettingsRoute
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/events'
+    | '/leads'
     | '/members'
     | '/membership'
     | '/settings'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/events'
+    | '/leads'
     | '/members'
     | '/membership'
     | '/settings'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/events'
+    | '/leads'
     | '/members'
     | '/membership'
     | '/settings'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   EventsRoute: typeof EventsRoute
+  LeadsRoute: typeof LeadsRoute
   MembersRoute: typeof MembersRoute
   MembershipRoute: typeof MembershipRoute
   SettingsRoute: typeof SettingsRoute
@@ -281,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof MembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leads': {
+      id: '/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -425,6 +445,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   EventsRoute: EventsRoute,
+  LeadsRoute: LeadsRoute,
   MembersRoute: MembersRoute,
   MembershipRoute: MembershipRoute,
   SettingsRoute: SettingsRoute,
