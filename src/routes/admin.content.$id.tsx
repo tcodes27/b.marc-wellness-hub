@@ -17,6 +17,7 @@ import { getIntegrationStatus, type IntegrationStatus } from "@/lib/integrations
 import {
   Loader2, ArrowLeft, Save, Send, Clock, Archive, Eye, X,
   Image as ImageIcon, Film, Music, Mail, MessageSquare, Users, Link as LinkIcon,
+  Check, CloudOff, RefreshCw,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/$id")({
