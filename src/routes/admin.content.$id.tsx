@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link, useParams } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   supabase, CONTENT_TYPES, AUDIENCE_OPTIONS, POST_STATUSES,
   type ContentPost, type ContentType, type AudienceOption, type PostStatus,
