@@ -156,8 +156,25 @@ function MembersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
-                <tr><td colSpan={6} className="p-8 text-center text-clay">No members match.</td></tr>
+              {loading ? (
+                <tr><td colSpan={6} className="p-8 text-center text-clay">
+                  <Loader2 size={16} className="inline animate-spin mr-2" />Loading members…
+                </td></tr>
+              ) : loadError ? (
+                <tr><td colSpan={6} className="p-8 text-center">
+                  <div className="inline-flex items-start gap-2 text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 text-left">
+                    <AlertCircle size={16} className="mt-0.5" />
+                    <div>
+                      <div className="font-medium">Couldn't load members</div>
+                      <div className="text-xs mt-1 text-rose-600">{loadError}</div>
+                      <button onClick={fetchMembers} className="mt-2 text-xs underline">Retry</button>
+                    </div>
+                  </div>
+                </td></tr>
+              ) : filtered.length === 0 ? (
+                <tr><td colSpan={6} className="p-8 text-center text-clay">
+                  {members.length === 0 ? "No community members yet." : "No members match the current filters."}
+                </td></tr>
               ) : (
                 filtered.map((m) => (
                   <tr key={m.id} onClick={() => setSelected(m)} className="border-t border-tan/15 hover:bg-sand/30 cursor-pointer">
