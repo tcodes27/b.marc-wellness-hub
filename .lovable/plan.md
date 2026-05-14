@@ -1,28 +1,51 @@
-## What's actually happening
+## Goal
 
-- `/admin/login` renders fine on its own (verified in the preview).
-- The "This page didn't load" screen is the root error boundary in `__root.tsx`. It only triggers when something throws during render or in a route loader.
-- The most likely trigger is the redirect to `/admin` after a successful sign-in, where `admin.tsx` queries the `user_roles` table. If that table doesn't exist yet (or RLS blocks the query in a way that throws), the error bubbles up.
+Make `/admin` work end-to-end on Supabase: visiting `/admin` while signed-out redirects to `/admin/login`, signing in lands on `/admin`, and the dashboard renders with all sub-sections (members, events, leads, content, exports, settings).
+
+## Root cause of the current error
+
+The dashboard code in `src/routes/admin.tsx` queries `public.user_roles` to verify admin access. That table (and the `app_role` enum + `has_role()` SECURITY DEFINER function) does not yet exist in your Supabase project, so the query errors and the layout falls through to "Not authorized" / shows a `bootError`. Same story for the protected reads (`community_members`, etc.) — without RLS policies that allow admins, they return empty/error.
 
 ## Plan
 
-### 1. Confirm the database state
-Quickly verify whether the SQL from earlier actually ran:
-- Check if `app_role` enum exists
-- Check if `public.user_roles` table exists
-- Check if the admin row for UUID `a90c2213-5168-4a16-807b-2c0d081a189c` is present
+### 1. Database migration (Supabase)
 
-I'll ask you to run a short SELECT in the Supabase SQL editor (or paste the result here). If anything is missing, re-run the setup SQL.
+Create a migration that:
 
-### 2. Make the admin page fail visibly instead of silently
-Right now `admin.tsx` logs errors to console but the actual render-time crash still hits the global error page, which hides the message. I'll:
-- Add a small inline error panel inside `AdminLayout` that shows the real Supabase error message (table missing / permission denied / etc.) instead of throwing.
-- Same for `admin.index.tsx` so a failing `booking_clicks` / `getCalEventTypes` call doesn't take down the whole dashboard.
+- Creates `public.app_role` enum (`admin`, `moderator`, `user`).
+- Creates `public.user_roles (id, user_id → auth.users, role, unique(user_id, role))`.
+- Enables RLS on `user_roles` and adds policy: a user can `SELECT` their own roles.
+- Creates `public.has_role(_user_id uuid, _role app_role)` as `SECURITY DEFINER STABLE` with `search_path = public`.
+- Seeds the admin role for the current account (UUID you've been testing with).
+- Adds RLS policies on existing admin-managed tables (`community_members`, `events`, `leads`/tags, `content_*`) so that `has_role(auth.uid(),'admin')` grants full access. Anon insert remains for the public lead-capture form on `community_members` (kept as-is if already present).
 
-### 3. Re-test the flow
-After the fix, sign in again at `/admin/login`. You'll either land on the dashboard or see a clear, specific error message we can act on directly.
+### 2. Routing / auth flow cleanup (`src/routes/admin.tsx`, `src/routes/admin_.login.tsx`)
 
-### Technical details
-- Files to edit: `src/routes/admin.tsx`, `src/routes/admin.index.tsx`
-- No schema changes from my side — I can't run SQL on your Supabase project. If step 1 shows the table is missing, I'll re-send the exact SQL to paste.
-- No changes to `__root.tsx` or auth flow.
+- Keep `/admin/login` as a public route (already correct via `admin_.login.tsx` — URL is `/admin/login`, outside the admin layout).
+- In `admin.tsx`:
+  - Replace the direct `user_roles` SELECT with a call to the `has_role` RPC (`supabase.rpc('has_role', { _user_id, _role: 'admin' })`) — works regardless of RLS on `user_roles` and matches the security pattern.
+  - On no session → redirect to `/admin/login`.
+  - On session but not admin → show "Not authorized" with sign-out (current behavior).
+  - On admin → render layout + `<Outlet />`.
+  - Remove the noisy red `bootError` panel from the happy-path dashboard view; keep it only on the not-authorized screen for diagnostics.
+- In `admin_.login.tsx`: on successful sign-in, navigate to `/admin` (already correct). Keep the "already-signed-in → /admin" effect.
+
+### 3. Sub-routes sanity check
+
+Confirm each tab route exists and renders inside the admin layout via `<Outlet />`:
+`/admin` (overview), `/admin/members`, `/admin/events`, `/admin/leads`, `/admin/content`, `/admin/content/new`, `/admin/content/:id`, `/admin/exports`, `/admin/settings`. No new pages — just verify nothing broke.
+
+### 4. Verification
+
+- Visit `/admin` signed-out → redirected to `/admin/login`.
+- Sign in with the admin UUID account → land on `/admin` overview, sidebar visible, all tabs navigable.
+- Sign in with a non-admin account → "Not authorized" screen.
+- Refresh on `/admin/members` while signed-in → stays on the page (no redirect loop).
+
+## Files touched
+
+- `supabase/migrations/<timestamp>_admin_roles.sql` (new)
+- `src/routes/admin.tsx` (swap SELECT → RPC, clean error UI)
+- `src/routes/admin_.login.tsx` (minor — confirm redirect target)
+
+No changes to Lovable Cloud — pure Supabase via the existing publishable-key client.
