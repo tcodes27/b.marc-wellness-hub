@@ -56,6 +56,7 @@ function AdminLayout() {
   const [userId, setUserId] = useState<string>("");
   const [members, setMembers] = useState<CommunityMember[]>([]);
   const [navOpen, setNavOpen] = useState(false);
+  const [bootError, setBootError] = useState<string | null>(null);
 
   const loadMembers = async () => {
     try {
@@ -63,10 +64,14 @@ function AdminLayout() {
         .from("community_members")
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) console.error("[admin] loadMembers error:", error);
+      if (error) {
+        console.error("[admin] loadMembers error:", error);
+        setBootError(`community_members: ${error.message}`);
+      }
       setMembers((data ?? []) as CommunityMember[]);
-    } catch (err) {
+    } catch (err: any) {
       console.error("[admin] loadMembers threw:", err);
+      setBootError(`community_members threw: ${err?.message ?? String(err)}`);
     }
   };
 
@@ -75,7 +80,10 @@ function AdminLayout() {
     (async () => {
       try {
         const { data: sessionData, error: sessionErr } = await supabase.auth.getSession();
-        if (sessionErr) console.error("[admin] getSession error:", sessionErr);
+        if (sessionErr) {
+          console.error("[admin] getSession error:", sessionErr);
+          setBootError(`getSession: ${sessionErr.message}`);
+        }
         if (!sessionData.session) {
           navigate({ to: "/admin_/login" });
           return;
@@ -87,7 +95,15 @@ function AdminLayout() {
           .eq("user_id", uid)
           .eq("role", "admin")
           .maybeSingle();
-        if (roleErr) console.error("[admin] user_roles error:", roleErr);
+        if (roleErr) {
+          console.error("[admin] user_roles error:", roleErr);
+          setBootError(`user_roles: ${roleErr.message} (code ${roleErr.code ?? "?"})`);
+          if (!cancelled) {
+            setIsAdmin(false);
+            setAuthChecked(true);
+          }
+          return;
+        }
         if (cancelled) return;
         if (!roleRow) {
           setIsAdmin(false);
@@ -98,8 +114,9 @@ function AdminLayout() {
         setIsAdmin(true);
         setAuthChecked(true);
         await loadMembers();
-      } catch (err) {
+      } catch (err: any) {
         console.error("[admin] auth bootstrap threw:", err);
+        setBootError(`bootstrap threw: ${err?.message ?? String(err)}`);
         if (!cancelled) setAuthChecked(true);
       }
     })();
@@ -132,11 +149,16 @@ function AdminLayout() {
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-ivory px-4">
-        <div className="max-w-md text-center bg-white border border-tan/30 rounded-2xl p-8 shadow-sm">
+        <div className="max-w-lg text-center bg-white border border-tan/30 rounded-2xl p-8 shadow-sm">
           <h1 className="font-serif text-2xl text-espresso">Not authorized</h1>
           <p className="mt-2 text-sm text-clay">
             Your account doesn't have admin access. Contact the site owner to be granted the admin role.
           </p>
+          {bootError && (
+            <pre className="mt-4 text-left text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
+              {bootError}
+            </pre>
+          )}
           <button
             onClick={signOut}
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5"
@@ -214,6 +236,11 @@ function AdminLayout() {
           </header>
 
           <main className="flex-1 p-5 sm:p-8 max-w-6xl w-full mx-auto">
+            {bootError && (
+              <pre className="mb-4 text-xs bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 whitespace-pre-wrap break-words">
+                {bootError}
+              </pre>
+            )}
             <Outlet />
           </main>
         </div>
