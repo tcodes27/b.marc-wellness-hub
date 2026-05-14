@@ -314,13 +314,25 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                   )}
 
                   <div className="pt-2">
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className="btn-luxe btn-luxe-hover w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {submitting ? "Joining…" : "Join the Community"}
-                    </button>
+                    {welcomeBack ? (
+                      <button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-espresso/30 bg-sand/60 text-espresso/80 font-serif text-sm tracking-[0.18em] uppercase cursor-not-allowed"
+                      >
+                        <Check size={14} className="opacity-70" />
+                        Welcome back
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="btn-luxe btn-luxe-hover w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
+                      >
+                        {submitting ? "Joining…" : "Join the Community"}
+                      </button>
+                    )}
                   </div>
                 </form>
               )}
