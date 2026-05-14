@@ -14,7 +14,7 @@ type BookingContextValue = {
 
 const BookingContext = createContext<BookingContextValue | null>(null);
 
-const ACUITY_SRC = "https://app.acuityscheduling.com/schedule.php?owner=39322079&ref=embedded_csp";
+const CAL_SRC = "https://cal.com/bmarcpilates?embed=true&theme=light";
 
 export function useBooking() {
   const ctx = useContext(BookingContext);
