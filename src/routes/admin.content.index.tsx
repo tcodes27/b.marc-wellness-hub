@@ -192,6 +192,13 @@ function ContentList() {
           </ul>
         )}
       </div>
+
+      <NewPostModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={() => { void load(); }}
+        userId={userId}
+      />
     </div>
   );
 }
