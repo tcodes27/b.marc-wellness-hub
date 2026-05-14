@@ -66,6 +66,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [welcomeBack, setWelcomeBack] = useState(false);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
   const open = useCallback((src?: string) => {
@@ -73,6 +74,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
     setForm(empty);
     setDone(false);
     setError(null);
+    setWelcomeBack(false);
     setIsOpen(true);
   }, []);
 
