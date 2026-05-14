@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useBooking } from "./booking/BookingProvider";
 
 const links = [
   { to: "/", label: "Home" },
@@ -12,6 +13,7 @@ const links = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { open: openBooking } = useBooking();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -55,8 +57,8 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:block">
-          <Link
-            to="/membership"
+          <button
+            onClick={() => openBooking({ title: "Join the Community" })}
             className={`btn-luxe btn-luxe-hover ${
               scrolled
                 ? ""
@@ -64,7 +66,7 @@ export function Navbar() {
             }`}
           >
             Join the Community
-          </Link>
+          </button>
         </div>
 
         <button
@@ -89,9 +91,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link to="/membership" onClick={() => setOpen(false)} className="btn-luxe btn-luxe-hover self-start mt-2">
+            <button
+              onClick={() => {
+                setOpen(false);
+                openBooking({ title: "Join the Community" });
+              }}
+              className="btn-luxe btn-luxe-hover self-start mt-2"
+            >
               Join the Community
-            </Link>
+            </button>
           </div>
         </div>
       )}
