@@ -4,6 +4,7 @@ import {
   supabase, type ContentPost, POST_STATUSES, AUDIENCE_OPTIONS, CONTENT_TYPES,
 } from "@/integrations/supabase/client";
 import { useAdmin } from "./admin";
+import { NewPostModal } from "@/components/admin/NewPostModal";
 import { Plus, Loader2, Trash2, Eye, Pencil, Copy, Search, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/")({
