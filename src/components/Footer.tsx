@@ -23,13 +23,13 @@ export function Footer() {
         <div>
           <div className="eyebrow mb-5">Connect</div>
           <div className="flex gap-4">
-            <a href="#" aria-label="Instagram" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
+            <a href="https://www.instagram.com/bmarcpilates" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
               <Instagram size={16} />
             </a>
-            <a href="#" aria-label="TikTok" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
+            <a href="https://www.tiktok.com/@bmarcpilates" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
               <Music2 size={16} />
             </a>
-            <a href="#" aria-label="Email" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
+            <a href="mailto:team@bmarcpilates.com" aria-label="Email team@bmarcpilates.com" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
               <Mail size={16} />
             </a>
           </div>
