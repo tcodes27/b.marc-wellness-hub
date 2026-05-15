@@ -147,7 +147,7 @@ export const createCalEventType = createServerFn({ method: "POST" })
     if (data.location) {
       body.locations = [{ type: "link", link: data.location, public: true }];
     }
-    const res = await calFetch(`/event-types`, { method: "POST", body: JSON.stringify(body) });
+    const res = await calFetch(`/event-types`, { method: "POST", body: JSON.stringify(body), apiVersion: "2024-06-14" });
     if (!res.ok) {
       return { ok: false, calEventId: null, bookingUrl: null, error: res.error };
     }
