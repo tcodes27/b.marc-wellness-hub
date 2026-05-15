@@ -4,8 +4,9 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
+type Prefill = { email?: string };
 type CommunityContextValue = {
-  open: (source?: string) => void;
+  open: (source?: string, prefill?: Prefill) => void;
   close: () => void;
 };
 

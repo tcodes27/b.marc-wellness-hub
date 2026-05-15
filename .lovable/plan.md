@@ -1,67 +1,28 @@
-## Fix: `public.has_role` does not exist
+## Audit Summary
 
-Your `db/events.sql` references `public.has_role(auth.uid(), 'admin')`, but that function (and the `app_role` enum + `user_roles` table it depends on) hasn't been created in your Supabase project yet. It lives in `db/admin_roles.sql`, which never got run.
+Both signup surfaces are connected to Supabase and writing to `public.community_members`. Recent network logs confirm inserts succeed (the only failure was a duplicate-email 409, which is handled with a "Welcome back" toast). RLS is not blocking. No silent failures.
 
-Fix = run the admin-roles SQL once, then (optionally) re-run the events SQL. No code changes needed.
+| Surface | File | Saves | Status |
+|---|---|---|---|
+| "Join the Community" modal (Navbar, Hero, Membership) | `src/components/community/CommunityProvider.tsx` | Full payload: first/last name, email, phone, city, IG, interests[], email/SMS consent, consent_timestamp, source | ✅ Working, all states present |
+| Footer email-only widget | `src/components/sections/EmailSignup.tsx` | Email + placeholder "Newsletter Subscriber" name, `source='newsletter'`, `consent_marketing=true` | ⚠️ Working but only captures email |
 
-### Step 1 — Run this in Supabase SQL Editor
+All rows appear in `/admin/members` (`src/routes/admin.members.tsx`).
 
-Creates the `app_role` enum, `user_roles` table with RLS, and the `has_role` security-definer function. Safe to re-run.
+## Change
 
-```sql
--- 1. Role enum
-do $$ begin
-  create type public.app_role as enum ('admin', 'moderator', 'user');
-exception when duplicate_object then null; end $$;
+Per your choice, rewire the footer widget to be a CTA that opens the full modal pre-filled with the email — one source of truth, full payload captured.
 
--- 2. user_roles table
-create table if not exists public.user_roles (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users(id) on delete cascade not null,
-  role public.app_role not null,
-  created_at timestamptz not null default now(),
-  unique (user_id, role)
-);
+### Implementation
+1. **`CommunityProvider.tsx`** — extend `open(source?, prefill?)` to accept an optional `{ email }` prefill; merge into initial form state.
+2. **`EmailSignup.tsx`** — remove the direct Supabase insert; on submit, call `openCommunity("newsletter", { email })`. Keep the email input + arrow button UI; drop the local loading/done/error states (modal owns them now).
+3. Remove the now-unused `supabase` import + zod schema from `EmailSignup.tsx`.
 
-alter table public.user_roles enable row level security;
+No DB changes, no RLS changes, no new routes.
 
-drop policy if exists "Users can view their own roles" on public.user_roles;
-create policy "Users can view their own roles"
-  on public.user_roles for select
-  to authenticated
-  using (auth.uid() = user_id);
+### Side fix (quiet)
+Hydration mismatch on `/about` (`"More than a"` vs old `"A community of"`) — this is a stale SSR cache from the recent edit; it self-resolves on next build. No code action needed unless it persists.
 
--- 3. has_role security definer (avoids RLS recursion)
-create or replace function public.has_role(_user_id uuid, _role public.app_role)
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.user_roles
-    where user_id = _user_id and role = _role
-  );
-$$;
-
-grant execute on function public.has_role(uuid, public.app_role) to anon, authenticated;
-```
-
-### Step 2 — Grant yourself admin
-
-Find your user id in Supabase → Authentication → Users, then run:
-
-```sql
-insert into public.user_roles (user_id, role)
-values ('YOUR-AUTH-USER-UUID-HERE', 'admin')
-on conflict (user_id, role) do nothing;
-```
-
-### Step 3 — Re-run `db/events.sql`
-
-Now that `has_role` exists, the events table policies will create successfully. The script is idempotent — safe to re-run.
-
-### Why not change the policy instead?
-
-Your project already standardizes on `has_role` (used by `community_members`, `content_posts`, etc. via `db/admin_roles.sql`, and called from `src/routes/admin.tsx` via `supabase.rpc("has_role", ...)`). Inlining a different check in `events` would diverge from the rest of the schema. Creating the missing function keeps everything consistent.
+## Verification
+- Submit the footer email → modal opens with email field populated → complete and submit → row appears in `/admin/members` with `source='newsletter'` and full data.
+- Existing modal triggers (Navbar, Hero, Membership) continue to work unchanged.
