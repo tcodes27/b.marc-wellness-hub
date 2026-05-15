@@ -35,10 +35,13 @@ function AboutPage() {
           </div>
           <div className="md:col-span-5 md:pt-16 space-y-6 text-lg leading-[1.7] text-foreground/85 font-light">
             <p>
-              B.MARC began with a simple idea, that the way we move shapes the way we live. What started as a single Pilates session in a small Los Angeles loft grew into a community of women practicing presence together.
+              B.MARC was created from the belief that the way we move shapes the way we live. Founded by Erra, a Pilates instructor now based in Atlanta, Georgia, B.MARC began as more than fitness, it became a lifestyle rooted in wellness, discipline, softness, and community.
             </p>
             <p>
-              Today, B.MARC is a brand, a studio, and a culture. A space where strength and softness coexist. Where you arrive for the workout and stay for the women.
+              Today, B.MARC is a growing wellness culture designed for the modern woman balancing busy schedules, careers, relationships, and everyday life while still wanting to feel strong, feminine, confident, and connected to herself.
+            </p>
+            <p>
+              What started as a passion for movement has evolved into a global wellness community offering Pilates experiences, online memberships, in-person events around the world, accountability-based wellness support, mindset and mental wellness conversations, nutrition and lifestyle guidance, body confidence, and movement education.
             </p>
           </div>
         </div>
