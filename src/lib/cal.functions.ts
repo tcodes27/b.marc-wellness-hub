@@ -23,18 +23,19 @@ export type CalBooking = {
 
 async function calFetch(
   path: string,
-  init?: RequestInit,
+  init?: RequestInit & { apiVersion?: string },
 ): Promise<{ ok: true; data: any } | { ok: false; error: string; status?: number }> {
   const key = process.env.CAL_API_KEY;
   if (!key) return { ok: false, error: "CAL_API_KEY not configured" };
+  const { apiVersion, ...rest } = init ?? {};
   try {
     const res = await fetch(`${CAL_BASE}${path}`, {
-      ...init,
+      ...rest,
       headers: {
         Authorization: `Bearer ${key}`,
-        "cal-api-version": "2024-08-13",
+        "cal-api-version": apiVersion ?? "2024-08-13",
         "Content-Type": "application/json",
-        ...(init?.headers ?? {}),
+        ...(rest?.headers ?? {}),
       },
     });
     const text = await res.text();
