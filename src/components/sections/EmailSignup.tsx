@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useCommunity } from "@/components/community/CommunityProvider";
+import { branding } from "@/config/branding";
 
 export function EmailSignup() {
   const [email, setEmail] = useState("");
@@ -19,12 +20,12 @@ export function EmailSignup() {
           <div className="absolute -bottom-40 -left-40 size-[28rem] rounded-full bg-clay/20 blur-3xl" />
 
           <div className="relative max-w-2xl mx-auto">
-            <span className="eyebrow !text-tan">Newsletter</span>
+            <span className="eyebrow !text-tan">{branding.newsletter.eyebrow}</span>
             <h2 className="mt-5 text-4xl md:text-6xl text-ivory leading-[1.05]">
-              Join the <em className="font-light">B.MARC</em> Community
+              {branding.newsletter.headlineLead}<em className="font-light">{branding.newsletter.headlineEm}</em>
             </h2>
             <p className="mt-6 text-ivory/75 max-w-lg mx-auto leading-relaxed">
-              Get wellness updates, event access, and exclusive movement experiences delivered with intention.
+              {branding.newsletter.body}
             </p>
 
             <form onSubmit={submit} className="mt-10 max-w-md mx-auto">

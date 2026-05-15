@@ -1,36 +1,29 @@
 import about from "@/assets/about.jpg";
-
-const pillars = [
-  "Wellness",
-  "Confidence",
-  "Discipline",
-  "Feminine Energy",
-  "Community",
-  "Intentional Living",
-];
+import { branding } from "@/config/branding";
 
 export function AboutMovement() {
+  const { about: a } = branding;
   return (
     <section className="py-28 md:py-40 bg-sand/40">
       <div className="container-luxe grid gap-16 md:gap-20 md:grid-cols-2 items-center">
         <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
           <img
             src={about}
-            alt="Sunlit Pilates studio"
+            alt={`${branding.name} studio`}
             loading="lazy"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1500ms] hover:scale-105"
           />
         </div>
         <div>
-          <span className="eyebrow">The Movement</span>
+          <span className="eyebrow">{a.eyebrow}</span>
           <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
-            A practice of <em className="font-light">presence</em>, a culture of <em className="font-light">care</em>.
+            {a.headlineLead}<em className="font-light">{a.headlineEm1}</em>{a.headlineMid}<em className="font-light">{a.headlineEm2}</em>.
           </h2>
           <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-            B.MARC was born from a simple belief, that movement is a love language. We build strength on the mat and a softer, more intentional life off of it. This is Pilates as ritual, community as medicine.
+            {a.body}
           </p>
           <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 max-w-md">
-            {pillars.map((p) => (
+            {a.pillars.map((p) => (
               <div key={p} className="flex items-center gap-3 text-sm">
                 <span className="size-1.5 rounded-full bg-clay" />
                 <span className="font-medium tracking-wide">{p}</span>

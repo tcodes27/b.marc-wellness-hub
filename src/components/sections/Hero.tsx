@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 import { useCommunity } from "@/components/community/CommunityProvider";
+import { branding } from "@/config/branding";
 
 export function Hero() {
   const { open } = useCommunity();
@@ -9,7 +10,7 @@ export function Hero() {
     <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
       <img
         src={hero}
-        alt="Woman practicing Pilates in a sunlit studio"
+        alt={`${branding.fullName} hero`}
         className="absolute inset-0 w-full h-full object-cover scale-105"
         width={1920}
         height={1080}
@@ -18,26 +19,26 @@ export function Hero() {
 
       <div className="relative h-full container-luxe flex flex-col justify-end pt-32 md:pt-36 pb-24 md:pb-32">
         <div className="max-w-3xl">
-          <span className="eyebrow !text-ivory/80 animate-fade-in">B.MARC Pilates</span>
+          <span className="eyebrow !text-ivory/80 animate-fade-in">{branding.hero.eyebrow}</span>
           <h1 className="mt-5 font-serif text-ivory text-[2.25rem] leading-[1.08] xs:text-[2.5rem] sm:text-5xl sm:leading-[1.06] md:text-6xl md:leading-[1.05] lg:text-7xl lg:leading-[1.04] tracking-[-0.01em] animate-fade-up">
-            More Than Pilates.<br />
-            <em className="font-light">A Wellness Culture.</em>
+            {branding.hero.headlineLead}<br />
+            <em className="font-light">{branding.hero.headlineEm}</em>
           </h1>
           <p
             className="mt-8 text-ivory/85 text-base md:text-lg max-w-xl leading-relaxed animate-fade-up"
             style={{ animationDelay: "0.15s" }}
           >
-            Movement, connection, and intentional living designed for modern women.
+            {branding.hero.subtext}
           </p>
           <div
             className="mt-10 flex flex-wrap gap-4 animate-fade-up"
             style={{ animationDelay: "0.3s" }}
           >
             <button onClick={() => open("hero")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
-              Join the Community
+              {branding.cta.joinCommunity}
             </button>
             <Link to="/events" className="btn-ghost-luxe hover:!bg-ivory hover:!text-espresso">
-              View Events <ArrowRight size={14} />
+              {branding.cta.viewEvents} <ArrowRight size={14} />
             </Link>
           </div>
         </div>

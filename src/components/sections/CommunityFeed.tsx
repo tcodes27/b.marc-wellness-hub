@@ -21,10 +21,12 @@ import {
  * ============================================================
  */
 
-const INSTAGRAM_HANDLE = "bmarcpilates";
-const INSTAGRAM_URL = "https://www.instagram.com/bmarcpilates/";
-const FALLBACK_MESSAGE =
-  "Instagram feed is loading. Follow us @bmarcpilates for the latest updates.";
+import { branding, getSocial } from "@/config/branding";
+
+const IG_SOCIAL = getSocial("instagram");
+const INSTAGRAM_HANDLE = IG_SOCIAL?.handle ?? "";
+const INSTAGRAM_URL = IG_SOCIAL?.url ?? "#";
+const FALLBACK_MESSAGE = `Instagram feed is loading. Follow us @${INSTAGRAM_HANDLE} for the latest updates.`;
 
 function TypeBadge({ type }: { type: InstagramMediaType }) {
   if (type === "image") return null;
@@ -135,7 +137,7 @@ export function CommunityFeed() {
           <div className="max-w-2xl">
             <span className="eyebrow">From our journal</span>
             <h2 className="mt-5 font-serif text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.01em]">
-              Inside the <em className="font-light">B.MARC Community.</em>
+              Inside the <em className="font-light">{branding.name} {branding.terminology.community}.</em>
             </h2>
             <p className="mt-5 text-muted-foreground text-base md:text-lg max-w-xl leading-relaxed">
               A curated look at our rituals, gatherings and quiet moments —
@@ -200,7 +202,7 @@ export function CommunityFeed() {
       <div className="container-luxe mt-14 md:mt-20 flex flex-col items-center text-center">
         <span className="eyebrow">Follow our journey</span>
         <p className="mt-4 font-serif text-2xl md:text-3xl max-w-xl">
-          Step inside the everyday rituals of the B.MARC community.
+          Step inside the everyday rituals of the {branding.name} {branding.terminology.community.toLowerCase()}.
         </p>
         <a
           href={INSTAGRAM_URL}

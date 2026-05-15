@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { BookingProvider } from "@/components/booking/BookingProvider";
 import { CommunityProvider } from "@/components/community/CommunityProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { branding } from "@/config/branding";
 
 function NotFoundComponent() {
   return (
@@ -75,14 +76,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "B.MARC Pilates, A Wellness Culture for Modern Women" },
-      { name: "description", content: "B.MARC Pilates is a luxury wellness community for modern women, Pilates events, online classes and intentional living." },
-      { name: "author", content: "B.MARC Pilates" },
-      { property: "og:title", content: "B.MARC Pilates" },
-      { property: "og:description", content: "Movement, connection, and intentional living for modern women." },
+      { title: branding.seo.defaultTitle },
+      { name: "description", content: branding.seo.defaultDescription },
+      { name: "author", content: branding.fullName },
+      { property: "og:title", content: branding.fullName },
+      { property: "og:description", content: branding.tagline },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: branding.fullName },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      ...(branding.seo.twitterHandle
+        ? [{ name: "twitter:site", content: branding.seo.twitterHandle }]
+        : []),
     ],
     links: [
       { rel: "stylesheet", href: appCss },
