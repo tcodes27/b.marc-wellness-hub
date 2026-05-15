@@ -7,18 +7,15 @@ import { MembershipPreview } from "@/components/sections/MembershipPreview";
 import { CommunityFeed } from "@/components/sections/CommunityFeed";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { EmailSignup } from "@/components/sections/EmailSignup";
+import { branding } from "@/config/branding";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "B.MARC Pilates, A Wellness Culture for Modern Women" },
-      {
-        name: "description",
-        content:
-          "B.MARC Pilates is a luxury wellness community for modern women. Join in-person Pilates events, online classes and a movement built on intention.",
-      },
-      { property: "og:title", content: "B.MARC Pilates, A Wellness Culture" },
-      { property: "og:description", content: "Movement, connection, and intentional living for modern women." },
+      { title: branding.seo.defaultTitle },
+      { name: "description", content: branding.seo.defaultDescription },
+      { property: "og:title", content: branding.fullName },
+      { property: "og:description", content: branding.tagline },
     ],
   }),
   component: Index,
