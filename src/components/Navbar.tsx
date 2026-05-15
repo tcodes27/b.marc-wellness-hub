@@ -61,7 +61,7 @@ export function Navbar() {
                 : "!bg-transparent !text-ivory !border-ivory/70 hover:!bg-ivory hover:!text-espresso"
             }`}
           >
-            Join the Community
+            {branding.cta.joinCommunity}
           </button>
         </div>
 
@@ -94,7 +94,7 @@ export function Navbar() {
               }}
               className="btn-luxe btn-luxe-hover self-start mt-2"
             >
-              Join the Community
+              {branding.cta.joinCommunity}
             </button>
           </div>
         </div>
