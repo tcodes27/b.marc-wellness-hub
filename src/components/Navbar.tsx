@@ -2,13 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useCommunity } from "./community/CommunityProvider";
+import { branding } from "@/config/branding";
 
-const links = [
-  { to: "/", label: "Home" },
-  { to: "/events", label: "Events" },
-  { to: "/membership", label: "Membership" },
-  { to: "/about", label: "About" },
-] as const;
+const links = branding.nav;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
