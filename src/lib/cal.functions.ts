@@ -21,18 +21,30 @@ export type CalBooking = {
   attendeeEmail: string | null;
 };
 
-async function calFetch(path: string): Promise<{ ok: true; data: any } | { ok: false; error: string }> {
+async function calFetch(
+  path: string,
+  init?: RequestInit,
+): Promise<{ ok: true; data: any } | { ok: false; error: string; status?: number }> {
   const key = process.env.CAL_API_KEY;
   if (!key) return { ok: false, error: "CAL_API_KEY not configured" };
   try {
     const res = await fetch(`${CAL_BASE}${path}`, {
+      ...init,
       headers: {
         Authorization: `Bearer ${key}`,
         "cal-api-version": "2024-08-13",
+        "Content-Type": "application/json",
+        ...(init?.headers ?? {}),
       },
     });
-    if (!res.ok) return { ok: false, error: `Cal.com API ${res.status}` };
-    return { ok: true, data: await res.json() };
+    const text = await res.text();
+    let data: any = null;
+    try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+    if (!res.ok) {
+      const msg = (data && (data.error?.message || data.message)) || `Cal.com API ${res.status}`;
+      return { ok: false, error: msg, status: res.status };
+    }
+    return { ok: true, data };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Cal.com request failed" };
   }
@@ -86,3 +98,65 @@ export const getCalBookings = createServerFn({ method: "GET" }).handler(
     return { bookings, error: null };
   },
 );
+
+// Compute event length in minutes from start/end times.
+function lengthFromTimes(start?: string | null, end?: string | null): number {
+  if (!start || !end) return 60;
+  const [sh, sm] = start.split(":").map(Number);
+  const [eh, em] = end.split(":").map(Number);
+  const mins = (eh * 60 + em) - (sh * 60 + sm);
+  return mins > 0 ? mins : 60;
+}
+
+const slugify = (s: string) =>
+  s.toLowerCase().trim().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").slice(0, 60) || `event-${Date.now()}`;
+
+export type CreateCalEventInput = {
+  title: string;
+  description?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  location?: string | null;
+  price?: number | null;
+};
+
+export type CreateCalEventResult = {
+  ok: boolean;
+  calEventId: string | null;
+  bookingUrl: string | null;
+  error: string | null;
+};
+
+// Sync an internal event to Cal.com as an Event Type.
+// Cal.com Event Types are booking templates (no fixed date); we store the
+// concrete date/time in Supabase and use Cal.com purely for the booking link.
+export const createCalEventType = createServerFn({ method: "POST" })
+  .inputValidator((input: CreateCalEventInput) => input)
+  .handler(async ({ data }): Promise<CreateCalEventResult> => {
+    const username = process.env.CAL_USERNAME ?? "bmarcpilates";
+    const slug = `${slugify(data.title)}-${Math.random().toString(36).slice(2, 6)}`;
+    const lengthInMinutes = lengthFromTimes(data.startTime, data.endTime);
+    const body: Record<string, unknown> = {
+      title: data.title.slice(0, 100),
+      slug,
+      lengthInMinutes,
+      description: (data.description ?? "").slice(0, 500) || undefined,
+    };
+    if (data.location) {
+      body.locations = [{ type: "link", link: data.location, public: true }];
+    }
+    const res = await calFetch(`/event-types`, { method: "POST", body: JSON.stringify(body) });
+    if (!res.ok) {
+      return { ok: false, calEventId: null, bookingUrl: null, error: res.error };
+    }
+    const raw: any = res.data;
+    const eventType = raw?.data ?? raw;
+    const id = eventType?.id ?? eventType?.uid ?? null;
+    const finalSlug = eventType?.slug ?? slug;
+    return {
+      ok: true,
+      calEventId: id ? String(id) : null,
+      bookingUrl: `https://cal.com/${username}/${finalSlug}`,
+      error: null,
+    };
+  });
