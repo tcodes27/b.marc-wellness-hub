@@ -23,7 +23,7 @@ export function Footer() {
         <div>
           <div className="eyebrow mb-5">Connect</div>
           <div className="flex gap-4">
-            <a href="https://www.instagram.com/bmarcpilates" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
+            <a href="https://www.instagram.com/bmarcpilates/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
               <Instagram size={16} />
             </a>
             <a href="https://www.tiktok.com/@bmarcpilates" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="size-10 rounded-full border border-border flex items-center justify-center hover:bg-espresso hover:text-ivory transition-colors">
