@@ -73,9 +73,9 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
   const [welcomeBack, setWelcomeBack] = useState(false);
   const closeRef = useRef<HTMLButtonElement | null>(null);
 
-  const open = useCallback((src?: string) => {
+  const open = useCallback((src?: string, prefill?: Prefill) => {
     setSource(src);
-    setForm(empty);
+    setForm({ ...empty, ...(prefill?.email ? { email: prefill.email } : {}) });
     setDone(false);
     setError(null);
     setWelcomeBack(false);
