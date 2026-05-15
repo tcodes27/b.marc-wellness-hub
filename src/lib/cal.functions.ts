@@ -23,18 +23,19 @@ export type CalBooking = {
 
 async function calFetch(
   path: string,
-  init?: RequestInit,
+  init?: RequestInit & { apiVersion?: string },
 ): Promise<{ ok: true; data: any } | { ok: false; error: string; status?: number }> {
   const key = process.env.CAL_API_KEY;
   if (!key) return { ok: false, error: "CAL_API_KEY not configured" };
+  const { apiVersion, ...rest } = init ?? {};
   try {
     const res = await fetch(`${CAL_BASE}${path}`, {
-      ...init,
+      ...rest,
       headers: {
         Authorization: `Bearer ${key}`,
-        "cal-api-version": "2024-08-13",
+        "cal-api-version": apiVersion ?? "2024-08-13",
         "Content-Type": "application/json",
-        ...(init?.headers ?? {}),
+        ...(rest?.headers ?? {}),
       },
     });
     const text = await res.text();
@@ -60,8 +61,8 @@ export const getCalStatus = createServerFn({ method: "GET" }).handler(async () =
 export const getCalEventTypes = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ eventTypes: CalEventType[]; error: string | null }> => {
     const username = process.env.CAL_USERNAME ?? "bmarcpilates";
-    // v2 returns the authenticated user's event types — no username query param.
-    const result = await calFetch(`/event-types`);
+    // v2 /event-types requires apiVersion 2024-06-14 and a username query param.
+    const result = await calFetch(`/event-types?username=${encodeURIComponent(username)}`, { apiVersion: "2024-06-14" });
     if (!result.ok) return { eventTypes: [], error: result.error };
     const raw: any = result.data;
     let list: any[] = [];
@@ -146,7 +147,7 @@ export const createCalEventType = createServerFn({ method: "POST" })
     if (data.location) {
       body.locations = [{ type: "link", link: data.location, public: true }];
     }
-    const res = await calFetch(`/event-types`, { method: "POST", body: JSON.stringify(body) });
+    const res = await calFetch(`/event-types`, { method: "POST", body: JSON.stringify(body), apiVersion: "2024-06-14" });
     if (!res.ok) {
       return { ok: false, calEventId: null, bookingUrl: null, error: res.error };
     }
