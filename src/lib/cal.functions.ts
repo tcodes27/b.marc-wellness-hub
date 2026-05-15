@@ -61,8 +61,8 @@ export const getCalStatus = createServerFn({ method: "GET" }).handler(async () =
 export const getCalEventTypes = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ eventTypes: CalEventType[]; error: string | null }> => {
     const username = process.env.CAL_USERNAME ?? "bmarcpilates";
-    // v2 returns the authenticated user's event types — no username query param.
-    const result = await calFetch(`/event-types`);
+    // v2 /event-types requires apiVersion 2024-06-14 and a username query param.
+    const result = await calFetch(`/event-types?username=${encodeURIComponent(username)}`, { apiVersion: "2024-06-14" });
     if (!result.ok) return { eventTypes: [], error: result.error };
     const raw: any = result.data;
     let list: any[] = [];
