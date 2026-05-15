@@ -33,7 +33,7 @@ export function Navbar() {
             scrolled ? "text-espresso" : "text-ivory"
           }`}
         >
-          B.MARC
+          {branding.name}
         </Link>
 
         <nav className="hidden md:flex items-center gap-10">
