@@ -35,10 +35,13 @@ function AboutPage() {
           </div>
           <div className="md:col-span-5 md:pt-16 space-y-6 text-lg leading-[1.7] text-foreground/85 font-light">
             <p>
-              B.MARC began with a simple idea, that the way we move shapes the way we live. What started as a single Pilates session in a small Los Angeles loft grew into a community of women practicing presence together.
+              B.MARC was created from the belief that the way we move shapes the way we live. Founded by Erra, a Pilates instructor now based in Atlanta, Georgia, B.MARC began as more than fitness, it became a lifestyle rooted in wellness, discipline, softness, and community.
             </p>
             <p>
-              Today, B.MARC is a brand, a studio, and a culture. A space where strength and softness coexist. Where you arrive for the workout and stay for the women.
+              Today, B.MARC is a growing wellness culture designed for the modern woman balancing busy schedules, careers, relationships, and everyday life while still wanting to feel strong, feminine, confident, and connected to herself.
+            </p>
+            <p>
+              What started as a passion for movement has evolved into a global wellness community offering Pilates experiences, online memberships, in-person events around the world, accountability-based wellness support, mindset and mental wellness conversations, nutrition and lifestyle guidance, body confidence, and movement education.
             </p>
           </div>
         </div>
@@ -48,9 +51,9 @@ function AboutPage() {
         <div className="container-luxe grid md:grid-cols-2 gap-16 items-center">
           <div>
             <span className="eyebrow">The Vision</span>
-            <h2 className="mt-5 text-4xl md:text-5xl">A community of <em className="font-light">intentional women.</em></h2>
+            <h2 className="mt-5 text-4xl md:text-5xl">More than a <em className="font-light">studio.</em></h2>
             <p className="mt-7 text-muted-foreground leading-relaxed">
-              We're building something quieter and more lasting than a fitness brand. B.MARC is a soft place to land, a movement that invites women to come home to themselves through Pilates, ritual and shared breath.
+              B.MARC was intentionally built to create deeper relationships between women who want to grow together, stay accountable together, and evolve together physically, mentally, and emotionally. We believe wellness should fit into your lifestyle, not compete with it. Whether you join us online or attend an event in person, B.MARC helps women stay connected to movement, community, and themselves no matter where life takes them.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-5">
