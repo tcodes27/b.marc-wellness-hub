@@ -111,8 +111,12 @@ function TestingPage() {
 
   const runOne = async (id: string, fn: () => Promise<{ ok: boolean; detail?: string }>) => {
     setResults(r => ({ ...r, [id]: "running" }));
-    try { setResults(r => ({ ...r, [id]: await fn() })); }
-    catch (e: any) { setResults(r => ({ ...r, [id]: { ok: false, detail: e?.message ?? String(e) } })); }
+    try {
+      const out = await fn();
+      setResults(r => ({ ...r, [id]: out }));
+    } catch (e: any) {
+      setResults(r => ({ ...r, [id]: { ok: false, detail: e?.message ?? String(e) } }));
+    }
   };
 
   const runAll = async () => {
