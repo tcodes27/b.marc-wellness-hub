@@ -95,6 +95,13 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <Link
+              to="/portal"
+              onClick={() => setOpen(false)}
+              className="text-sm uppercase tracking-[0.28em] text-espresso"
+            >
+              Member Portal
+            </Link>
             <button
               onClick={() => {
                 setOpen(false);
