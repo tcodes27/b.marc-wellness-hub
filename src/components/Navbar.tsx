@@ -52,7 +52,15 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-4">
+          <Link
+            to="/portal"
+            className={`text-[0.72rem] uppercase tracking-[0.28em] font-medium link-underline transition-colors ${
+              scrolled ? "text-espresso" : "text-ivory"
+            }`}
+          >
+            Member Portal
+          </Link>
           <button
             onClick={() => openCommunity("navbar")}
             className={`btn-luxe btn-luxe-hover ${
