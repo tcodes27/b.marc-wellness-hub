@@ -69,6 +69,8 @@ function MembersPage() {
     const list = members.filter((m) => {
       if (statusFilter !== "all" && m.status !== statusFilter) return false;
       if (interestFilter !== "all" && !(m.interests ?? []).includes(interestFilter)) return false;
+      if (demoFilter === "real" && m.is_test_account) return false;
+      if (demoFilter === "demo" && !m.is_test_account) return false;
       if (!q) return true;
       return (
         m.first_name.toLowerCase().includes(q) ||
