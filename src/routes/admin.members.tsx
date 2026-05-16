@@ -16,6 +16,7 @@ function MembersPage() {
   const [search, setSearch] = useState("");
   const [interestFilter, setInterestFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | MemberStatus>("all");
+  const [demoFilter, setDemoFilter] = useState<"all" | "real" | "demo">("all");
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
   const [selected, setSelected] = useState<CommunityMember | null>(null);
   const [notesDraft, setNotesDraft] = useState("");
