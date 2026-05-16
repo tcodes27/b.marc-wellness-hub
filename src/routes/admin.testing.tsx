@@ -144,6 +144,40 @@ function TestingPage() {
     res.filter(r => r.error).forEach(r => toast.error(`${r.table}: ${r.error}`));
   };
 
+  const runSetupFn = useServerFn(runDatabaseSetup);
+  const [setupRunning, setSetupRunning] = useState(false);
+  const [setupResults, setSetupResults] = useState<SetupResult[]>([]);
+  const [needsBootstrap, setNeedsBootstrap] = useState(false);
+  const [bootstrapSql, setBootstrapSql] = useState("");
+
+  const runSetup = async () => {
+    setSetupRunning(true);
+    setSetupResults([]);
+    try {
+      const out = await runSetupFn();
+      setSetupResults(out.results);
+      setNeedsBootstrap(out.needsBootstrap);
+      setBootstrapSql(out.bootstrapSql);
+      const okCount = out.results.filter(r => r.ok).length;
+      if (okCount === out.results.length) {
+        toast.success(`${okCount}/${out.results.length} migrations applied`);
+      } else if (out.needsBootstrap) {
+        toast.error("One-time setup required", { description: "Run the bootstrap SQL shown below, then click again." });
+      } else {
+        toast.error(`${okCount}/${out.results.length} succeeded — see details`);
+      }
+    } catch (e: any) {
+      toast.error("Setup failed", { description: e?.message ?? String(e) });
+    } finally {
+      setSetupRunning(false);
+    }
+  };
+
+  const copyBootstrap = async () => {
+    await navigator.clipboard.writeText(bootstrapSql);
+    toast.success("Bootstrap SQL copied");
+  };
+
   return (
     <div className="space-y-8">
       <header>
