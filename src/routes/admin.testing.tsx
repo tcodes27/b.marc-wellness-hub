@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "./admin";
 import { seedDemoData, clearDemoData } from "@/lib/demoData";
+import { runDatabaseSetup, type SetupResult } from "@/lib/db-setup.functions";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, Sparkles, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, Sparkles, Trash2, ExternalLink, Play, Copy } from "lucide-react";
 
 export const Route = createFileRoute("/admin/testing")({
   component: TestingPage,
@@ -142,6 +144,40 @@ function TestingPage() {
     res.filter(r => r.error).forEach(r => toast.error(`${r.table}: ${r.error}`));
   };
 
+  const runSetupFn = useServerFn(runDatabaseSetup);
+  const [setupRunning, setSetupRunning] = useState(false);
+  const [setupResults, setSetupResults] = useState<SetupResult[]>([]);
+  const [needsBootstrap, setNeedsBootstrap] = useState(false);
+  const [bootstrapSql, setBootstrapSql] = useState("");
+
+  const runSetup = async () => {
+    setSetupRunning(true);
+    setSetupResults([]);
+    try {
+      const out = await runSetupFn();
+      setSetupResults(out.results);
+      setNeedsBootstrap(out.needsBootstrap);
+      setBootstrapSql(out.bootstrapSql);
+      const okCount = out.results.filter(r => r.ok).length;
+      if (okCount === out.results.length) {
+        toast.success(`${okCount}/${out.results.length} migrations applied`);
+      } else if (out.needsBootstrap) {
+        toast.error("One-time setup required", { description: "Run the bootstrap SQL shown below, then click again." });
+      } else {
+        toast.error(`${okCount}/${out.results.length} succeeded — see details`);
+      }
+    } catch (e: any) {
+      toast.error("Setup failed", { description: e?.message ?? String(e) });
+    } finally {
+      setSetupRunning(false);
+    }
+  };
+
+  const copyBootstrap = async () => {
+    await navigator.clipboard.writeText(bootstrapSql);
+    toast.success("Bootstrap SQL copied");
+  };
+
   return (
     <div className="space-y-8">
       <header>
@@ -151,6 +187,56 @@ function TestingPage() {
           Run automated probes and walk through the manual flows. Demo data is isolated by <code>is_test_account = true</code> and can be cleared in one click.
         </p>
       </header>
+
+      <section className="rounded-2xl border border-tan/30 bg-white p-5 sm:p-6 space-y-4">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-clay">Database</p>
+            <h2 className="font-serif text-xl mt-1">One-click database setup</h2>
+            <p className="text-sm text-clay mt-1 max-w-xl">
+              Runs <code>admin_roles → events → content_distribution → portal_and_testing</code> in order. Idempotent — safe to re-run.
+            </p>
+          </div>
+          <button
+            onClick={runSetup}
+            disabled={setupRunning}
+            className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5 disabled:opacity-60"
+          >
+            {setupRunning ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
+            {setupRunning ? "Running…" : "Run database setup"}
+          </button>
+        </div>
+
+        {needsBootstrap && (
+          <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm space-y-2">
+            <p className="font-medium text-amber-900">One-time bootstrap required</p>
+            <p className="text-amber-800">
+              Paste this into the Supabase SQL Editor once, then click <em>Run database setup</em> again.
+            </p>
+            <pre className="text-xs bg-white border border-amber-200 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap">{bootstrapSql}</pre>
+            <button onClick={copyBootstrap} className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border border-amber-400 hover:bg-amber-100">
+              <Copy size={12} /> Copy SQL
+            </button>
+          </div>
+        )}
+
+        {setupResults.length > 0 && (
+          <ul className="divide-y divide-tan/20 border border-tan/20 rounded-xl overflow-hidden">
+            {setupResults.map(r => (
+              <li key={r.file} className="px-4 py-3 flex items-start gap-3 bg-white">
+                {r.ok
+                  ? <CheckCircle2 size={16} className="text-emerald-600 mt-0.5 shrink-0" />
+                  : <XCircle size={16} className="text-red-600 mt-0.5 shrink-0" />}
+                <div className="flex-1 min-w-0">
+                  <p className="font-mono text-sm">{r.file}</p>
+                  {r.error && <p className="text-xs text-red-700 mt-1 break-words">{r.error}</p>}
+                </div>
+                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-clay shrink-0">{r.durationMs}ms</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       <div className="flex flex-wrap gap-2">
         <button onClick={runAll} className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5">
