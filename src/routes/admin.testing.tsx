@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "./admin";
 import { seedDemoData, clearDemoData } from "@/lib/demoData";
+import { runDatabaseSetup, type SetupResult } from "@/lib/db-setup.functions";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, Sparkles, Trash2, ExternalLink } from "lucide-react";
+import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, Sparkles, Trash2, ExternalLink, Play, Copy } from "lucide-react";
 
 export const Route = createFileRoute("/admin/testing")({
   component: TestingPage,
