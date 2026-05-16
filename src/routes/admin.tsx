@@ -47,6 +47,7 @@ const NAV = [
   { to: "/admin/leads", label: "Leads / Tags", icon: Tags },
   { to: "/admin/content", label: "Content Studio", icon: PenSquare },
   { to: "/admin/exports", label: "Exports", icon: Download },
+  { to: "/admin/testing", label: "Testing", icon: LayoutDashboard },
   { to: "/admin/settings", label: "Settings", icon: SettingsIcon },
 ] as const;
 

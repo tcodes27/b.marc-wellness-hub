@@ -49,6 +49,7 @@ export type CommunityMember = {
   status: MemberStatus;
   notes: string | null;
   created_at: string;
+  is_test_account?: boolean;
 };
 
 export const CONTENT_TYPES = [

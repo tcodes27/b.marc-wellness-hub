@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as MembersRouteImport } from './routes/members'
 import { Route as LeadsRouteImport } from './routes/leads'
@@ -18,8 +19,15 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as PortalSignupRouteImport } from './routes/portal_.signup'
+import { Route as PortalLoginRouteImport } from './routes/portal_.login'
+import { Route as PortalProfileRouteImport } from './routes/portal.profile'
+import { Route as PortalEventsRouteImport } from './routes/portal.events'
+import { Route as PortalContentRouteImport } from './routes/portal.content'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as AdminTestingRouteImport } from './routes/admin.testing'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
@@ -37,6 +45,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -74,15 +87,50 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const PortalSignupRoute = PortalSignupRouteImport.update({
+  id: '/portal_/signup',
+  path: '/portal/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalLoginRoute = PortalLoginRouteImport.update({
+  id: '/portal_/login',
+  path: '/portal/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalProfileRoute = PortalProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalEventsRoute = PortalEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalContentRoute = PortalContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => PortalRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin_/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTestingRoute = AdminTestingRouteImport.update({
+  id: '/testing',
+  path: '/testing',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
@@ -134,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/leads': typeof LeadsRoute
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
+  '/portal': typeof PortalRouteWithChildren
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/events': typeof AdminEventsRoute
@@ -141,8 +190,15 @@ export interface FileRoutesByFullPath {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testing': typeof AdminTestingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/portal/content': typeof PortalContentRoute
+  '/portal/events': typeof PortalEventsRoute
+  '/portal/profile': typeof PortalProfileRoute
+  '/portal/login': typeof PortalLoginRoute
+  '/portal/signup': typeof PortalSignupRoute
   '/admin/': typeof AdminIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content/': typeof AdminContentIndexRoute
@@ -161,8 +217,15 @@ export interface FileRoutesByTo {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testing': typeof AdminTestingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/portal/content': typeof PortalContentRoute
+  '/portal/events': typeof PortalEventsRoute
+  '/portal/profile': typeof PortalProfileRoute
+  '/portal/login': typeof PortalLoginRoute
+  '/portal/signup': typeof PortalSignupRoute
   '/admin': typeof AdminIndexRoute
+  '/portal': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content': typeof AdminContentIndexRoute
@@ -176,6 +239,7 @@ export interface FileRoutesById {
   '/leads': typeof LeadsRoute
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
+  '/portal': typeof PortalRouteWithChildren
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/events': typeof AdminEventsRoute
@@ -183,8 +247,15 @@ export interface FileRoutesById {
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testing': typeof AdminTestingRoute
   '/admin_/login': typeof AdminLoginRoute
+  '/portal/content': typeof PortalContentRoute
+  '/portal/events': typeof PortalEventsRoute
+  '/portal/profile': typeof PortalProfileRoute
+  '/portal_/login': typeof PortalLoginRoute
+  '/portal_/signup': typeof PortalSignupRoute
   '/admin/': typeof AdminIndexRoute
+  '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content/': typeof AdminContentIndexRoute
@@ -199,6 +270,7 @@ export interface FileRouteTypes {
     | '/leads'
     | '/members'
     | '/membership'
+    | '/portal'
     | '/settings'
     | '/sitemap.xml'
     | '/admin/events'
@@ -206,8 +278,15 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/members'
     | '/admin/settings'
+    | '/admin/testing'
     | '/admin/login'
+    | '/portal/content'
+    | '/portal/events'
+    | '/portal/profile'
+    | '/portal/login'
+    | '/portal/signup'
     | '/admin/'
+    | '/portal/'
     | '/admin/content/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content/'
@@ -226,8 +305,15 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/members'
     | '/admin/settings'
+    | '/admin/testing'
     | '/admin/login'
+    | '/portal/content'
+    | '/portal/events'
+    | '/portal/profile'
+    | '/portal/login'
+    | '/portal/signup'
     | '/admin'
+    | '/portal'
     | '/admin/content/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content'
@@ -240,6 +326,7 @@ export interface FileRouteTypes {
     | '/leads'
     | '/members'
     | '/membership'
+    | '/portal'
     | '/settings'
     | '/sitemap.xml'
     | '/admin/events'
@@ -247,8 +334,15 @@ export interface FileRouteTypes {
     | '/admin/leads'
     | '/admin/members'
     | '/admin/settings'
+    | '/admin/testing'
     | '/admin_/login'
+    | '/portal/content'
+    | '/portal/events'
+    | '/portal/profile'
+    | '/portal_/login'
+    | '/portal_/signup'
     | '/admin/'
+    | '/portal/'
     | '/admin/content/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content/'
@@ -262,9 +356,12 @@ export interface RootRouteChildren {
   LeadsRoute: typeof LeadsRoute
   MembersRoute: typeof MembersRoute
   MembershipRoute: typeof MembershipRoute
+  PortalRoute: typeof PortalRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  PortalLoginRoute: typeof PortalLoginRoute
+  PortalSignupRoute: typeof PortalSignupRoute
   ApiPublicTwilioSmsWebhookRoute: typeof ApiPublicTwilioSmsWebhookRoute
 }
 
@@ -282,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -333,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -340,12 +451,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/portal_/signup': {
+      id: '/portal_/signup'
+      path: '/portal/signup'
+      fullPath: '/portal/signup'
+      preLoaderRoute: typeof PortalSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal_/login': {
+      id: '/portal_/login'
+      path: '/portal/login'
+      fullPath: '/portal/login'
+      preLoaderRoute: typeof PortalLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/profile': {
+      id: '/portal/profile'
+      path: '/profile'
+      fullPath: '/portal/profile'
+      preLoaderRoute: typeof PortalProfileRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/events': {
+      id: '/portal/events'
+      path: '/events'
+      fullPath: '/portal/events'
+      preLoaderRoute: typeof PortalEventsRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/content': {
+      id: '/portal/content'
+      path: '/content'
+      fullPath: '/portal/content'
+      preLoaderRoute: typeof PortalContentRouteImport
+      parentRoute: typeof PortalRoute
+    }
     '/admin_/login': {
       id: '/admin_/login'
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/testing': {
+      id: '/admin/testing'
+      path: '/testing'
+      fullPath: '/admin/testing'
+      preLoaderRoute: typeof AdminTestingRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
       id: '/admin/settings'
@@ -412,6 +565,7 @@ interface AdminRouteChildren {
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMembersRoute: typeof AdminMembersRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTestingRoute: typeof AdminTestingRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminContentIdRoute: typeof AdminContentIdRoute
   AdminContentIndexRoute: typeof AdminContentIndexRoute
@@ -423,12 +577,30 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMembersRoute: AdminMembersRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTestingRoute: AdminTestingRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminContentIdRoute: AdminContentIdRoute,
   AdminContentIndexRoute: AdminContentIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface PortalRouteChildren {
+  PortalContentRoute: typeof PortalContentRoute
+  PortalEventsRoute: typeof PortalEventsRoute
+  PortalProfileRoute: typeof PortalProfileRoute
+  PortalIndexRoute: typeof PortalIndexRoute
+}
+
+const PortalRouteChildren: PortalRouteChildren = {
+  PortalContentRoute: PortalContentRoute,
+  PortalEventsRoute: PortalEventsRoute,
+  PortalProfileRoute: PortalProfileRoute,
+  PortalIndexRoute: PortalIndexRoute,
+}
+
+const PortalRouteWithChildren =
+  PortalRoute._addFileChildren(PortalRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -438,21 +610,14 @@ const rootRouteChildren: RootRouteChildren = {
   LeadsRoute: LeadsRoute,
   MembersRoute: MembersRoute,
   MembershipRoute: MembershipRoute,
+  PortalRoute: PortalRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
+  PortalLoginRoute: PortalLoginRoute,
+  PortalSignupRoute: PortalSignupRoute,
   ApiPublicTwilioSmsWebhookRoute: ApiPublicTwilioSmsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -16,6 +16,7 @@ function MembersPage() {
   const [search, setSearch] = useState("");
   const [interestFilter, setInterestFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState<"all" | MemberStatus>("all");
+  const [demoFilter, setDemoFilter] = useState<"all" | "real" | "demo">("all");
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
   const [selected, setSelected] = useState<CommunityMember | null>(null);
   const [notesDraft, setNotesDraft] = useState("");
@@ -68,6 +69,8 @@ function MembersPage() {
     const list = members.filter((m) => {
       if (statusFilter !== "all" && m.status !== statusFilter) return false;
       if (interestFilter !== "all" && !(m.interests ?? []).includes(interestFilter)) return false;
+      if (demoFilter === "real" && m.is_test_account) return false;
+      if (demoFilter === "demo" && !m.is_test_account) return false;
       if (!q) return true;
       return (
         m.first_name.toLowerCase().includes(q) ||
@@ -83,7 +86,7 @@ function MembersPage() {
         : +new Date(a.created_at) - +new Date(b.created_at),
     );
     return list;
-  }, [members, search, interestFilter, statusFilter, sort]);
+  }, [members, search, interestFilter, statusFilter, demoFilter, sort]);
 
   const updateStatus = async (m: CommunityMember, status: MemberStatus) => {
     await supabase.from("community_members").update({ status }).eq("id", m.id);
@@ -138,6 +141,14 @@ function MembersPage() {
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+          <div className="inline-flex rounded-lg border border-tan/40 overflow-hidden text-xs">
+            {(["all", "real", "demo"] as const).map((v) => (
+              <button key={v} onClick={() => setDemoFilter(v)}
+                className={`px-3 py-2 uppercase tracking-[0.18em] ${demoFilter === v ? "bg-espresso text-ivory" : "bg-ivory text-espresso"}`}>
+                {v === "all" ? "All" : v === "real" ? "Real" : "Demo"}
+              </button>
+            ))}
+          </div>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as "newest" | "oldest")}
