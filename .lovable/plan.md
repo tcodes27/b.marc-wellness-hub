@@ -1,89 +1,50 @@
-## Goal
+## One-click database setup
 
-Take B.MARC from "admin-only CRM" to "real-customer-ready platform" with a member portal, demo-data isolation, a self-serve admin testing checklist, and an audit pass on async/RLS/route protection.
+Add a **"Run database setup"** button to `/admin/testing` that executes the four SQL files in the correct order and reports per-file success/errors inline.
 
----
+### How it works
 
-## 1. Database (one migration via SQL editor)
+1. **Bundle the SQL** — import each file as a raw string with Vite's `?raw` suffix so it ships with the server function (no filesystem reads at runtime, Worker-safe):
+   ```ts
+   import adminRoles from "../../db/admin_roles.sql?raw";
+   import events from "../../db/events.sql?raw";
+   import contentDist from "../../db/content_distribution.sql?raw";
+   import portalTesting from "../../db/portal_and_testing.sql?raw";
+   ```
 
-New file: `db/portal_and_testing.sql` (you run it in Supabase SQL editor, same as `admin_roles.sql`).
+2. **Bootstrap a SQL executor in Postgres** (one tiny manual step — unavoidable, because `supabase-js` cannot run raw multi-statement SQL on its own). The button's first run instructs the user to paste this 6-line snippet into the Supabase SQL Editor once:
+   ```sql
+   create or replace function public.exec_sql(sql text)
+   returns void language plpgsql security definer
+   set search_path = public as $$ begin execute sql; end; $$;
+   revoke all on function public.exec_sql(text) from public, anon, authenticated;
+   ```
+   After that, the server fn calls it via `supabaseAdmin.rpc("exec_sql", { sql })`.
 
-- `public.account_type` enum: `demo | customer | admin | member`
-- `public.profiles` table — 1:1 with `auth.users`
-  - `id uuid PK references auth.users on delete cascade`
-  - `email text`, `full_name text`, `phone text`, `avatar_url text`
-  - `account_type public.account_type not null default 'customer'`
-  - `is_test_account boolean not null default false`
-  - `community_status text` (mirrors `community_members.status` when linked)
-  - `created_at`, `updated_at`
-  - Trigger: auto-insert profile on `auth.users` signup; mark `is_test_account=true` if email matches `*+test@*` or `demo@*`
-- `public.event_registrations` table
-  - `id`, `user_id`, `event_id`, `status` (`registered|attended|cancelled`), `is_test_account`, `created_at`
-- Add `is_test_account boolean default false` to `community_members`, `events`, `content_posts`
-- RLS:
-  - `profiles`: user can `select/update` own row; admin full access via `has_role`
-  - `event_registrations`: user can `select/insert` own rows; admin full access
-  - `content_posts`: add policy `to authenticated using (true)` for member-visible posts (a `visibility` column: `public | members | admin`)
+3. **Server function** `runDatabaseSetup` in `src/lib/db-setup.functions.ts`:
+   - Uses `supabaseAdmin` (service role, bypasses RLS).
+   - Runs the four files **in order**: `admin_roles → events → content_distribution → portal_and_testing`.
+   - Catches errors per file, continues to the next, returns `[{ file, ok, error?, durationMs }]`.
+   - All SQL is idempotent (uses `if not exists`, `drop policy if exists`, etc.) so re-running is safe.
 
-## 2. Auth
+4. **UI on `/admin/testing`** — new card above the probes list:
+   - **Run database setup** button (primary).
+   - Live status list with each file name + spinner → ✅/❌ + error message.
+   - If `exec_sql` is missing, the first call surfaces a clear error with the bootstrap snippet to copy.
+   - Toast summary: "4/4 migrations applied" or "3/4 — see details".
 
-- Google OAuth via Lovable broker (`supabase--configure_social_auth`) + email/password
-- New helper `src/integrations/supabase/portal-auth.ts` — `signUp`, `signIn`, `signInWithGoogle`, `signOut`, `getProfile`, `updateProfile`
-- `attachSupabaseAuth` middleware: verify it's registered in `src/start.ts` (add if missing)
-- New `_portal` pathless layout route gating `/portal/*` (redirect to `/portal/login` if no session)
+### Files
 
-## 3. Portal routes (`src/routes/`)
+- **New** `src/lib/db-setup.functions.ts` — the `runDatabaseSetup` server fn + `?raw` SQL imports.
+- **Edit** `src/routes/admin.testing.tsx` — add the setup card + run handler + status state. No other page logic changes.
+- **No new SQL files** — uses the existing four.
 
-- `portal.tsx` — pathless layout shell, sidebar (Profile, Events, Content, Logout)
-- `_portal.portal.index.tsx` → `/portal` dashboard: greeting, status badges, quick links
-- `_portal.portal.profile.tsx` → edit full_name, phone, avatar
-- `_portal.portal.events.tsx` → list user's `event_registrations`
-- `_portal.portal.content.tsx` → member-visible `content_posts`
-- `portal_.login.tsx` → email/pw + Google button
-- `portal_.signup.tsx` → email/pw + Google button (auto-creates profile via trigger)
+### Why not a CLI script?
 
-All forms: zod validation, loading state on submit button, sonner toasts on success/error, empty/error states on lists.
+You asked for **one-click**. A `bun run db:setup` script would need `DATABASE_URL` + `pg` package + you running it locally. Doing it from the admin UI uses the service role you already have, runs from anywhere, and surfaces results in the same place as the rest of the readiness checks.
 
-## 4. Admin updates
+### After implementation
 
-- `/admin/testing` (new route `admin.testing.tsx`) — interactive checklist:
-  - 12 checkboxes matching your spec (public signup, member signup, member login, profile update, admin visibility, content publish→portal visibility, event create→registration, logout/login persistence, Supabase read/write ping)
-  - Each row has a "Run check" button that does a live probe (e.g. read/write a `_diagnostics` row, fetch current session, fetch profile) and shows ✅/❌ with the actual error
-  - Checklist state persisted in `localStorage` per admin
-- Add **demo-data filter** to `/admin/members`, `/admin/events`, `/admin/content`, `/admin/leads`: segmented control `All | Real | Demo` filtering on `is_test_account`
-- New `/admin/members` columns: `account_type` badge, `is_test_account` badge
-- "Seed demo data" button in `/admin/testing` → inserts 1 demo member, 1 demo event, 1 demo content post, 1 demo registration (all flagged)
-- "Clear demo data" button → deletes everything where `is_test_account = true`
-
-## 5. Async / UX audit
-
-Pass over: `admin.members`, `admin.events`, `admin.content`, `admin.leads`, `Hero` signup, `EmailSignup`, `CommunityFeed`.
-
-For each: skeleton loaders (using existing `Skeleton`), empty states, error states with retry button, disabled buttons while pending, toast confirmation, zod-validated forms.
-
-## 6. Security
-
-- Confirm RLS on every new table
-- `/admin/*` already gated by `has_role('admin')` ✅ — verify still works
-- `/portal/*` gated by `_portal` layout `beforeLoad` → session check via `supabase.auth.getUser()`
-- Customers cannot reach `/admin` (RPC returns false → "Not authorized" screen, already exists)
-- Public visitors only see public marketing routes
-
-## 7. Deliverables to you after build
-
-1. **Run `db/portal_and_testing.sql`** in Supabase SQL editor
-2. **Enable Google provider** — I'll trigger `configure_social_auth`; you confirm in Lovable Cloud → Users
-3. Visit `/admin/testing` → click "Seed demo data" → walk through checklist
-4. Sign up a real account at `/portal/signup` → confirm it appears in `/admin/members` as `customer`, not `demo`
-
----
-
-## Technical notes
-
-- **Files created**: ~14 (1 SQL, 1 auth helper, 7 portal routes, 1 admin testing route, 1 demo-data lib, 3 small components)
-- **Files edited**: ~10 (admin list pages for filter, Navbar for portal link, start.ts for middleware verify, members/events/content tables for column)
-- **No edge functions**, no new external integrations
-- **Build risk**: new routes generate via `routeTree.gen.ts` (auto); RLS errors caught by `/admin/testing` probes
-- **Effort**: realistically one focused build pass + one polish pass after you run the SQL
-
-After you approve, I'll execute end-to-end and stop only for the SQL run and Google OAuth confirmation.
+1. Paste the 6-line `exec_sql` snippet into Supabase SQL Editor (one-time).
+2. Visit `/admin/testing` → click **Run database setup** → watch all four turn green.
+3. Click **Run all probes** → confirm RLS, profiles, registrations all pass.
