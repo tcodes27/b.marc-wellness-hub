@@ -4,6 +4,7 @@ import { Hero } from "@/components/sections/Hero";
 import { AboutMovement } from "@/components/sections/AboutMovement";
 import { EventsPreview } from "@/components/sections/EventsPreview";
 import { MembershipPreview } from "@/components/sections/MembershipPreview";
+import { YouTubeShowcase } from "@/components/sections/YouTubeShowcase";
 import { CommunityFeed } from "@/components/sections/CommunityFeed";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { EmailSignup } from "@/components/sections/EmailSignup";
@@ -28,6 +29,7 @@ function Index() {
       <AboutMovement />
       <EventsPreview />
       <MembershipPreview />
+      <YouTubeShowcase />
       <CommunityFeed />
       <Testimonials />
       <EmailSignup />

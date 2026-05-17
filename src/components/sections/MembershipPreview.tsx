@@ -1,5 +1,5 @@
 import membership from "@/assets/membership.jpg";
-import { goToUscreen } from "@/lib/uscreen";
+import { goToYouTube } from "@/lib/youtube";
 import { branding } from "@/config/branding";
 
 export function MembershipPreview() {
@@ -26,7 +26,7 @@ export function MembershipPreview() {
           </ul>
 
           <div className="mt-10">
-            <button onClick={goToUscreen} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+            <button onClick={() => goToYouTube("channel")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
               {branding.cta.startMembership}
             </button>
           </div>
