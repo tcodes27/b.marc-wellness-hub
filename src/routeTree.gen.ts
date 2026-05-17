@@ -27,8 +27,10 @@ import { Route as PortalProfileRouteImport } from './routes/portal.profile'
 import { Route as PortalEventsRouteImport } from './routes/portal.events'
 import { Route as PortalContentRouteImport } from './routes/portal.content'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminTestingRouteImport } from './routes/admin.testing'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminPortalMembersRouteImport } from './routes/admin.portal-members'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
@@ -127,6 +129,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminVideosRoute = AdminVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTestingRoute = AdminTestingRouteImport.update({
   id: '/testing',
   path: '/testing',
@@ -135,6 +142,11 @@ const AdminTestingRoute = AdminTestingRouteImport.update({
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortalMembersRoute = AdminPortalMembersRouteImport.update({
+  id: '/portal-members',
+  path: '/portal-members',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMembersRoute = AdminMembersRouteImport.update({
@@ -189,8 +201,10 @@ export interface FileRoutesByFullPath {
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testing': typeof AdminTestingRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
@@ -216,8 +230,10 @@ export interface FileRoutesByTo {
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testing': typeof AdminTestingRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
@@ -246,8 +262,10 @@ export interface FileRoutesById {
   '/admin/exports': typeof AdminExportsRoute
   '/admin/leads': typeof AdminLeadsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/testing': typeof AdminTestingRoute
+  '/admin/videos': typeof AdminVideosRoute
   '/admin_/login': typeof AdminLoginRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
@@ -277,8 +295,10 @@ export interface FileRouteTypes {
     | '/admin/exports'
     | '/admin/leads'
     | '/admin/members'
+    | '/admin/portal-members'
     | '/admin/settings'
     | '/admin/testing'
+    | '/admin/videos'
     | '/admin/login'
     | '/portal/content'
     | '/portal/events'
@@ -304,8 +324,10 @@ export interface FileRouteTypes {
     | '/admin/exports'
     | '/admin/leads'
     | '/admin/members'
+    | '/admin/portal-members'
     | '/admin/settings'
     | '/admin/testing'
+    | '/admin/videos'
     | '/admin/login'
     | '/portal/content'
     | '/portal/events'
@@ -333,8 +355,10 @@ export interface FileRouteTypes {
     | '/admin/exports'
     | '/admin/leads'
     | '/admin/members'
+    | '/admin/portal-members'
     | '/admin/settings'
     | '/admin/testing'
+    | '/admin/videos'
     | '/admin_/login'
     | '/portal/content'
     | '/portal/events'
@@ -493,6 +517,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/videos': {
+      id: '/admin/videos'
+      path: '/videos'
+      fullPath: '/admin/videos'
+      preLoaderRoute: typeof AdminVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/testing': {
       id: '/admin/testing'
       path: '/testing'
@@ -505,6 +536,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/admin/settings'
       preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portal-members': {
+      id: '/admin/portal-members'
+      path: '/portal-members'
+      fullPath: '/admin/portal-members'
+      preLoaderRoute: typeof AdminPortalMembersRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/members': {
@@ -564,8 +602,10 @@ interface AdminRouteChildren {
   AdminExportsRoute: typeof AdminExportsRoute
   AdminLeadsRoute: typeof AdminLeadsRoute
   AdminMembersRoute: typeof AdminMembersRoute
+  AdminPortalMembersRoute: typeof AdminPortalMembersRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTestingRoute: typeof AdminTestingRoute
+  AdminVideosRoute: typeof AdminVideosRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminContentIdRoute: typeof AdminContentIdRoute
   AdminContentIndexRoute: typeof AdminContentIndexRoute
@@ -576,8 +616,10 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminExportsRoute: AdminExportsRoute,
   AdminLeadsRoute: AdminLeadsRoute,
   AdminMembersRoute: AdminMembersRoute,
+  AdminPortalMembersRoute: AdminPortalMembersRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminTestingRoute: AdminTestingRoute,
+  AdminVideosRoute: AdminVideosRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminContentIdRoute: AdminContentIdRoute,
   AdminContentIndexRoute: AdminContentIndexRoute,
