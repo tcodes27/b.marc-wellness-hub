@@ -97,6 +97,46 @@ export async function listMyRegistrations(userId: string) {
     .order("created_at", { ascending: false });
 }
 
+/**
+ * List videos the current viewer is allowed to see.
+ *
+ * RLS on `video_library` enforces:
+ *   - anon → only access_level='public', is_active=true
+ *   - authenticated → rows where can_access_video(uid, access_level) is true
+ *
+ * So this query is safe to call from any client — the database returns
+ * exactly the rows (and the `private_link`) the caller is entitled to.
+ */
+export async function listAccessibleVideos(): Promise<{
+  data: VideoLibraryEntry[] | null;
+  error: { message: string } | null;
+}> {
+  const { data, error } = await supabase
+    .from("video_library")
+    .select("id,title,description,url,playlist_url,thumbnail_url,private_link,category,tags,access_level,sort_order")
+    .eq("is_active", true)
+    .order("sort_order", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(100);
+  return {
+    data: (data as VideoLibraryEntry[] | null) ?? null,
+    error: error ? { message: error.message } : null,
+  };
+}
+
+/** Public-only video feed for the marketing site (no auth needed). */
+export async function listPublicVideos(limit = 6): Promise<VideoLibraryEntry[]> {
+  const { data } = await supabase
+    .from("video_library")
+    .select("id,title,description,url,playlist_url,thumbnail_url,category,tags,access_level,sort_order")
+    .eq("is_active", true)
+    .eq("access_level", "public")
+    .order("sort_order", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return (data as VideoLibraryEntry[] | null) ?? [];
+}
+
 export async function listMemberContent() {
   return supabase
     .from("content_posts")
