@@ -13,6 +13,8 @@ import {
   Loader2,
   Menu,
   X,
+  Youtube,
+  Crown,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -46,6 +48,8 @@ const NAV = [
   { to: "/admin/events", label: "Events", icon: CalendarDays },
   { to: "/admin/leads", label: "Leads / Tags", icon: Tags },
   { to: "/admin/content", label: "Content Studio", icon: PenSquare },
+  { to: "/admin/videos", label: "Video Library", icon: Youtube },
+  { to: "/admin/portal-members", label: "Member Tiers", icon: Crown },
   { to: "/admin/exports", label: "Exports", icon: Download },
   { to: "/admin/testing", label: "Testing", icon: LayoutDashboard },
   { to: "/admin/settings", label: "Settings", icon: SettingsIcon },

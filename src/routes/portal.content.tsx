@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { listMemberContent } from "@/lib/portal";
+import { listMemberContent, listAccessibleVideos, TIER_LABEL, type MemberTier } from "@/lib/portal";
+import { usePortal } from "./portal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen, Lock, PlayCircle, Youtube } from "lucide-react";
+import { BookOpen, Lock, PlayCircle, Youtube, ExternalLink, Crown } from "lucide-react";
 import { YOUTUBE_CHANNEL_URL, embedVideoUrl, videoThumbnail, type VideoLibraryEntry } from "@/lib/youtube";
 
 export const Route = createFileRoute("/portal/content")({
@@ -73,38 +74,46 @@ function ContentPage() {
   );
 }
 
+const TIER_BADGE: Record<MemberTier, string> = {
+  "public": "bg-stone-200 text-stone-700",
+  "community": "bg-tan/30 text-espresso",
+  "signature": "bg-espresso text-ivory",
+  "all-access": "bg-gradient-to-r from-tan to-clay text-ivory",
+};
+
 /**
- * Future-ready Protected Video Library.
+ * Protected Video Library.
  *
- * Reads from a `video_library` table once it exists (admin uploads YouTube
- * URLs there). Until then we render a graceful empty state with a direct
- * link to the public channel, and embed any rows that arrive.
- *
- * Expected columns when the table is created:
- *   id, title, url, playlist_url, thumbnail_url, category, tags[],
- *   access_level ('public' | 'community' | 'signature' | 'all-access'),
- *   private_link (nullable — unlisted URL shown only to approved members).
+ * RLS on `video_library` returns only the rows (and the `private_link` column)
+ * that the current viewer is entitled to. The UI surfaces a "Private link"
+ * button whenever a row carries one — its presence is itself the proof of
+ * access, because RLS would have stripped it otherwise.
  */
 function ProtectedVideoLibrary() {
+  const { profile } = usePortal();
   const [entries, setEntries] = useState<VideoLibraryEntry[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
   const [active, setActive] = useState<VideoLibraryEntry | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { supabase } = await import("@/integrations/supabase/client");
-        const { data } = await (supabase as any)
-          .from("video_library")
-          .select("*")
-          .order("created_at", { ascending: false });
-        if (!cancelled) setEntries(((data ?? []) as VideoLibraryEntry[]));
-      } catch {
-        if (!cancelled) setEntries([]);
+  const tier: MemberTier = profile?.member_tier ?? "public";
+  const isMember = tier !== "public";
+
+  const load = async () => {
+    setErr(null); setEntries(null);
+    const { data, error } = await listAccessibleVideos();
+    if (error) {
+      // Table may not exist yet (pre-migration). Soft-fail.
+      if (/relation .*video_library.* does not exist/i.test(error.message)) {
+        setEntries([]);
+      } else {
+        setErr(error.message);
+        setEntries([]);
       }
-    })();
-    return () => { cancelled = true; };
-  }, []);
+      return;
+    }
+    setEntries(data ?? []);
+  };
+  useEffect(() => { void load(); }, []);
 
   return (
     <section>
@@ -113,30 +122,70 @@ function ProtectedVideoLibrary() {
           <p className="text-xs uppercase tracking-[0.3em] text-clay">Member library</p>
           <h1 className="font-serif text-3xl mt-2">Protected video library</h1>
           <p className="text-sm text-clay mt-2 max-w-md">
-            Curated Pilates and wellness sessions, including private unlisted classes for members.
+            Curated Pilates and wellness sessions, including private unlisted
+            classes for members.
           </p>
         </div>
-        <a
-          href={YOUTUBE_CHANNEL_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] link-underline"
-        >
-          <Youtube size={14} /> Public channel
-        </a>
+        <div className="flex items-center gap-3">
+          <span className={`inline-flex items-center gap-1.5 text-[0.6rem] uppercase tracking-[0.28em] px-3 py-1.5 rounded-full ${TIER_BADGE[tier]}`}>
+            <Crown size={11} /> {TIER_LABEL[tier]}
+          </span>
+          <a
+            href={YOUTUBE_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.28em] link-underline"
+          >
+            <Youtube size={14} /> Public channel
+          </a>
+        </div>
       </div>
+
+      {!isMember && (
+        <div className="mt-6 rounded-2xl border border-tan/40 bg-sand/40 p-5 text-sm flex items-start gap-3">
+          <Lock size={16} className="mt-0.5 text-clay shrink-0" />
+          <div>
+            <p className="font-medium text-espresso">You're viewing the public library.</p>
+            <p className="text-clay mt-1">
+              Member-only sessions unlock once an admin grants you Community,
+              Signature, or All Access. <Link to="/membership" className="underline">View membership tiers</Link>.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {err && (
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 text-red-700 p-4 text-sm">
+          {err} <button onClick={() => void load()} className="ml-3 underline">Retry</button>
+        </div>
+      )}
 
       {active && (
         <div className="mt-6 rounded-2xl overflow-hidden border border-tan/30 bg-black">
           <div className="aspect-video">
             <iframe
-              src={embedVideoUrl(active.private_link || active.url) ?? ""}
+              src={embedVideoUrl(active.url) ?? ""}
               title={active.title}
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
           </div>
+          {active.private_link && (
+            <div className="bg-espresso text-ivory text-xs px-4 py-3 flex items-center justify-between gap-3">
+              <span className="inline-flex items-center gap-2">
+                <Lock size={12} /> Private member link active
+              </span>
+              <a
+                href={active.private_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 underline"
+              >
+                Open on YouTube <ExternalLink size={12} />
+              </a>
+            </div>
+          )}
         </div>
       )}
 
@@ -146,12 +195,16 @@ function ProtectedVideoLibrary() {
         </div>
       )}
 
-      {entries && entries.length === 0 && (
+      {entries && entries.length === 0 && !err && (
         <div className="mt-6 rounded-2xl border border-tan/30 bg-white p-8 text-center">
           <PlayCircle className="mx-auto text-clay" />
-          <p className="mt-3 font-serif text-lg">Library coming soon</p>
+          <p className="mt-3 font-serif text-lg">
+            {isMember ? "Library coming soon" : "No public classes published yet"}
+          </p>
           <p className="text-sm text-clay mt-1 max-w-sm mx-auto">
-            Member-only classes will appear here. In the meantime, explore free sessions on our channel.
+            {isMember
+              ? "New member-only classes will appear here as soon as they're uploaded."
+              : "Explore free sessions on our channel while we publish the public library."}
           </p>
         </div>
       )}
@@ -160,7 +213,8 @@ function ProtectedVideoLibrary() {
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {entries.map((v) => {
             const thumb = v.thumbnail_url || videoThumbnail(v.url);
-            const memberOnly = v.access_level !== "public";
+            const level = v.access_level;
+            const restricted = level !== "public";
             return (
               <button
                 key={v.id}
@@ -174,17 +228,20 @@ function ProtectedVideoLibrary() {
                       <PlayCircle size={20} />
                     </span>
                   </span>
-                  {memberOnly && (
-                    <span className="absolute top-2 right-2 inline-flex items-center gap-1 bg-espresso text-ivory text-[0.55rem] uppercase tracking-[0.25em] px-2 py-1 rounded-full">
-                      <Lock size={10} /> Members
-                    </span>
-                  )}
+                  <span className={`absolute top-2 right-2 inline-flex items-center gap-1 text-[0.55rem] uppercase tracking-[0.25em] px-2 py-1 rounded-full ${TIER_BADGE[level]}`}>
+                    {restricted && <Lock size={10} />} {TIER_LABEL[level]}
+                  </span>
                 </div>
                 <div className="p-4">
                   {v.category && <p className="text-[0.6rem] uppercase tracking-[0.3em] text-clay">{v.category}</p>}
                   <h3 className="font-serif text-base mt-1">{v.title}</h3>
                   {v.tags && v.tags.length > 0 && (
                     <p className="text-xs text-clay mt-1 line-clamp-1">{v.tags.join(" · ")}</p>
+                  )}
+                  {v.private_link && (
+                    <p className="text-[0.65rem] uppercase tracking-[0.25em] text-clay mt-2 inline-flex items-center gap-1">
+                      <Lock size={10} /> Private link unlocked
+                    </p>
                   )}
                 </div>
               </button>

@@ -5,12 +5,14 @@ import adminRoles from "../../db/admin_roles.sql?raw";
 import events from "../../db/events.sql?raw";
 import contentDist from "../../db/content_distribution.sql?raw";
 import portalTesting from "../../db/portal_and_testing.sql?raw";
+import videoLibrary from "../../db/video_library.sql?raw";
 
 const FILES: { name: string; sql: string }[] = [
   { name: "admin_roles.sql", sql: adminRoles },
   { name: "events.sql", sql: events },
   { name: "content_distribution.sql", sql: contentDist },
   { name: "portal_and_testing.sql", sql: portalTesting },
+  { name: "video_library.sql", sql: videoLibrary },
 ];
 
 export const BOOTSTRAP_SQL = `create or replace function public.exec_sql(sql text)
