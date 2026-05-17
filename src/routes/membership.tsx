@@ -2,13 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
-import { goToUscreen } from "@/lib/uscreen";
+import { goToYouTube, YOUTUBE_CHANNEL_URL } from "@/lib/youtube";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
       { title: "Membership, B.MARC Pilates" },
-      { name: "description", content: "Unlimited online Pilates classes, wellness rituals and community access. The B.MARC membership, powered by Uscreen." },
+      { name: "description", content: "Unlimited online Pilates classes, wellness rituals and community access. The B.MARC membership, delivered through our private YouTube library." },
       { property: "og:title", content: "Membership, B.MARC Pilates" },
       { property: "og:description", content: "Your studio, in your pocket. On-demand Pilates and wellness for modern women." },
     ],
@@ -91,10 +91,10 @@ function MembershipPage() {
               The studio that <em className="font-light">moves with you.</em>
             </h1>
             <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-              Unlimited on-demand Pilates, wellness rituals, and a soft community of women, powered by Uscreen, ready when you are.
+              Unlimited on-demand Pilates, wellness rituals, and a soft community of women, streamed through our curated YouTube library, ready when you are.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={goToUscreen} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
           </div>
@@ -183,7 +183,7 @@ function MembershipPage() {
                 </ul>
 
                 <button
-                  onClick={goToUscreen}
+                  onClick={() => goToYouTube("channel")}
                   className={`mt-10 w-full rounded-full py-4 text-[0.7rem] uppercase tracking-[0.3em] font-medium transition-all duration-500 ${
                     t.highlight
                       ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"
