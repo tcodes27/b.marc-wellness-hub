@@ -217,47 +217,67 @@ function ProtectedVideoLibrary() {
             const restricted = level !== "public";
             const locked = !(v.has_access ?? true);
             return (
-              <button
+              <div
                 key={v.id}
-                onClick={() => { if (!locked) setActive(v); }}
-                disabled={locked}
-                className={`group text-left rounded-2xl overflow-hidden bg-white border border-tan/30 transition-colors ${locked ? "cursor-not-allowed opacity-95" : "hover:border-clay/50"}`}
+                className={`group relative flex flex-col text-left rounded-2xl overflow-hidden bg-white border border-tan/30 transition-colors ${locked ? "" : "hover:border-clay/50"}`}
               >
-                <div className="relative aspect-video bg-sand">
-                  {thumb && (
-                    <img
-                      src={thumb}
-                      alt=""
-                      className={`w-full h-full object-cover ${locked ? "blur-[2px] scale-105 grayscale" : ""}`}
-                    />
-                  )}
-                  {locked && <span className="absolute inset-0 bg-espresso/40" />}
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className={`h-12 w-12 rounded-full flex items-center justify-center transition-colors ${locked ? "bg-ivory/90 text-espresso" : "bg-espresso/90 text-ivory group-hover:bg-clay"}`}>
-                      {locked ? <Lock size={18} /> : <PlayCircle size={20} />}
+                <button
+                  type="button"
+                  onClick={() => { if (!locked) setActive(v); }}
+                  disabled={locked}
+                  aria-label={locked ? `${v.title} — locked, requires ${TIER_LABEL[level]}` : `Play ${v.title}`}
+                  className={`text-left ${locked ? "cursor-not-allowed" : ""}`}
+                >
+                  <div className="relative aspect-video bg-sand">
+                    {thumb && (
+                      <img
+                        src={thumb}
+                        alt=""
+                        className={`w-full h-full object-cover ${locked ? "blur-[2px] scale-105 grayscale" : ""}`}
+                      />
+                    )}
+                    {locked && <span className="absolute inset-0 bg-espresso/40" />}
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <span className={`h-12 w-12 rounded-full flex items-center justify-center transition-colors ${locked ? "bg-ivory/90 text-espresso" : "bg-espresso/90 text-ivory group-hover:bg-clay"}`}>
+                        {locked ? <Lock size={18} /> : <PlayCircle size={20} />}
+                      </span>
                     </span>
-                  </span>
-                  <span className={`absolute top-2 right-2 inline-flex items-center gap-1 text-[0.55rem] uppercase tracking-[0.25em] px-2 py-1 rounded-full ${TIER_BADGE[level]}`}>
-                    {restricted && <Lock size={10} />} {TIER_LABEL[level]}
-                  </span>
-                </div>
-                <div className="p-4">
+                    <span className={`absolute top-2 right-2 inline-flex items-center gap-1 text-[0.55rem] uppercase tracking-[0.25em] px-2 py-1 rounded-full ${TIER_BADGE[level]}`}>
+                      {restricted && <Lock size={10} />} {TIER_LABEL[level]}
+                    </span>
+                  </div>
+                </button>
+                <div className="p-4 flex-1 flex flex-col">
                   {v.category && <p className="text-[0.6rem] uppercase tracking-[0.3em] text-clay">{v.category}</p>}
                   <h3 className="font-serif text-base mt-1">{v.title}</h3>
                   {v.tags && v.tags.length > 0 && (
                     <p className="text-xs text-clay mt-1 line-clamp-1">{v.tags.join(" · ")}</p>
                   )}
                   {locked ? (
-                    <p className="text-[0.65rem] uppercase tracking-[0.25em] text-clay mt-2 inline-flex items-center gap-1">
-                      <Lock size={10} /> Unlocks at {TIER_LABEL[level]}
-                    </p>
+                    <div className="mt-3 pt-3 border-t border-tan/30">
+                      <p className="text-xs text-clay">
+                        This class unlocks at{" "}
+                        <span className="font-medium text-espresso">{TIER_LABEL[level]}</span>.
+                        {isMember
+                          ? " Upgrade your membership to access it."
+                          : " Join to start watching."}
+                      </p>
+                      <Link
+                        to="/membership"
+                        hash={level}
+                        className="mt-3 inline-flex items-center justify-center gap-1.5 w-full rounded-full bg-espresso text-ivory text-[0.65rem] uppercase tracking-[0.28em] px-4 py-2.5 hover:bg-clay transition-colors"
+                      >
+                        <Crown size={12} />
+                        {isMember ? `Upgrade to ${TIER_LABEL[level]}` : `Join — ${TIER_LABEL[level]}`}
+                      </Link>
+                    </div>
                   ) : v.private_link ? (
                     <p className="text-[0.65rem] uppercase tracking-[0.25em] text-clay mt-2 inline-flex items-center gap-1">
                       <Lock size={10} /> Private link unlocked
                     </p>
                   ) : null}
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>
