@@ -88,7 +88,8 @@ export function playlistUrl(id: string): string {
  * Private videos cannot be embedded — they must be opened on YouTube
  * by the signed-in member who has been granted access.
  */
-export function embedVideoUrl(idOrUrl: string, opts: { autoplay?: boolean; controls?: boolean } = {}): string | null {
+export function embedVideoUrl(idOrUrl: string | null | undefined, opts: { autoplay?: boolean; controls?: boolean } = {}): string | null {
+  if (!idOrUrl) return null;
   const id = extractVideoId(idOrUrl);
   if (!id) return null;
   const params = new URLSearchParams({
@@ -107,7 +108,8 @@ export function embedPlaylistUrl(idOrUrl: string): string | null {
 }
 
 /** Best-effort thumbnail URL for a given video. */
-export function videoThumbnail(idOrUrl: string, quality: "default" | "hq" | "max" = "hq"): string | null {
+export function videoThumbnail(idOrUrl: string | null | undefined, quality: "default" | "hq" | "max" = "hq"): string | null {
+  if (!idOrUrl) return null;
   const id = extractVideoId(idOrUrl);
   if (!id) return null;
   const map = { default: "hqdefault", hq: "hqdefault", max: "maxresdefault" } as const;
@@ -124,7 +126,7 @@ export type VideoLibraryEntry = {
   id: string;
   title: string;
   description?: string | null;
-  url: string;
+  url: string | null;
   playlist_url?: string | null;
   thumbnail_url?: string | null;
   category?: string | null;
@@ -132,4 +134,6 @@ export type VideoLibraryEntry = {
   access_level: VideoAccessLevel;
   private_link?: string | null;
   sort_order?: number | null;
+  /** True when the current viewer's tier is sufficient to play this video. */
+  has_access?: boolean;
 };

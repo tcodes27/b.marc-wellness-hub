@@ -109,10 +109,40 @@ create policy "Admins full access videos" on public.video_library
   using (public.has_role(auth.uid(), 'admin'))
   with check (public.has_role(auth.uid(), 'admin'));
 
--- 7. Admins can read/update profiles.member_tier (already covered by the
+-- 7. Locked-preview view.
+--    Exposes safe metadata (title, thumbnail, tier badge) for EVERY active
+--    video, regardless of viewer tier — but masks the sensitive columns
+--    (`url`, `private_link`) when the viewer cannot access them.
+--    Runs as the view owner (security_invoker=off) so it bypasses the
+--    underlying table RLS in a controlled way; only safe columns leak.
+drop view if exists public.video_library_preview;
+create view public.video_library_preview
+with (security_invoker = off) as
+select
+  v.id,
+  v.title,
+  v.description,
+  v.thumbnail_url,
+  v.category,
+  v.tags,
+  v.access_level,
+  v.sort_order,
+  v.created_at,
+  public.can_access_video(auth.uid(), v.access_level) as has_access,
+  case when public.can_access_video(auth.uid(), v.access_level)
+       then v.url else null end as url,
+  case when public.can_access_video(auth.uid(), v.access_level)
+       then v.playlist_url else null end as playlist_url,
+  case when public.can_access_video(auth.uid(), v.access_level)
+       then v.private_link else null end as private_link
+from public.video_library v
+where v.is_active;
+
+grant select on public.video_library_preview to anon, authenticated;
+
+-- 8. Admins can read/update profiles.member_tier (already covered by the
 --    "Admins full access profiles" policy in portal_and_testing.sql).
---    No extra grants needed.
 
 -- DONE. Verify with:
---   select * from public.video_library;
---   select id, email, member_tier from public.profiles limit 5;
+--   select id, title, access_level, has_access, url, private_link
+--     from public.video_library_preview;

@@ -180,8 +180,8 @@ function VideosAdmin() {
                     <div className="min-w-0">
                       <div className="font-serif text-base text-espresso truncate">{r.title}</div>
                       <div className="text-xs text-clay truncate">{r.category ?? "—"} · {(r.tags ?? []).join(", ") || "no tags"}</div>
-                      <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[0.65rem] text-clay underline inline-flex items-center gap-1 mt-1">
-                        {r.url} <ExternalLink size={10} />
+                      <a href={r.url ?? "#"} target="_blank" rel="noopener noreferrer" className="text-[0.65rem] text-clay underline inline-flex items-center gap-1 mt-1">
+                        {r.url ?? "(no url)"} <ExternalLink size={10} />
                       </a>
                       {r.private_link && (
                         <div className="text-[0.65rem] text-espresso inline-flex items-center gap-1 mt-1">
