@@ -112,9 +112,8 @@ export async function listAccessibleVideos(): Promise<{
   error: { message: string } | null;
 }> {
   const { data, error } = await supabase
-    .from("video_library")
-    .select("id,title,description,url,playlist_url,thumbnail_url,private_link,category,tags,access_level,sort_order")
-    .eq("is_active", true)
+    .from("video_library_preview")
+    .select("id,title,description,url,playlist_url,thumbnail_url,private_link,category,tags,access_level,sort_order,has_access")
     .order("sort_order", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(100);
