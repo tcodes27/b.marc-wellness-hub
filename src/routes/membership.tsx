@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
-import { goToYouTube, YOUTUBE_CHANNEL_URL } from "@/lib/youtube";
+import { goToYouTube } from "@/lib/youtube";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
