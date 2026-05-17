@@ -1,6 +1,16 @@
 import { supabase } from "@/integrations/supabase/client";
+import type { VideoAccessLevel, VideoLibraryEntry } from "@/lib/youtube";
 
 export type AccountType = "demo" | "customer" | "admin" | "member";
+export type MemberTier = VideoAccessLevel; // 'public' | 'community' | 'signature' | 'all-access'
+export const MEMBER_TIERS: MemberTier[] = ["public", "community", "signature", "all-access"];
+
+export const TIER_LABEL: Record<MemberTier, string> = {
+  "public": "Public",
+  "community": "Community Access",
+  "signature": "Signature Member",
+  "all-access": "All Access",
+};
 
 export type Profile = {
   id: string;
@@ -9,6 +19,7 @@ export type Profile = {
   phone: string | null;
   avatar_url: string | null;
   account_type: AccountType;
+  member_tier: MemberTier;
   is_test_account: boolean;
   community_status: string | null;
   created_at: string;
