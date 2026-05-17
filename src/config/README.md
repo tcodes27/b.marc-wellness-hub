@@ -21,8 +21,8 @@ beauty + lifestyle brands, coaches & creators, med spas, luxury service business
    - `seo` — default title / description / twitter handle
 
 2. **Integrations** — edit `src/config/integrations.ts`
-   - Toggle features on/off (`stripe`, `uscreen`, `instagram`, `twilio`, `email`)
-   - Set `uscreen.storefrontUrl`, `instagram.handle`, `email.provider`
+   - Toggle features on/off (`stripe`, `youtube`, `instagram`, `twilio`, `email`)
+   - Set `youtube.channelId`, `instagram.handle`, `email.provider`
    - Add corresponding **runtime secrets** in Project Settings → Secrets
      (e.g. `INSTAGRAM_ACCESS_TOKEN`, `STRIPE_SECRET_KEY`, `TWILIO_AUTH_TOKEN`,
      `RESEND_API_KEY`).

@@ -223,7 +223,7 @@ export const branding: BrandingConfig = {
     eyebrow: "The Membership",
     headlineLead: "Your studio, ",
     headlineEm: "in your pocket.",
-    body: "Stream Pilates classes and wellness rituals anytime, powered by Uscreen. Move with us from anywhere in the world.",
+    body: "Stream Pilates classes and wellness rituals anytime on our YouTube channel, with private member-only sessions delivered straight to you.",
     features: [
       { title: "On-Demand Classes", description: "Reformer, mat & sculpt sessions, anywhere." },
       { title: "Beginner Programs", description: "Step-by-step paths to build a confident practice." },

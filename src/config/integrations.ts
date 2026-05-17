@@ -33,11 +33,13 @@ export type IntegrationsConfig = {
     pricingTableId?: string;
   };
 
-  /** Uscreen on-demand video membership. */
-  uscreen: {
+  /** YouTube — primary video / class library platform. */
+  youtube: {
     enabled: boolean;
-    /** Storefront URL the membership CTA opens. */
-    storefrontUrl?: string;
+    /** Channel ID (UC...). */
+    channelId?: string;
+    /** Optional default playlist surfaced on the public site. */
+    featuredPlaylistId?: string;
   };
 
   /** Instagram Graph API feed on the homepage. */
@@ -61,9 +63,9 @@ export const integrations: IntegrationsConfig = {
   supabase: { enabled: true },
   calcom: { enabled: true },
   stripe: { enabled: false },
-  uscreen: {
+  youtube: {
     enabled: true,
-    storefrontUrl: "https://bmarcpilates.uscreen.io",
+    channelId: "UCUafiWbOwgWI7OuRCC7XSDQ",
   },
   instagram: { enabled: true, handle: "bmarcpilates" },
   twilio: { enabled: true },
