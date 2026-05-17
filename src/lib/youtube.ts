@@ -88,7 +88,8 @@ export function playlistUrl(id: string): string {
  * Private videos cannot be embedded — they must be opened on YouTube
  * by the signed-in member who has been granted access.
  */
-export function embedVideoUrl(idOrUrl: string, opts: { autoplay?: boolean; controls?: boolean } = {}): string | null {
+export function embedVideoUrl(idOrUrl: string | null | undefined, opts: { autoplay?: boolean; controls?: boolean } = {}): string | null {
+  if (!idOrUrl) return null;
   const id = extractVideoId(idOrUrl);
   if (!id) return null;
   const params = new URLSearchParams({
