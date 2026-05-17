@@ -123,11 +123,13 @@ export type VideoAccessLevel = "public" | "community" | "signature" | "all-acces
 export type VideoLibraryEntry = {
   id: string;
   title: string;
+  description?: string | null;
   url: string;
   playlist_url?: string | null;
   thumbnail_url?: string | null;
   category?: string | null;
-  tags?: string[];
+  tags?: string[] | null;
   access_level: VideoAccessLevel;
   private_link?: string | null;
+  sort_order?: number | null;
 };
