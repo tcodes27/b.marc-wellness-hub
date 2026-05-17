@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { listMemberContent } from "@/lib/portal";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Lock, PlayCircle, Youtube } from "lucide-react";
+import { YOUTUBE_CHANNEL_URL, embedVideoUrl, videoThumbnail, type VideoLibraryEntry } from "@/lib/youtube";
 
 export const Route = createFileRoute("/portal/content")({
   component: ContentPage,
@@ -27,10 +28,12 @@ function ContentPage() {
   useEffect(() => { load(); }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12">
+      <ProtectedVideoLibrary />
+
       <div>
         <p className="text-xs uppercase tracking-[0.3em] text-clay">For members</p>
-        <h1 className="font-serif text-3xl mt-2">Latest content</h1>
+        <h2 className="font-serif text-3xl mt-2">Latest content</h2>
       </div>
 
       {err && (
