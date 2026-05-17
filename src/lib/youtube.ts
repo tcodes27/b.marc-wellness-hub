@@ -124,7 +124,7 @@ export type VideoLibraryEntry = {
   id: string;
   title: string;
   description?: string | null;
-  url: string;
+  url: string | null;
   playlist_url?: string | null;
   thumbnail_url?: string | null;
   category?: string | null;
@@ -132,4 +132,6 @@ export type VideoLibraryEntry = {
   access_level: VideoAccessLevel;
   private_link?: string | null;
   sort_order?: number | null;
+  /** True when the current viewer's tier is sufficient to play this video. */
+  has_access?: boolean;
 };
