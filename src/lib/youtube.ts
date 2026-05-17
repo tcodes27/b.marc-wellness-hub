@@ -107,7 +107,8 @@ export function embedPlaylistUrl(idOrUrl: string): string | null {
 }
 
 /** Best-effort thumbnail URL for a given video. */
-export function videoThumbnail(idOrUrl: string, quality: "default" | "hq" | "max" = "hq"): string | null {
+export function videoThumbnail(idOrUrl: string | null | undefined, quality: "default" | "hq" | "max" = "hq"): string | null {
+  if (!idOrUrl) return null;
   const id = extractVideoId(idOrUrl);
   if (!id) return null;
   const map = { default: "hqdefault", hq: "hqdefault", max: "maxresdefault" } as const;
