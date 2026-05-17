@@ -215,17 +215,26 @@ function ProtectedVideoLibrary() {
             const thumb = v.thumbnail_url || videoThumbnail(v.url);
             const level = v.access_level;
             const restricted = level !== "public";
+            const locked = !(v.has_access ?? true);
             return (
               <button
                 key={v.id}
-                onClick={() => setActive(v)}
-                className="group text-left rounded-2xl overflow-hidden bg-white border border-tan/30 hover:border-clay/50 transition-colors"
+                onClick={() => { if (!locked) setActive(v); }}
+                disabled={locked}
+                className={`group text-left rounded-2xl overflow-hidden bg-white border border-tan/30 transition-colors ${locked ? "cursor-not-allowed opacity-95" : "hover:border-clay/50"}`}
               >
                 <div className="relative aspect-video bg-sand">
-                  {thumb && <img src={thumb} alt="" className="w-full h-full object-cover" />}
+                  {thumb && (
+                    <img
+                      src={thumb}
+                      alt=""
+                      className={`w-full h-full object-cover ${locked ? "blur-[2px] scale-105 grayscale" : ""}`}
+                    />
+                  )}
+                  {locked && <span className="absolute inset-0 bg-espresso/40" />}
                   <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="h-12 w-12 rounded-full bg-espresso/90 text-ivory flex items-center justify-center group-hover:bg-clay transition-colors">
-                      <PlayCircle size={20} />
+                    <span className={`h-12 w-12 rounded-full flex items-center justify-center transition-colors ${locked ? "bg-ivory/90 text-espresso" : "bg-espresso/90 text-ivory group-hover:bg-clay"}`}>
+                      {locked ? <Lock size={18} /> : <PlayCircle size={20} />}
                     </span>
                   </span>
                   <span className={`absolute top-2 right-2 inline-flex items-center gap-1 text-[0.55rem] uppercase tracking-[0.25em] px-2 py-1 rounded-full ${TIER_BADGE[level]}`}>
@@ -238,11 +247,15 @@ function ProtectedVideoLibrary() {
                   {v.tags && v.tags.length > 0 && (
                     <p className="text-xs text-clay mt-1 line-clamp-1">{v.tags.join(" · ")}</p>
                   )}
-                  {v.private_link && (
+                  {locked ? (
+                    <p className="text-[0.65rem] uppercase tracking-[0.25em] text-clay mt-2 inline-flex items-center gap-1">
+                      <Lock size={10} /> Unlocks at {TIER_LABEL[level]}
+                    </p>
+                  ) : v.private_link ? (
                     <p className="text-[0.65rem] uppercase tracking-[0.25em] text-clay mt-2 inline-flex items-center gap-1">
                       <Lock size={10} /> Private link unlocked
                     </p>
-                  )}
+                  ) : null}
                 </div>
               </button>
             );
