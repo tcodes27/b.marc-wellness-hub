@@ -19,8 +19,9 @@
 import { integrations } from "@/config/integrations";
 
 export const YOUTUBE_CHANNEL_ID = "UCUafiWbOwgWI7OuRCC7XSDQ";
-export const YOUTUBE_CHANNEL_URL = `https://www.youtube.com/channel/${YOUTUBE_CHANNEL_ID}`;
-export const YOUTUBE_CHANNEL_HANDLE_FALLBACK = YOUTUBE_CHANNEL_URL;
+export const YOUTUBE_HANDLE = "bmarcpilates";
+export const YOUTUBE_CHANNEL_URL = `https://www.youtube.com/@${YOUTUBE_HANDLE}`;
+export const YOUTUBE_CHANNEL_URL_BY_ID = `https://www.youtube.com/channel/${YOUTUBE_CHANNEL_ID}`;
 
 /** Public channel destinations the membership CTAs can route to. */
 export const YOUTUBE_DESTINATIONS = {
