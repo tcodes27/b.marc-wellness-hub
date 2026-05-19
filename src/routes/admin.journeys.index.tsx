@@ -7,7 +7,7 @@ import {
   Database, Users, Mail,
 } from "lucide-react";
 
-export const Route = createFileRoute("/admin/journeys")({
+export const Route = createFileRoute("/admin/journeys/")({
   component: JourneysPage,
 });
 
