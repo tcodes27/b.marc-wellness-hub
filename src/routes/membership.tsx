@@ -2,111 +2,99 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
 import membership from "@/assets/membership.jpg";
-import { goToYouTube } from "@/lib/youtube";
+import { useCommunity } from "@/components/community/CommunityProvider";
 
 export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
-      { title: "Membership, B.MARC Pilates" },
-      { name: "description", content: "A hybrid wellness membership: online community today, self-guided reformer sessions and live community classes when our studio opens. Beginner-welcoming, premium, built for real life." },
-      { property: "og:title", content: "Membership, B.MARC Pilates" },
-      { property: "og:description", content: "Start online. Step into the studio. Self-guided or live — your pace, your way." },
+      { title: "Founding Community — B.MARC Pilates" },
+      { name: "description", content: "B.MARC is currently onboarding founding members. Join the wellness community for free during our growth phase — portal access, early event invitations, and insider updates." },
+      { property: "og:title", content: "Founding Community — B.MARC Pilates" },
+      { property: "og:description", content: "Complimentary founding-member access during our community growth phase. Portal, events, and wellness updates — built around intentional living." },
     ],
   }),
   component: MembershipPage,
 });
 
+// Future-tier architecture intentionally preserved (no prices, no paid CTAs).
 const tiers = [
   {
     name: "Community Access",
-    tagline: "Start with the community.",
-    price: "$85",
-    cadence: "/ month",
+    tagline: "Your entry into the B.MARC wellness community.",
     features: [
-      "Online community access",
-      "Beginner movement library",
-      "Mobility & stretching sessions",
-      "Monthly wellness newsletter",
-      "Event previews & early invites",
-      "Member-only content drops",
+      "B.MARC Portal access",
+      "Digital wellness updates",
+      "Pilates resources & guidance",
+      "Event announcements & previews",
+      "Founding-member newsletter",
     ],
-    cta: "Begin Here",
     highlight: false,
   },
   {
-    name: "Signature Membership",
-    tagline: "The full hybrid practice.",
-    price: "$185",
-    cadence: "/ month",
-    note: "Most Popular",
-    valueNote: "≈ 20% saved vs. à la carte",
+    name: "Signature Access",
+    tagline: "An elevated wellness experience.",
+    note: "Founding Tier",
     features: [
-      "Full online wellness library",
-      "Monthly live virtual classes",
-      "Beginner pathways & guided programs",
-      "Seasonal wellness guides",
-      "Priority event booking",
-      "Member community challenges",
-      "Member-only brand discounts",
-      "Early studio waitlist access",
+      "Everything in Community Access",
+      "Priority event communication",
+      "Exclusive portal content drops",
+      "Community perks & insider previews",
+      "Early access to wellness experiences",
     ],
-    cta: "Become a Signature Member",
     highlight: true,
   },
   {
-    name: "B.MARC All Access",
-    tagline: "Everything, online + in studio.",
-    price: "$385",
-    cadence: "/ month",
+    name: "All Access",
+    tagline: "Founding-member level access.",
     features: [
-      "Everything in Signature",
-      "Future studio access at launch",
-      "Self-guided reformer sessions",
-      "Live, instructor-led classes",
-      "Premium wellness experiences",
-      "1:1 onboarding & wellness check-ins",
-      "VIP access to pop-up events",
-      "Founding-member perks",
+      "Everything in Signature Access",
+      "Future premium experiences",
+      "Curated wellness drops",
+      "Intimate community events",
+      "Complimentary gift bags at live events",
+      "VIP announcements & invitations",
     ],
-    cta: "Request All Access",
     highlight: false,
   },
 ];
 
 const inside = [
-  { t: "Online Community", d: "Guided wellness content, mobility, and beginner-friendly movement on-demand." },
-  { t: "Self-Guided Sessions", d: "Future studio reformer sessions you can flow through at your own pace." },
-  { t: "Live Community Classes", d: "Instructor-led group classes when you want energy, connection, and accountability." },
-  { t: "Wellness Events", d: "Pop-ups, workshops, and meetups building the community in real life." },
+  { t: "Online Community", d: "A founding wellness community, gathered around movement and intentional living." },
+  { t: "Portal Access", d: "Your private space for wellness content, event updates, and member-only resources." },
+  { t: "Live Pilates Events", d: "Booked separately through Cal.com — community members receive priority invitations." },
+  { t: "Wellness Insider", d: "Early notifications, VIP announcements, and complimentary perks at live experiences." },
 ];
 
 function MembershipPage() {
+  const { open } = useCommunity();
+  const join = () => open("membership");
+
   return (
     <SiteLayout>
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
         <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
           <div>
-            <span className="eyebrow">Hybrid Membership</span>
+            <span className="eyebrow">Founding Community</span>
             <h1 className="mt-5 text-5xl md:text-7xl leading-[1.02]">
-              Your wellness, <em className="font-light">your way.</em>
+              A wellness community, <em className="font-light">in the making.</em>
             </h1>
             <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-              Start online today with our wellness community and guided movement library. Step into the studio when we open — choose self-guided reformer sessions on your own time, or live, instructor-led classes when you want the energy of a group.
+              We're currently building our founding wellness community. Founding-member access is complimentary during our growth phase — portal access, event invitations, and insider wellness updates, gathered around movement and intentional living.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Join the Community</button>
+              <button onClick={join} className="btn-luxe btn-luxe-hover">Join the Community</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[0.65rem] uppercase tracking-[0.3em] text-clay">
-              <span>Beginner-friendly</span>
+              <span>Complimentary access</span>
               <span className="text-border">·</span>
-              <span>Online + In-Studio</span>
+              <span>Founding members</span>
               <span className="text-border">·</span>
-              <span>Self-guided or live</span>
+              <span>Beginner-welcoming</span>
             </div>
           </div>
           <div className="aspect-[4/5] rounded-3xl overflow-hidden">
-            <img src={membership} alt="Online Pilates classes" loading="lazy" className="w-full h-full object-cover" />
+            <img src={membership} alt="B.MARC founding wellness community" loading="lazy" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
@@ -114,10 +102,10 @@ function MembershipPage() {
       <section id="inside" className="py-24 bg-sand/40">
         <div className="container-luxe">
           <div className="max-w-2xl mb-14">
-            <span className="eyebrow">Inside the Membership</span>
-            <h2 className="mt-5 text-4xl md:text-5xl">A community, a library, a future studio.</h2>
+            <span className="eyebrow">Inside the Community</span>
+            <h2 className="mt-5 text-4xl md:text-5xl">A wellness insider community, not a checkout.</h2>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              Start online today. Step into the studio when we open — self-guided or live, your pace.
+              The B.MARC community is currently complimentary. Future premium access tiers will be introduced as the platform expands — early members will be notified first.
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -134,12 +122,12 @@ function MembershipPage() {
       <section id="plans" className="py-32 md:py-40 bg-gradient-to-b from-ivory via-sand/30 to-ivory">
         <div className="container-luxe">
           <div className="text-center max-w-2xl mx-auto mb-20">
-            <span className="eyebrow">Membership</span>
+            <span className="eyebrow">Access Levels</span>
             <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl">
               Three ways to <em className="font-light">belong.</em>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Curated tiers for every stage — start with the online community, grow into the full hybrid practice, unlock everything online and in studio.
+              Founding-member access is currently free during our community growth phase. Membership pricing and premium tiers will be introduced in the future — early members will be the first to know.
             </p>
           </div>
 
@@ -153,7 +141,7 @@ function MembershipPage() {
                     : "bg-ivory border border-border/70 hover:border-tan/50 hover:shadow-[0_40px_90px_-40px_oklch(0.28_0.035_40_/_0.25)]"
                 }`}
               >
-                {t.highlight && (
+                {t.highlight && t.note && (
                   <div className="absolute -top-px left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <span className="inline-flex items-center gap-2 bg-gradient-to-r from-tan to-clay text-ivory text-[0.6rem] uppercase tracking-[0.32em] px-5 py-2 rounded-full shadow-[0_10px_30px_-10px_oklch(0.28_0.035_40_/_0.5)]">
                       <span className="h-1 w-1 rounded-full bg-ivory/80" />
@@ -170,17 +158,15 @@ function MembershipPage() {
                 </div>
 
                 <div className="mt-8 pb-8 border-b border-dashed border-current/15">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="font-serif text-[3.5rem] leading-none tracking-[-0.02em]">{t.price}</span>
-                    <span className={`text-sm ${t.highlight ? "text-ivory/65" : "text-muted-foreground"}`}>
-                      {t.cadence}
-                    </span>
+                  <div className={`text-[0.65rem] uppercase tracking-[0.32em] ${t.highlight ? "text-tan" : "text-clay"}`}>
+                    Founding Phase
                   </div>
-                  {t.valueNote && (
-                    <div className={`mt-3 text-[0.7rem] uppercase tracking-[0.28em] ${t.highlight ? "text-tan" : "text-clay"}`}>
-                      {t.valueNote}
-                    </div>
-                  )}
+                  <div className="mt-3 font-serif text-[2rem] leading-tight tracking-[-0.01em]">
+                    Complimentary
+                  </div>
+                  <div className={`mt-2 text-xs ${t.highlight ? "text-ivory/65" : "text-muted-foreground"}`}>
+                    Free during our community growth phase.
+                  </div>
                 </div>
 
                 <ul className="mt-8 space-y-4 flex-1">
@@ -191,40 +177,38 @@ function MembershipPage() {
                     </li>
                   ))}
                 </ul>
-
-                <button
-                  onClick={() => goToYouTube("channel")}
-                  className={`mt-10 w-full rounded-full py-4 text-[0.7rem] uppercase tracking-[0.3em] font-medium transition-all duration-500 ${
-                    t.highlight
-                      ? "bg-ivory text-espresso hover:bg-tan hover:text-ivory"
-                      : "bg-espresso text-ivory hover:bg-clay border border-espresso"
-                  }`}
-                >
-                  {t.cta}
-                </button>
               </div>
             ))}
           </div>
 
+          <div className="mt-16 text-center">
+            <button onClick={join} className="btn-luxe btn-luxe-hover">
+              Join the Founding Community
+            </button>
+            <p className="mt-5 text-xs uppercase tracking-[0.28em] text-clay">
+              Currently complimentary during our founding phase
+            </p>
+          </div>
+
           <div className="mt-20 max-w-3xl mx-auto rounded-[2rem] border border-border/70 bg-ivory p-10 md:p-12 text-center">
-            <span className="eyebrow text-clay">Beginner Welcome</span>
+            <span className="eyebrow text-clay">Live Events</span>
             <h3 className="mt-4 font-serif text-3xl md:text-4xl leading-snug">
-              New to movement? <em className="font-light">Start here.</em>
+              Live Pilates events, <em className="font-light">booked separately.</em>
             </h3>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              Pilates and wellness can feel intimidating the first time. We've built B.MARC around guided support, self-paced options, and a community that meets you where you are. No prior experience required — just curiosity.
+              Live, instructor-led Pilates events are booked through Cal.com. Community members receive early access notifications, VIP announcements, priority invitations, and complimentary gift bags at live experiences.
             </p>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 justify-center text-[0.65rem] uppercase tracking-[0.3em] text-clay">
-              <span>Self-paced</span>
+              <span>Early access</span>
               <span className="text-border">·</span>
-              <span>Beginner pathways</span>
+              <span>VIP invitations</span>
               <span className="text-border">·</span>
-              <span>Private or group</span>
+              <span>Community perks</span>
             </div>
           </div>
 
           <p className="mt-14 text-center text-xs uppercase tracking-[0.32em] text-clay">
-            Online membership via YouTube · Live events booked through Cal.com · Cancel anytime
+            Founding community · Live events via Cal.com · Premium tiers coming soon
           </p>
         </div>
       </section>
