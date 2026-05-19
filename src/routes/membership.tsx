@@ -206,8 +206,25 @@ function MembershipPage() {
             ))}
           </div>
 
+          <div className="mt-20 max-w-3xl mx-auto rounded-[2rem] border border-border/70 bg-ivory p-10 md:p-12 text-center">
+            <span className="eyebrow text-clay">Beginner Welcome</span>
+            <h3 className="mt-4 font-serif text-3xl md:text-4xl leading-snug">
+              New to movement? <em className="font-light">Start here.</em>
+            </h3>
+            <p className="mt-5 text-muted-foreground leading-relaxed">
+              Pilates and wellness can feel intimidating the first time. We've built B.MARC around guided support, self-paced options, and a community that meets you where you are. No prior experience required — just curiosity.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 justify-center text-[0.65rem] uppercase tracking-[0.3em] text-clay">
+              <span>Self-paced</span>
+              <span className="text-border">·</span>
+              <span>Beginner pathways</span>
+              <span className="text-border">·</span>
+              <span>Private or group</span>
+            </div>
+          </div>
+
           <p className="mt-14 text-center text-xs uppercase tracking-[0.32em] text-clay">
-            By invitation · Cancel anytime · Billed in USD
+            Cancel anytime · Billed in USD · Founding members welcome
           </p>
         </div>
       </section>
