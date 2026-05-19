@@ -2,10 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "./admin";
-import { seedDemoData, clearDemoData } from "@/lib/demoData";
 import { SETUP_FILES } from "@/lib/db-setup.functions";
 import { toast } from "sonner";
-import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, Sparkles, Trash2, ExternalLink, Copy, ShieldAlert } from "lucide-react";
+import { CheckCircle2, XCircle, CircleDashed, Loader2, Database, ExternalLink, Copy, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/admin/testing")({
   component: TestingPage,
@@ -25,8 +24,6 @@ function TestingPage() {
 
   const [results, setResults] = useState<Record<string, { ok: boolean; detail?: string } | "running">>({});
   const [manual, setManual] = useState<Record<string, boolean>>({});
-  const [seeding, setSeeding] = useState(false);
-  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     try { setManual(JSON.parse(localStorage.getItem(storageKey) || "{}")); } catch {}
@@ -124,25 +121,6 @@ function TestingPage() {
     for (const c of checks) if (c.run) await runOne(c.id, c.run);
   };
 
-  const seed = async () => {
-    setSeeding(true);
-    const res = await seedDemoData();
-    setSeeding(false);
-    const ok = res.filter(r => r.ok).length;
-    toast.success(`Seeded ${ok}/${res.length} demo records`);
-    res.filter(r => !r.ok).forEach(r => toast.error(`${r.table} failed`, { description: r.error }));
-  };
-
-  const clear = async () => {
-    if (!confirm("Delete ALL rows flagged is_test_account=true?")) return;
-    setClearing(true);
-    const res = await clearDemoData();
-    setClearing(false);
-    const total = res.reduce((n, r) => n + r.deleted, 0);
-    toast.success(`Cleared ${total} demo rows`);
-    res.filter(r => r.error).forEach(r => toast.error(`${r.table}: ${r.error}`));
-  };
-
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
   const copySql = async (name: string, sql: string) => {
     try {
@@ -161,7 +139,7 @@ function TestingPage() {
         <p className="text-xs uppercase tracking-[0.3em] text-clay">Pre-launch</p>
         <h1 className="font-serif text-3xl mt-2">Testing & readiness</h1>
         <p className="text-sm text-clay mt-2 max-w-2xl">
-          Run automated probes and walk through the manual flows. Demo data is isolated by <code>is_test_account = true</code> and can be cleared in one click.
+          Run automated probes and walk through the manual flows below. This environment runs on real data only — no demo seeding.
         </p>
       </header>
 
@@ -208,13 +186,8 @@ function TestingPage() {
         <button onClick={runAll} className="inline-flex items-center gap-2 rounded-full bg-espresso text-ivory text-xs uppercase tracking-[0.2em] px-5 py-2.5">
           <Database size={14} /> Run all probes
         </button>
-        <button onClick={seed} disabled={seeding} className="inline-flex items-center gap-2 rounded-full border border-tan/40 text-xs uppercase tracking-[0.2em] px-5 py-2.5 disabled:opacity-60">
-          {seeding ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />} Seed demo data
-        </button>
-        <button onClick={clear} disabled={clearing} className="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 text-xs uppercase tracking-[0.2em] px-5 py-2.5 disabled:opacity-60">
-          {clearing ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} Clear demo data
-        </button>
       </div>
+
 
       <div className="bg-white border border-tan/30 rounded-2xl divide-y divide-tan/20">
         {checks.map(c => {
