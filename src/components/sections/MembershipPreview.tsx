@@ -4,6 +4,7 @@ import { branding } from "@/config/branding";
 
 export function MembershipPreview() {
   const { membership: m } = branding;
+  const { open } = useCommunity();
   return (
     <section className="py-28 md:py-36 bg-espresso text-ivory">
       <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
