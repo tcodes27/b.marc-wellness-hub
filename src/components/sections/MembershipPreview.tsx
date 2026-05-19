@@ -1,5 +1,5 @@
 import membership from "@/assets/membership.jpg";
-import { goToYouTube } from "@/lib/youtube";
+import { useCommunity } from "@/components/community/CommunityProvider";
 import { branding } from "@/config/branding";
 
 export function MembershipPreview() {
