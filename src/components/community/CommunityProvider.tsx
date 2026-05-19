@@ -215,15 +215,25 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
                     className="mt-3 text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed animate-fade-in"
                     style={{ animationDuration: "0.8s", animationDelay: "0.4s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
                   >
-                    You'll be the first to know about upcoming events and experiences.
+                    You'll be the first to know about upcoming events and experiences. Next, create your portal access to unlock member-only content.
                   </p>
-                  <button
-                    onClick={close}
-                    className="btn-luxe btn-luxe-hover mt-8 animate-fade-in"
+                  <div
+                    className="mt-8 flex flex-wrap gap-3 justify-center animate-fade-in"
                     style={{ animationDuration: "0.8s", animationDelay: "0.55s", animationFillMode: "both", animationTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
                   >
-                    Close
-                  </button>
+                    <a
+                      href="/portal/signup"
+                      className="btn-luxe btn-luxe-hover"
+                    >
+                      Create Your Portal Access
+                    </a>
+                    <button
+                      onClick={close}
+                      className="px-7 py-3.5 rounded-full border border-espresso/30 text-espresso text-sm uppercase tracking-[0.2em] hover:bg-sand transition-colors"
+                    >
+                      Maybe later
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={submit} className="space-y-5">

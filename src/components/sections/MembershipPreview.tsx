@@ -1,9 +1,10 @@
 import membership from "@/assets/membership.jpg";
-import { goToYouTube } from "@/lib/youtube";
+import { useCommunity } from "@/components/community/CommunityProvider";
 import { branding } from "@/config/branding";
 
 export function MembershipPreview() {
   const { membership: m } = branding;
+  const { open } = useCommunity();
   return (
     <section className="py-28 md:py-36 bg-espresso text-ivory">
       <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
@@ -26,8 +27,8 @@ export function MembershipPreview() {
           </ul>
 
           <div className="mt-10">
-            <button onClick={() => goToYouTube("channel")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
-              {branding.cta.startMembership}
+            <button onClick={() => open("membership-preview")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+              {branding.cta.joinCommunity}
             </button>
           </div>
         </div>
