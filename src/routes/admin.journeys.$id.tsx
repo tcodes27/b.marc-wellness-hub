@@ -55,7 +55,7 @@ const TOKENS = ["{{first_name}}", "{{email}}", "{{city}}", "{{interests}}"];
 
 function JourneyDetailPage() {
   const { id } = Route.useParams();
-  const [, ] = [null, null]; // navigate not needed here
+  
   const [journey, setJourney] = useState<Journey | null>(null);
   const [emails, setEmails] = useState<Email[]>([]);
   const [loading, setLoading] = useState(true);
