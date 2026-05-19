@@ -141,9 +141,9 @@ export type BrandingConfig = {
 export const branding: BrandingConfig = {
   name: "B.MARC",
   fullName: "B.MARC Pilates",
-  tagline: "Movement, connection, and intentional living for modern women.",
-  vertical: "Pilates",
-  ethos: "Movement · Community · Intention",
+  tagline: "A hybrid wellness community for modern living — online today, in-studio soon.",
+  vertical: "Hybrid Wellness & Movement",
+  ethos: "Community · Movement · Wellness",
 
   contact: {
     email: "team@bmarcpilates.com",
@@ -179,7 +179,7 @@ export const branding: BrandingConfig = {
 
   cta: {
     joinCommunity: "Join the Community",
-    startMembership: "Start Your Journey",
+    startMembership: "Join the Community",
     viewEvents: "View Events",
     bookSession: "Book a Session",
     newsletter: "Subscribe",
@@ -196,39 +196,40 @@ export const branding: BrandingConfig = {
   },
 
   hero: {
-    eyebrow: "B.MARC Pilates",
-    headlineLead: "More Than Pilates.",
-    headlineEm: "A Wellness Culture.",
-    subtext: "Movement, connection, and intentional living designed for modern women.",
+    eyebrow: "A Wellness Community",
+    headlineLead: "More Than a Studio.",
+    headlineEm: "A Wellness Ecosystem.",
+    subtext:
+      "An online community today — and a future studio designed around two ways to move: self-guided digital reformer sessions and live, instructor-led classes. Beginner-friendly, premium, built for real life.",
   },
 
   about: {
-    eyebrow: "The Movement",
+    eyebrow: "The Community",
     headlineLead: "A practice of ",
     headlineEm1: "presence",
     headlineMid: ", a culture of ",
     headlineEm2: "care",
-    body: "B.MARC was born from a simple belief, that movement is a love language. We build strength on the mat and a softer, more intentional life off of it. This is Pilates as ritual, community as medicine.",
+    body: "B.MARC is a modern wellness community built around movement — online today, hybrid tomorrow. We make Pilates, mobility, and intentional living feel less intimidating and more like home, whether you join us on screen, in a pop-up, or one day in our studio for a self-guided or live session.",
     pillars: [
-      "Wellness",
-      "Confidence",
-      "Discipline",
-      "Feminine Energy",
-      "Community",
+      "Online Community",
+      "Self-Guided Movement",
+      "Live Classes",
+      "Beginner-Welcoming",
+      "Wellness Events",
       "Intentional Living",
     ],
   },
 
   membership: {
     eyebrow: "The Membership",
-    headlineLead: "Your studio, ",
-    headlineEm: "in your pocket.",
-    body: "Stream Pilates classes and wellness rituals anytime on our YouTube channel, with private member-only sessions delivered straight to you.",
+    headlineLead: "Your wellness, ",
+    headlineEm: "your way.",
+    body: "Start with our online community and digital wellness library. Step into the studio when we open — choose self-guided reformer sessions on your own time, or live, instructor-led classes when you want the energy of a group. Hybrid by design. Beginner by welcome.",
     features: [
-      { title: "On-Demand Classes", description: "Reformer, mat & sculpt sessions, anywhere." },
-      { title: "Beginner Programs", description: "Step-by-step paths to build a confident practice." },
-      { title: "Wellness Routines", description: "Morning rituals, breathwork & sleep flows." },
-      { title: "Lifestyle Content", description: "Recipes, edits and conversations on living well." },
+      { title: "Online Community", description: "Guided wellness content, mobility, and beginner-friendly movement on-demand." },
+      { title: "Self-Guided Sessions", description: "Future studio access for digital reformer sessions at your own pace." },
+      { title: "Live Community Classes", description: "Instructor-led, group-energy classes when you want connection." },
+      { title: "Wellness Events", description: "Pop-ups, workshops, and meetups building the community in real life." },
     ],
   },
 
