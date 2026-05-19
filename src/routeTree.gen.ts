@@ -22,6 +22,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PortalSignupRouteImport } from './routes/portal_.signup'
+import { Route as PortalResetPasswordRouteImport } from './routes/portal_.reset-password'
 import { Route as PortalLoginRouteImport } from './routes/portal_.login'
 import { Route as PortalForgotPasswordRouteImport } from './routes/portal_.forgot-password'
 import { Route as PortalProfileRouteImport } from './routes/portal.profile'
@@ -103,6 +104,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const PortalSignupRoute = PortalSignupRouteImport.update({
   id: '/portal_/signup',
   path: '/portal/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalResetPasswordRoute = PortalResetPasswordRouteImport.update({
+  id: '/portal_/reset-password',
+  path: '/portal/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortalLoginRoute = PortalLoginRouteImport.update({
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/portal/profile': typeof PortalProfileRoute
   '/portal/forgot-password': typeof PortalForgotPasswordRoute
   '/portal/login': typeof PortalLoginRoute
+  '/portal/reset-password': typeof PortalResetPasswordRoute
   '/portal/signup': typeof PortalSignupRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/portal/profile': typeof PortalProfileRoute
   '/portal/forgot-password': typeof PortalForgotPasswordRoute
   '/portal/login': typeof PortalLoginRoute
+  '/portal/reset-password': typeof PortalResetPasswordRoute
   '/portal/signup': typeof PortalSignupRoute
   '/admin': typeof AdminIndexRoute
   '/portal': typeof PortalIndexRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/portal/profile': typeof PortalProfileRoute
   '/portal_/forgot-password': typeof PortalForgotPasswordRoute
   '/portal_/login': typeof PortalLoginRoute
+  '/portal_/reset-password': typeof PortalResetPasswordRoute
   '/portal_/signup': typeof PortalSignupRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/portal/profile'
     | '/portal/forgot-password'
     | '/portal/login'
+    | '/portal/reset-password'
     | '/portal/signup'
     | '/admin/'
     | '/portal/'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/portal/profile'
     | '/portal/forgot-password'
     | '/portal/login'
+    | '/portal/reset-password'
     | '/portal/signup'
     | '/admin'
     | '/portal'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/portal/profile'
     | '/portal_/forgot-password'
     | '/portal_/login'
+    | '/portal_/reset-password'
     | '/portal_/signup'
     | '/admin/'
     | '/portal/'
@@ -398,6 +410,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   PortalForgotPasswordRoute: typeof PortalForgotPasswordRoute
   PortalLoginRoute: typeof PortalLoginRoute
+  PortalResetPasswordRoute: typeof PortalResetPasswordRoute
   PortalSignupRoute: typeof PortalSignupRoute
   ApiPublicTwilioSmsWebhookRoute: typeof ApiPublicTwilioSmsWebhookRoute
 }
@@ -493,6 +506,13 @@ declare module '@tanstack/react-router' {
       path: '/portal/signup'
       fullPath: '/portal/signup'
       preLoaderRoute: typeof PortalSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal_/reset-password': {
+      id: '/portal_/reset-password'
+      path: '/portal/reset-password'
+      fullPath: '/portal/reset-password'
+      preLoaderRoute: typeof PortalResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portal_/login': {
@@ -678,6 +698,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   PortalForgotPasswordRoute: PortalForgotPasswordRoute,
   PortalLoginRoute: PortalLoginRoute,
+  PortalResetPasswordRoute: PortalResetPasswordRoute,
   PortalSignupRoute: PortalSignupRoute,
   ApiPublicTwilioSmsWebhookRoute: ApiPublicTwilioSmsWebhookRoute,
 }
