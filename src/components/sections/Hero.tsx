@@ -41,6 +41,17 @@ export function Hero() {
               {branding.cta.viewEvents} <ArrowRight size={14} />
             </Link>
           </div>
+
+          <div
+            className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[0.65rem] uppercase tracking-[0.32em] text-ivory/70 animate-fade-up"
+            style={{ animationDelay: "0.45s" }}
+          >
+            <span>Beginner-friendly</span>
+            <span className="text-ivory/30">·</span>
+            <span>Online + In-Person</span>
+            <span className="text-ivory/30">·</span>
+            <span>Community-led</span>
+          </div>
         </div>
       </div>
 
