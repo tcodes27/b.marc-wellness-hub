@@ -37,8 +37,10 @@ import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
+import { Route as AdminJourneysIndexRouteImport } from './routes/admin.journeys.index'
 import { Route as AdminContentIndexRouteImport } from './routes/admin.content.index'
 import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
+import { Route as AdminJourneysIdRouteImport } from './routes/admin.journeys.$id'
 import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -181,6 +183,11 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminJourneysIndexRoute = AdminJourneysIndexRouteImport.update({
+  id: '/journeys/',
+  path: '/journeys/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminContentIndexRoute = AdminContentIndexRouteImport.update({
   id: '/content/',
   path: '/content/',
@@ -192,6 +199,11 @@ const ApiPublicTwilioSmsWebhookRoute =
     path: '/api/public/twilio-sms-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminJourneysIdRoute = AdminJourneysIdRouteImport.update({
+  id: '/journeys/$id',
+  path: '/journeys/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminContentIdRoute = AdminContentIdRouteImport.update({
   id: '/content/$id',
   path: '/content/$id',
@@ -228,8 +240,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/journeys/$id': typeof AdminJourneysIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content/': typeof AdminContentIndexRoute
+  '/admin/journeys/': typeof AdminJourneysIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -259,8 +273,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/portal': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/journeys/$id': typeof AdminJourneysIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content': typeof AdminContentIndexRoute
+  '/admin/journeys': typeof AdminJourneysIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -293,8 +309,10 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
+  '/admin/journeys/$id': typeof AdminJourneysIdRoute
   '/api/public/twilio-sms-webhook': typeof ApiPublicTwilioSmsWebhookRoute
   '/admin/content/': typeof AdminContentIndexRoute
+  '/admin/journeys/': typeof AdminJourneysIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -328,8 +346,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portal/'
     | '/admin/content/$id'
+    | '/admin/journeys/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content/'
+    | '/admin/journeys/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -359,8 +379,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/portal'
     | '/admin/content/$id'
+    | '/admin/journeys/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content'
+    | '/admin/journeys'
   id:
     | '__root__'
     | '/'
@@ -392,8 +414,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portal/'
     | '/admin/content/$id'
+    | '/admin/journeys/$id'
     | '/api/public/twilio-sms-webhook'
     | '/admin/content/'
+    | '/admin/journeys/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -613,6 +637,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/journeys/': {
+      id: '/admin/journeys/'
+      path: '/journeys'
+      fullPath: '/admin/journeys/'
+      preLoaderRoute: typeof AdminJourneysIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/content/': {
       id: '/admin/content/'
       path: '/content'
@@ -626,6 +657,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/twilio-sms-webhook'
       preLoaderRoute: typeof ApiPublicTwilioSmsWebhookRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/journeys/$id': {
+      id: '/admin/journeys/$id'
+      path: '/journeys/$id'
+      fullPath: '/admin/journeys/$id'
+      preLoaderRoute: typeof AdminJourneysIdRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/content/$id': {
       id: '/admin/content/$id'
@@ -648,7 +686,9 @@ interface AdminRouteChildren {
   AdminVideosRoute: typeof AdminVideosRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminContentIdRoute: typeof AdminContentIdRoute
+  AdminJourneysIdRoute: typeof AdminJourneysIdRoute
   AdminContentIndexRoute: typeof AdminContentIndexRoute
+  AdminJourneysIndexRoute: typeof AdminJourneysIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -662,7 +702,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminVideosRoute: AdminVideosRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminContentIdRoute: AdminContentIdRoute,
+  AdminJourneysIdRoute: AdminJourneysIdRoute,
   AdminContentIndexRoute: AdminContentIndexRoute,
+  AdminJourneysIndexRoute: AdminJourneysIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
@@ -705,13 +747,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
