@@ -7,7 +7,7 @@ import { branding } from "@/config/branding";
 export function Hero() {
   const { open } = useCommunity();
   return (
-    <section className="relative h-screen min-h-[640px] w-full overflow-hidden">
+    <section className="relative min-h-[100svh] sm:min-h-[640px] w-full overflow-hidden">
       <img
         src={hero}
         alt={`${branding.fullName} hero`}
@@ -15,12 +15,13 @@ export function Hero() {
         width={1920}
         height={1080}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-espresso/30 via-espresso/20 to-espresso/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-espresso/55 via-espresso/35 to-espresso/80 sm:from-espresso/30 sm:via-espresso/20 sm:to-espresso/70" />
 
-      <div className="relative h-full container-luxe flex flex-col justify-end pt-32 md:pt-36 pb-24 md:pb-32">
+      <div className="relative min-h-[100svh] sm:min-h-[640px] container-luxe flex flex-col justify-end pt-28 sm:pt-32 md:pt-36 pb-20 sm:pb-24 md:pb-32">
         <div className="max-w-3xl">
           <span className="eyebrow !text-ivory/80 animate-fade-in">{branding.hero.eyebrow}</span>
-          <h1 className="mt-5 font-serif text-ivory text-[2.25rem] leading-[1.08] xs:text-[2.5rem] sm:text-5xl sm:leading-[1.06] md:text-6xl md:leading-[1.05] lg:text-7xl lg:leading-[1.04] tracking-[-0.01em] animate-fade-up">
+          <h1 className="mt-4 sm:mt-5 font-serif text-ivory text-[2rem] leading-[1.1] xs:text-[2.25rem] sm:text-5xl sm:leading-[1.06] md:text-6xl md:leading-[1.05] lg:text-7xl lg:leading-[1.04] tracking-[-0.01em] animate-fade-up break-words">
+
             {branding.hero.headlineLead}<br />
             <em className="font-light">{branding.hero.headlineEm}</em>
           </h1>
