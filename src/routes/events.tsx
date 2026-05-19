@@ -9,9 +9,9 @@ export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
       { title: "Events, B.MARC Pilates" },
-      { name: "description", content: "Reserve your place at B.MARC Pilates events: candlelit reformer flows, coastal retreats, wellness workshops and community meetups." },
+      { name: "description", content: "Pop-up wellness events, beginner workshops, mobility meetups, and community activations — how B.MARC is building the wellness community before our studio opens." },
       { property: "og:title", content: "Events, B.MARC Pilates" },
-      { property: "og:description", content: "In-person Pilates and wellness experiences for modern women." },
+      { property: "og:description", content: "Pop-up wellness events and community activations for beginners and modern lifestyles." },
     ],
   }),
   component: EventsPage,
@@ -30,12 +30,12 @@ function EventsPage() {
     <SiteLayout>
       <section className="pt-40 pb-16 md:pt-52 md:pb-24 bg-sand/40">
         <div className="container-luxe text-center max-w-3xl mx-auto">
-          <span className="eyebrow">Events</span>
+          <span className="eyebrow">Pop-Ups & Community</span>
           <h1 className="mt-5 text-5xl md:text-7xl leading-[1.05]">
-            Gatherings rooted in <em className="font-light">movement.</em>
+            Wellness, <em className="font-light">in real life.</em>
           </h1>
           <p className="mt-6 text-muted-foreground leading-relaxed">
-            From candlelit reformer flows to coastal retreats, every B.MARC experience is curated with intention.
+            Pop-up wellness events, beginner workshops, stretch & mobility meetups, and community activations — how we're building the B.MARC community before our studio opens.
           </p>
         </div>
       </section>
