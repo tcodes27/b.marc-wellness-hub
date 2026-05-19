@@ -2,9 +2,9 @@ import { goToYouTube, YOUTUBE_CHANNEL_URL } from "@/lib/youtube";
 import { Play, Youtube } from "lucide-react";
 
 const featured = [
-  { t: "Featured Classes", d: "Signature Pilates flows, filmed in studio.", dest: "videos" as const },
-  { t: "Beginner Playlists", d: "A grounded entry point to your practice.", dest: "playlists" as const },
-  { t: "Wellness Drops", d: "Breathwork, mobility and intentional rituals.", dest: "featured" as const },
+  { t: "Guided Wellness Sessions", d: "Mobility, stretching, and Pilates-inspired flows for every level.", dest: "videos" as const },
+  { t: "Beginner Pathways", d: "Step-by-step intros for anyone new to movement — no intimidation, just guidance.", dest: "playlists" as const },
+  { t: "Wellness Rituals", d: "Breathwork, recovery, and routines to support real, everyday life.", dest: "featured" as const },
 ];
 
 export function YouTubeShowcase() {
@@ -13,13 +13,12 @@ export function YouTubeShowcase() {
       <div className="container-luxe">
         <div className="flex items-end justify-between gap-10 flex-wrap mb-14">
           <div className="max-w-xl">
-            <span className="eyebrow">On YouTube</span>
+            <span className="eyebrow">Online Community, Today</span>
             <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl">
-              Curated Pilates, <em className="font-light">streaming now.</em>
+              Guided wellness, <em className="font-light">streaming now.</em>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Free wellness sessions live on our channel. Member-only classes
-              arrive as private, unlisted links — straight to you.
+              Free sessions live on our channel. Member-only classes — beginner pathways, mobility, and Pilates-inspired flows — arrive as private, unlisted links straight to you.
             </p>
           </div>
           <a
