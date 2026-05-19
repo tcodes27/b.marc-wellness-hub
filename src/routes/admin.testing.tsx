@@ -48,6 +48,7 @@ function TestingPage() {
       label: "has_role('admin') returns true",
       description: "Confirms RLS admin gate works.",
       run: async () => {
+        if (!userId) return { ok: false, detail: "No authenticated user — sign in as admin first." };
         const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
         if (error) return { ok: false, detail: error.message };
         return { ok: !!data, detail: String(data) };
@@ -58,6 +59,7 @@ function TestingPage() {
       label: "Supabase write + read (_diagnostics)",
       description: "Inserts and reads a row to confirm RW.",
       run: async () => {
+        if (!userId) return { ok: false, detail: "No authenticated user — sign in as admin first." };
         const { data: ins, error: insErr } = await supabase
           .from("_diagnostics").insert({ created_by: userId, note: `ping ${Date.now()}` }).select().single();
         if (insErr) return { ok: false, detail: `insert: ${insErr.message}` };
