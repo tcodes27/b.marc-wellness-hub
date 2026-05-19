@@ -117,7 +117,7 @@ function TestingPage() {
     { id: "content_publish", label: "Published member content shows in portal", description: "Publish a post with visibility=members; confirm in /portal/content.", manualHref: "/admin/content" },
     { id: "event_create", label: "Event creation flow works", description: "Create an event; appears in /admin/events.", manualHref: "/admin/events" },
     { id: "session_persist", label: "Logout/login session persistence", description: "Sign out of portal, sign back in, session sticks across reload.", manualHref: "/portal/login" },
-  ], [userId]);
+  ], []);
 
   const runOne = async (id: string, fn: () => Promise<{ ok: boolean; detail?: string }>) => {
     setResults(r => ({ ...r, [id]: "running" }));
