@@ -1,86 +1,37 @@
-## Goal
+## Problem
 
-Reposition B.MARC Pilates from "Pilates studio" to a **modern, hybrid wellness community platform** — online-first today, with a future studio that will offer both **self-guided digital reformer sessions** and **live community classes**. Beginner-friendly, premium, technology-enhanced, lifestyle-driven.
+In `src/routes/admin.testing.tsx`, the `has_role_admin` and `diag_write_read` probes guard on `userId` from `useAdmin()` context. The first probe (`supabase_session`) calls `supabase.auth.getSession()` directly and succeeds, but the context `userId` can be stale or empty in the closure when the probes run — producing the false "No authenticated user — sign in as admin first." message even though the session is live.
 
-No new routes. No tier price changes. Refresh existing pages, copy, and a few visual sections only.
+The admin layout does eventually set `userId`, but probes should not depend on parent context being hydrated at the right moment. They should resolve the current user themselves from the Supabase auth client (single source of truth, same client everywhere).
 
----
+## Fix
 
-## Scope of changes
+Edit `src/routes/admin.testing.tsx` only. No schema, no auth flow, no other routes touched.
 
-### 1. `src/config/branding.ts` — single source of truth rewrite
-The whole site reads from here, so most copy changes flow from this one file.
+1. **Add a small helper** at the top of the component:
+   ```ts
+   const resolveUserId = async (): Promise<string | null> => {
+     const { data: s } = await supabase.auth.getSession();
+     if (s.session?.user?.id) return s.session.user.id;
+     const { data: u } = await supabase.auth.getUser();
+     return u.user?.id ?? null;
+   };
+   ```
+   This prefers the cached session (fast) and falls back to `getUser()` (network) so it never returns an empty string.
 
-- `tagline`, `ethos`: shift from "modern women / Pilates" to hybrid wellness community language.
-- `vertical`: `"Hybrid Wellness & Movement"` (still surfaces "Pilates" in product copy).
-- `hero`: new headline + subtext. Example direction:
-  - Eyebrow: `"A Wellness Community"`
-  - Headline: `"More Than a Studio."` / em: `"A Wellness Ecosystem."`
-  - Subtext: online community today, self-guided + live studio experiences coming — built for beginners and modern lifestyles.
-- `about`: rewrite around "presence, community, and intentional movement — online and in real life."
-- `membership` section: features become **Online Community**, **Self-Guided Sessions**, **Live Community Classes**, **Wellness Events** (instead of "On-Demand / Beginner / Wellness / Lifestyle"). Add a beginner-welcoming line.
-- `newsletter`, `footer.description`: community-first language.
-- `seo.defaultTitle` / `defaultDescription`: "B.MARC Pilates — A Hybrid Wellness Community for Modern Living."
-- `cta.startMembership`: `"Join the Community"` variant; keep button labels short.
+2. **Rewrite the two failing probes** to call `resolveUserId()` instead of reading `userId` from context:
+   - `has_role_admin`: `const uid = await resolveUserId(); if (!uid) return { ok:false, detail:"No authenticated user — sign in as admin first." }` then `supabase.rpc("has_role", { _user_id: uid, _role: "admin" })`.
+   - `diag_write_read`: same `resolveUserId()` guard, then insert `{ created_by: uid, note: ... }`.
 
-### 2. `src/routes/index.tsx` + home sections
-Reorder/retitle existing sections so the home page tells the hybrid story without adding routes:
+3. **Drop `userId` from the `useMemo` deps** for `checks` (probes no longer close over it). Keep `useAdmin()` only for the `storageKey`.
 
-```text
-Hero  →  AboutMovement (community ethos)  →  MembershipPreview (hybrid pillars)
-     →  YouTubeShowcase (online today)  →  EventsPreview (in-person now)
-     →  CommunityFeed  →  Testimonials  →  EmailSignup
-```
+4. **Loading state for probes**: if `resolveUserId()` returns null, return a friendly `{ ok:false, detail:"Authentication still hydrating — try again in a moment." }` instead of a hard failure.
 
-Adjustments per section (copy only, no new components):
-- `Hero.tsx`: pulls new headline from `branding`. Add a small "Beginner-friendly · Online + In-person · Community-led" trio under the CTAs (3 inline pills using existing `eyebrow` style).
-- `AboutMovement.tsx`: copy now reads from `branding.about` (already does). New pillar list will include **Self-Guided**, **Live Classes**, **Digital Wellness**, **Beginner-Welcoming**, **Community**, **Intentional Living**.
-- `MembershipPreview.tsx`: features array becomes the 4 hybrid pillars (Online Community / Self-Guided Reformer / Live Classes / Wellness Events). Headline shifts to "Your wellness, your way."
-- `YouTubeShowcase.tsx`: reframe as "Online Community, available today" — same component, updated heading + subtext, keep cards.
-- `EventsPreview.tsx`: reframe as "In-Person Pop-Ups & Community Activations" — copy only.
+5. **No changes** to: avatar upload, db-setup functions, SETUP_FILES, admin layout, RLS, video library, YouTube/Cal.com flows, OAuth.
 
-### 3. `src/routes/membership.tsx`
-- Keep tier names, prices ($85 / $185 / $385) and structure.
-- Rewrite each tier's `tagline` and `features` to reflect the hybrid model:
-  - **Community Access ($85)** — Online community, beginner library, event previews, newsletter.
-  - **Signature Membership ($185)** — Full online library, live virtual classes, seasonal guides, priority event booking, member discounts.
-  - **B.MARC All Access ($385)** — Everything in Signature + future studio access (self-guided reformer sessions + live community classes), premium wellness experiences, 1:1 onboarding, founding-member perks.
-- Add a short intro band above the tiers explaining the hybrid model: "Start online today. Step into the studio when we open — self-guided or live, your pace."
-- Add a "Beginner Welcome" reassurance card below the tiers (uses existing card styles).
+## Expected QA
 
-### 4. `src/routes/about.tsx`
-- Rewrite the long-form story to reflect the hybrid wellness vision: online community first, future studio with two experiences (self-guided digital reformer + live community classes), beginner-first ethos.
-- Replace one image block with a "Two ways to experience B.MARC" split (Self-Guided vs Live) using existing gallery images and the current grid styles — no new components.
-
-### 5. `src/routes/events.tsx`
-- Reframe intro copy as "Pop-up wellness events, community activations, and beginner workshops — how we're building the community before the studio opens." No structural changes.
-
-### 6. Visual language
-- Keep existing tokens (`ivory`, `sand`, `espresso`, `clay`, `tan`) — they already match the soft-luxury / warm-minimalism brief.
-- No new design system work. No new fonts. No new components. Tone shifts come from copy + minor section reordering.
-
----
-
-## Out of scope (explicitly)
-
-- No new routes (no `/experience`, `/beginners`, `/community`).
-- No rename — staying with **B.MARC Pilates**.
-- No tier price changes.
-- No backend / auth / DB changes. No edits to `db/`, `portal.*`, `admin.*`, or `src/lib/youtube.ts`.
-- No new images generated; reuse existing assets.
-
----
-
-## Files touched
-
-- `src/config/branding.ts` (largest change — drives ~70% of visible copy)
-- `src/components/sections/Hero.tsx` (add inline pills)
-- `src/components/sections/MembershipPreview.tsx` (headline tweak)
-- `src/components/sections/YouTubeShowcase.tsx` (heading + subtext)
-- `src/components/sections/EventsPreview.tsx` (intro copy)
-- `src/routes/membership.tsx` (tier features + intro + beginner card)
-- `src/routes/about.tsx` (story rewrite + hybrid split block)
-- `src/routes/events.tsx` (intro copy)
-
-## Verification
-- Visit `/`, `/membership`, `/about`, `/events` in the preview — confirm new copy renders, no layout regressions, SEO titles updated.
+- `Supabase session is live` ✅ (unchanged)
+- `has_role('admin') returns true` ✅ (now reads same session)
+- `Supabase write + read (_diagnostics)` ✅ (uses same UUID)
+- No UUID syntax errors, no false "No authenticated user" messages, no new console errors.

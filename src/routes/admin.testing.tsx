@@ -19,8 +19,8 @@ type Check = {
 };
 
 function TestingPage() {
-  const { userId } = useAdmin();
-  const storageKey = `bmarc.testing.${userId || "anon"}`;
+  const { userId: ctxUserId } = useAdmin();
+  const storageKey = `bmarc.testing.${ctxUserId || "anon"}`;
 
   const [results, setResults] = useState<Record<string, { ok: boolean; detail?: string } | "running">>({});
   const [manual, setManual] = useState<Record<string, boolean>>({});
@@ -31,6 +31,13 @@ function TestingPage() {
   useEffect(() => {
     try { localStorage.setItem(storageKey, JSON.stringify(manual)); } catch {}
   }, [manual, storageKey]);
+
+  const resolveUserId = async (): Promise<string | null> => {
+    const { data: s } = await supabase.auth.getSession();
+    if (s.session?.user?.id) return s.session.user.id;
+    const { data: u } = await supabase.auth.getUser();
+    return u.user?.id ?? null;
+  };
 
   const checks: Check[] = useMemo(() => [
     {
@@ -48,8 +55,9 @@ function TestingPage() {
       label: "has_role('admin') returns true",
       description: "Confirms RLS admin gate works.",
       run: async () => {
-        if (!userId) return { ok: false, detail: "No authenticated user — sign in as admin first." };
-        const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+        const uid = await resolveUserId();
+        if (!uid) return { ok: false, detail: "Authentication still hydrating — try again in a moment." };
+        const { data, error } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
         if (error) return { ok: false, detail: error.message };
         return { ok: !!data, detail: String(data) };
       },
@@ -59,9 +67,10 @@ function TestingPage() {
       label: "Supabase write + read (_diagnostics)",
       description: "Inserts and reads a row to confirm RW.",
       run: async () => {
-        if (!userId) return { ok: false, detail: "No authenticated user — sign in as admin first." };
+        const uid = await resolveUserId();
+        if (!uid) return { ok: false, detail: "Authentication still hydrating — try again in a moment." };
         const { data: ins, error: insErr } = await supabase
-          .from("_diagnostics").insert({ created_by: userId, note: `ping ${Date.now()}` }).select().single();
+          .from("_diagnostics").insert({ created_by: uid, note: `ping ${Date.now()}` }).select().single();
         if (insErr) return { ok: false, detail: `insert: ${insErr.message}` };
         const { error: selErr } = await supabase.from("_diagnostics").select("id").eq("id", ins.id).single();
         if (selErr) return { ok: false, detail: `select: ${selErr.message}` };
@@ -69,6 +78,7 @@ function TestingPage() {
         return { ok: true, detail: "RW OK" };
       },
     },
+
     {
       id: "profiles_table",
       label: "profiles table reachable",
@@ -107,7 +117,7 @@ function TestingPage() {
     { id: "content_publish", label: "Published member content shows in portal", description: "Publish a post with visibility=members; confirm in /portal/content.", manualHref: "/admin/content" },
     { id: "event_create", label: "Event creation flow works", description: "Create an event; appears in /admin/events.", manualHref: "/admin/events" },
     { id: "session_persist", label: "Logout/login session persistence", description: "Sign out of portal, sign back in, session sticks across reload.", manualHref: "/portal/login" },
-  ], [userId]);
+  ], []);
 
   const runOne = async (id: string, fn: () => Promise<{ ok: boolean; detail?: string }>) => {
     setResults(r => ({ ...r, [id]: "running" }));
