@@ -224,7 +224,7 @@ function MembershipPage() {
           </div>
 
           <p className="mt-14 text-center text-xs uppercase tracking-[0.32em] text-clay">
-            Cancel anytime · Billed in USD · Founding members welcome
+            Online membership via YouTube · Live events booked through Cal.com · Cancel anytime
           </p>
         </div>
       </section>
