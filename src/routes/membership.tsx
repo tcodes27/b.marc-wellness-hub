@@ -8,9 +8,9 @@ export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
       { title: "Membership, B.MARC Pilates" },
-      { name: "description", content: "Unlimited online Pilates classes, wellness rituals and community access. The B.MARC membership, delivered through our private YouTube library." },
+      { name: "description", content: "A hybrid wellness membership: online community today, self-guided reformer sessions and live community classes when our studio opens. Beginner-welcoming, premium, built for real life." },
       { property: "og:title", content: "Membership, B.MARC Pilates" },
-      { property: "og:description", content: "Your studio, in your pocket. On-demand Pilates and wellness for modern women." },
+      { property: "og:description", content: "Start online. Step into the studio. Self-guided or live — your pace, your way." },
     ],
   }),
   component: MembershipPage,
@@ -19,54 +19,54 @@ export const Route = createFileRoute("/membership")({
 const tiers = [
   {
     name: "Community Access",
-    tagline: "An invitation in.",
+    tagline: "Start with the community.",
     price: "$85",
     cadence: "/ month",
     features: [
+      "Online community access",
+      "Beginner movement library",
+      "Mobility & stretching sessions",
       "Monthly wellness newsletter",
-      "Private community access",
-      "Event updates & previews",
-      "Member-only content",
-      "Select online Pilates sessions",
-      "Early access to events",
+      "Event previews & early invites",
+      "Member-only content drops",
     ],
     cta: "Begin Here",
     highlight: false,
   },
   {
     name: "Signature Membership",
-    tagline: "The full B.MARC practice.",
+    tagline: "The full hybrid practice.",
     price: "$185",
     cadence: "/ month",
     note: "Most Popular",
     valueNote: "≈ 20% saved vs. à la carte",
     features: [
-      "Full online Pilates library",
+      "Full online wellness library",
       "Monthly live virtual classes",
+      "Beginner pathways & guided programs",
       "Seasonal wellness guides",
       "Priority event booking",
       "Member community challenges",
-      "Lifestyle content & rituals",
       "Member-only brand discounts",
-      "Exclusive wellness drops",
+      "Early studio waitlist access",
     ],
     cta: "Become a Signature Member",
     highlight: true,
   },
   {
     name: "B.MARC All Access",
-    tagline: "The flagship membership.",
+    tagline: "Everything, online + in studio.",
     price: "$385",
     cadence: "/ month",
     features: [
       "Everything in Signature",
-      "In-person event access",
-      "Premium community experiences",
-      "Priority booking on every release",
-      "VIP wellness experiences",
-      "Early access to limited events",
-      "Premium digital content",
-      "Concierge-style member care",
+      "Future studio access at launch",
+      "Self-guided reformer sessions",
+      "Live, instructor-led classes",
+      "Premium wellness experiences",
+      "1:1 onboarding & wellness check-ins",
+      "VIP access to pop-up events",
+      "Founding-member perks",
     ],
     cta: "Request All Access",
     highlight: false,
@@ -74,10 +74,10 @@ const tiers = [
 ];
 
 const inside = [
-  { t: "On-Demand Library", d: "New classes added weekly across reformer, mat and sculpt." },
-  { t: "Beginner Pathways", d: "Guided 4-week starts to build form and confidence." },
-  { t: "Wellness Routines", d: "Morning rituals, breathwork, sleep stories." },
-  { t: "Lifestyle Edits", d: "Recipes, journaling prompts and the women we love." },
+  { t: "Online Community", d: "Guided wellness content, mobility, and beginner-friendly movement on-demand." },
+  { t: "Self-Guided Sessions", d: "Future studio reformer sessions you can flow through at your own pace." },
+  { t: "Live Community Classes", d: "Instructor-led group classes when you want energy, connection, and accountability." },
+  { t: "Wellness Events", d: "Pop-ups, workshops, and meetups building the community in real life." },
 ];
 
 function MembershipPage() {
@@ -86,16 +86,23 @@ function MembershipPage() {
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
         <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
           <div>
-            <span className="eyebrow">Membership</span>
+            <span className="eyebrow">Hybrid Membership</span>
             <h1 className="mt-5 text-5xl md:text-7xl leading-[1.02]">
-              The studio that <em className="font-light">moves with you.</em>
+              Your wellness, <em className="font-light">your way.</em>
             </h1>
             <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-              Unlimited on-demand Pilates, wellness rituals, and a soft community of women, streamed through our curated YouTube library, ready when you are.
+              Start online today with our wellness community and guided movement library. Step into the studio when we open — choose self-guided reformer sessions on your own time, or live, instructor-led classes when you want the energy of a group.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Join the Community</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[0.65rem] uppercase tracking-[0.3em] text-clay">
+              <span>Beginner-friendly</span>
+              <span className="text-border">·</span>
+              <span>Online + In-Studio</span>
+              <span className="text-border">·</span>
+              <span>Self-guided or live</span>
             </div>
           </div>
           <div className="aspect-[4/5] rounded-3xl overflow-hidden">
@@ -108,7 +115,10 @@ function MembershipPage() {
         <div className="container-luxe">
           <div className="max-w-2xl mb-14">
             <span className="eyebrow">Inside the Membership</span>
-            <h2 className="mt-5 text-4xl md:text-5xl">A practice library, plus a way of living.</h2>
+            <h2 className="mt-5 text-4xl md:text-5xl">A community, a library, a future studio.</h2>
+            <p className="mt-5 text-muted-foreground leading-relaxed">
+              Start online today. Step into the studio when we open — self-guided or live, your pace.
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {inside.map((f) => (
@@ -129,7 +139,7 @@ function MembershipPage() {
               Three ways to <em className="font-light">belong.</em>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Curated tiers for every stage of your practice, from quiet entry to flagship access.
+              Curated tiers for every stage — start with the online community, grow into the full hybrid practice, unlock everything online and in studio.
             </p>
           </div>
 
@@ -196,8 +206,25 @@ function MembershipPage() {
             ))}
           </div>
 
+          <div className="mt-20 max-w-3xl mx-auto rounded-[2rem] border border-border/70 bg-ivory p-10 md:p-12 text-center">
+            <span className="eyebrow text-clay">Beginner Welcome</span>
+            <h3 className="mt-4 font-serif text-3xl md:text-4xl leading-snug">
+              New to movement? <em className="font-light">Start here.</em>
+            </h3>
+            <p className="mt-5 text-muted-foreground leading-relaxed">
+              Pilates and wellness can feel intimidating the first time. We've built B.MARC around guided support, self-paced options, and a community that meets you where you are. No prior experience required — just curiosity.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 justify-center text-[0.65rem] uppercase tracking-[0.3em] text-clay">
+              <span>Self-paced</span>
+              <span className="text-border">·</span>
+              <span>Beginner pathways</span>
+              <span className="text-border">·</span>
+              <span>Private or group</span>
+            </div>
+          </div>
+
           <p className="mt-14 text-center text-xs uppercase tracking-[0.32em] text-clay">
-            By invitation · Cancel anytime · Billed in USD
+            Cancel anytime · Billed in USD · Founding members welcome
           </p>
         </div>
       </section>
