@@ -115,7 +115,10 @@ function MembershipPage() {
         <div className="container-luxe">
           <div className="max-w-2xl mb-14">
             <span className="eyebrow">Inside the Membership</span>
-            <h2 className="mt-5 text-4xl md:text-5xl">A practice library, plus a way of living.</h2>
+            <h2 className="mt-5 text-4xl md:text-5xl">A community, a library, a future studio.</h2>
+            <p className="mt-5 text-muted-foreground leading-relaxed">
+              Start online today. Step into the studio when we open — self-guided or live, your pace.
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {inside.map((f) => (
@@ -136,7 +139,7 @@ function MembershipPage() {
               Three ways to <em className="font-light">belong.</em>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              Curated tiers for every stage of your practice, from quiet entry to flagship access.
+              Curated tiers for every stage — start with the online community, grow into the full hybrid practice, unlock everything online and in studio.
             </p>
           </div>
 
