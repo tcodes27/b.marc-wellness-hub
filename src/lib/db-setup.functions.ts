@@ -10,6 +10,7 @@ import events from "../../db/events.sql?raw";
 import contentDist from "../../db/content_distribution.sql?raw";
 import portalTesting from "../../db/portal_and_testing.sql?raw";
 import videoLibrary from "../../db/video_library.sql?raw";
+import profileAvatars from "../../db/profile_avatars.sql?raw";
 
 export const SETUP_FILES: { name: string; sql: string }[] = [
   { name: "admin_roles.sql", sql: adminRoles },
@@ -17,6 +18,7 @@ export const SETUP_FILES: { name: string; sql: string }[] = [
   { name: "content_distribution.sql", sql: contentDist },
   { name: "portal_and_testing.sql", sql: portalTesting },
   { name: "video_library.sql", sql: videoLibrary },
+  { name: "profile_avatars.sql", sql: profileAvatars },
 ];
 
 export type SetupResult = {
