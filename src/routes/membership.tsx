@@ -86,16 +86,23 @@ function MembershipPage() {
       <section className="pt-40 pb-20 md:pt-52 md:pb-28">
         <div className="container-luxe grid gap-16 md:grid-cols-2 items-center">
           <div>
-            <span className="eyebrow">Membership</span>
+            <span className="eyebrow">Hybrid Membership</span>
             <h1 className="mt-5 text-5xl md:text-7xl leading-[1.02]">
-              The studio that <em className="font-light">moves with you.</em>
+              Your wellness, <em className="font-light">your way.</em>
             </h1>
             <p className="mt-7 text-muted-foreground leading-relaxed max-w-lg">
-              Unlimited on-demand Pilates, wellness rituals, and a soft community of women, streamed through our curated YouTube library, ready when you are.
+              Start online today with our wellness community and guided movement library. Step into the studio when we open — choose self-guided reformer sessions on your own time, or live, instructor-led classes when you want the energy of a group.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Start Your Journey</button>
+              <button onClick={() => goToYouTube("channel")} className="btn-luxe btn-luxe-hover">Join the Community</button>
               <a href="#inside" className="text-sm uppercase tracking-[0.28em] self-center link-underline">What's inside</a>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[0.65rem] uppercase tracking-[0.3em] text-clay">
+              <span>Beginner-friendly</span>
+              <span className="text-border">·</span>
+              <span>Online + In-Studio</span>
+              <span className="text-border">·</span>
+              <span>Self-guided or live</span>
             </div>
           </div>
           <div className="aspect-[4/5] rounded-3xl overflow-hidden">
