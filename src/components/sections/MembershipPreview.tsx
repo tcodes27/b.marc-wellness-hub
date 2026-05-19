@@ -27,8 +27,8 @@ export function MembershipPreview() {
           </ul>
 
           <div className="mt-10">
-            <button onClick={() => goToYouTube("channel")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
-              {branding.cta.startMembership}
+            <button onClick={() => open("membership-preview")} className="btn-luxe !bg-ivory !text-espresso !border-ivory hover:!bg-transparent hover:!text-ivory">
+              {branding.cta.joinCommunity}
             </button>
           </div>
         </div>
