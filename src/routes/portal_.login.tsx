@@ -69,7 +69,13 @@ function PortalLogin() {
           </button>
         </form>
 
-        <p className="mt-5 text-sm text-clay text-center">
+        <p className="mt-4 text-sm text-center">
+          <Link to="/portal/forgot-password" className="text-clay hover:text-espresso underline">
+            Forgot password?
+          </Link>
+        </p>
+
+        <p className="mt-3 text-sm text-clay text-center">
           New here? <Link to="/portal/signup" className="underline text-espresso">Create account</Link>
         </p>
       </div>
