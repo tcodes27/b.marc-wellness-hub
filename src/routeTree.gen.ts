@@ -38,8 +38,6 @@ import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
 import { Route as AdminJourneysRouteImport } from './routes/admin.journeys'
 import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
-import { Route as AdminJourneysRouteImport } from './routes/admin.journeys'
-import { Route as AdminJourneysIdRouteImport } from './routes/admin.journeys.$id'
 import { Route as AdminContentIndexRouteImport } from './routes/admin.content.index'
 import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
 import { Route as AdminJourneysIdRouteImport } from './routes/admin.journeys.$id'
@@ -188,16 +186,6 @@ const AdminExportsRoute = AdminExportsRouteImport.update({
 const AdminEventsRoute = AdminEventsRouteImport.update({
   id: '/events',
   path: '/events',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminJourneysRoute = AdminJourneysRouteImport.update({
-  id: '/journeys',
-  path: '/journeys',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminJourneysIdRoute = AdminJourneysIdRouteImport.update({
-  id: '/journeys/$id',
-  path: '/journeys/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContentIndexRoute = AdminContentIndexRouteImport.update({
