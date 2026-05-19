@@ -237,21 +237,21 @@ export const branding: BrandingConfig = {
     eyebrow: "Newsletter",
     headlineLead: "Join the ",
     headlineEm: "B.MARC Community",
-    body: "Get wellness updates, event access, and exclusive movement experiences delivered with intention.",
+    body: "Wellness updates, event invites, and early access to the studio launch — sent with intention, never noise.",
   },
 
   footer: {
     description:
-      "A movement, a community, a way of living. Pilates, wellness and intention, designed for the modern woman.",
+      "A hybrid wellness community — online today, in-studio soon. Self-guided movement, live classes, and pop-up events for people who want wellness to fit into real life.",
     exploreLabel: "Explore",
     connectLabel: "Connect",
   },
 
   seo: {
     titleTemplate: "%s — B.MARC Pilates",
-    defaultTitle: "B.MARC Pilates, A Wellness Culture for Modern Women",
+    defaultTitle: "B.MARC Pilates — A Hybrid Wellness Community for Modern Living",
     defaultDescription:
-      "B.MARC Pilates is a luxury wellness community for modern women. Join in-person Pilates events, online classes and a movement built on intention.",
+      "B.MARC Pilates is a hybrid wellness community. Join online today for guided movement and community, and step into our future studio for self-guided reformer sessions and live, instructor-led classes. Beginner-welcoming, premium, and built around real life.",
     twitterHandle: "@Lovable",
   },
 };
