@@ -41,7 +41,7 @@ export function EventsPreview() {
     <section className="py-28 md:py-36">
       <div className="container-luxe">
         <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
-          <div class‌Name="max-w-2xl">
+          <div className="max-w-2xl">
             <span className="eyebrow">In-Person Pop-Ups & Community</span>
             <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl">
               Gather. Move. <em className="font-light">Belong.</em>
