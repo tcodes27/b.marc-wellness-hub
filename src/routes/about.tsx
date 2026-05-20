@@ -57,7 +57,7 @@ function AboutPage() {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-ivory rounded-3xl overflow-hidden border border-border/60">
               <div className="aspect-[5/3] overflow-hidden">
-                <img src={g4} alt="Self-guided reformer experience" loading="lazy" className="w-full h-full object-cover" />
+                <img src={images.selfGuided.src} alt={images.selfGuided.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <div className="p-8">
                 <span className="eyebrow text-clay">Option One</span>
