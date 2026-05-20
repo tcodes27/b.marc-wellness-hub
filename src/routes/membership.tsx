@@ -94,7 +94,7 @@ function MembershipPage() {
             </div>
           </div>
           <div className="aspect-[4/5] rounded-3xl overflow-hidden">
-            <img src={membership} alt="B.MARC founding wellness community" loading="lazy" className="w-full h-full object-cover" />
+            <img src={images.membership.src} alt={images.membership.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>
