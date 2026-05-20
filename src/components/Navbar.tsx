@@ -74,16 +74,18 @@ export function Navbar() {
         </div>
 
         <button
-          aria-label="Menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-nav"
           onClick={() => setOpen((v) => !v)}
           className={`md:hidden ${scrolled ? "text-espresso" : "text-ivory"}`}
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
+          {open ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
         </button>
       </div>
 
       {open && (
-        <div className="md:hidden bg-ivory border-t border-border mt-3 animate-fade-in">
+        <div id="mobile-nav" className="md:hidden bg-ivory border-t border-border mt-3 animate-fade-in">
           <div className="container-luxe py-6 flex flex-col gap-5">
             {links.map((l) => (
               <Link
