@@ -1,4 +1,4 @@
-import about from "@/assets/about.jpg";
+import { images } from "@/config/images";
 import { branding } from "@/config/branding";
 
 export function AboutMovement() {
@@ -8,9 +8,10 @@ export function AboutMovement() {
       <div className="container-luxe grid gap-16 md:gap-20 md:grid-cols-2 items-center">
         <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
           <img
-            src={about}
-            alt={`${branding.name} studio`}
+            src={images.aboutStudio.src}
+            alt={images.aboutStudio.alt}
             loading="lazy"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1500ms] hover:scale-105"
           />
         </div>
