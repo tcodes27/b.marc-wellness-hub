@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import about from "@/assets/about.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
+import { images } from "@/config/images";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
