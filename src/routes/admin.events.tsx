@@ -227,16 +227,16 @@ function EventsPage() {
                       <div className="inline-flex items-center gap-1">
                         {url && (
                           <>
-                            <button onClick={() => copyLink(url)} title="Copy booking link" className="p-1.5 rounded hover:bg-sand">
-                              <Copy size={14} />
+                            <button onClick={() => copyLink(url)} aria-label="Copy booking link" title="Copy booking link" className="p-1.5 rounded hover:bg-sand">
+                              <Copy size={14} aria-hidden="true" />
                             </button>
-                            <a href={url} target="_blank" rel="noreferrer" title="Open booking link" className="p-1.5 rounded hover:bg-sand">
-                              <ExternalLink size={14} />
+                            <a href={url} target="_blank" rel="noreferrer" aria-label="Open booking link in a new tab" title="Open booking link" className="p-1.5 rounded hover:bg-sand">
+                              <ExternalLink size={14} aria-hidden="true" />
                             </a>
                           </>
                         )}
-                        <button onClick={() => resync(e)} title="Sync to Cal.com" className="p-1.5 rounded hover:bg-sand">
-                          <RefreshCw size={14} />
+                        <button onClick={() => resync(e)} aria-label="Sync event to Cal.com" title="Sync to Cal.com" className="p-1.5 rounded hover:bg-sand">
+                          <RefreshCw size={14} aria-hidden="true" />
                         </button>
                       </div>
                     </td>
