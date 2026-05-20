@@ -1,15 +1,11 @@
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
+import { images } from "@/config/images";
 
 const items = [
-  { src: g1, alt: "Reformer Pilates", span: "row-span-2" },
-  { src: g4, alt: "Group flow class", span: "" },
-  { src: g3, alt: "Matcha lifestyle", span: "" },
-  { src: g2, alt: "Friends in studio", span: "" },
-  { src: g5, alt: "Sunset meditation", span: "row-span-2" },
+  { ...images.gallery.reformer, span: "row-span-2" },
+  { ...images.gallery.groupClass, span: "" },
+  { ...images.gallery.matcha, span: "" },
+  { ...images.gallery.friends, span: "" },
+  { ...images.gallery.meditation, span: "row-span-2" },
 ];
 
 export function Gallery() {
@@ -23,7 +19,15 @@ export function Gallery() {
               Moments from <em className="font-light">our world.</em>
             </h2>
           </div>
-          <a href="#" className="text-sm uppercase tracking-[0.28em] link-underline">@bmarcpilates</a>
+          <a
+            href="https://www.instagram.com/bmarcpilates/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit B.MARC Pilates on Instagram (opens in a new tab)"
+            className="text-sm uppercase tracking-[0.28em] link-underline"
+          >
+            @bmarcpilates
+          </a>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 auto-rows-[180px] md:auto-rows-[240px] gap-3 md:gap-5">
@@ -36,6 +40,7 @@ export function Gallery() {
                 src={i.src}
                 alt={i.alt}
                 loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-[1200ms] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-espresso/0 group-hover:bg-espresso/15 transition-colors duration-500" />

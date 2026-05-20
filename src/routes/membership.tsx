@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
-import membership from "@/assets/membership.jpg";
+import { images } from "@/config/images";
 import { useCommunity } from "@/components/community/CommunityProvider";
 
 export const Route = createFileRoute("/membership")({
@@ -94,7 +94,7 @@ function MembershipPage() {
             </div>
           </div>
           <div className="aspect-[4/5] rounded-3xl overflow-hidden">
-            <img src={membership} alt="B.MARC founding wellness community" loading="lazy" className="w-full h-full object-cover" />
+            <img src={images.membership.src} alt={images.membership.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
           </div>
         </div>
       </section>

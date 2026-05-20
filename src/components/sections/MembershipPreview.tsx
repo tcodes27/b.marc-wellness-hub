@@ -1,4 +1,4 @@
-import membership from "@/assets/membership.jpg";
+import { images } from "@/config/images";
 import { useCommunity } from "@/components/community/CommunityProvider";
 import { branding } from "@/config/branding";
 
@@ -35,9 +35,10 @@ export function MembershipPreview() {
 
         <div className="order-1 md:order-2 relative aspect-[4/5] rounded-3xl overflow-hidden">
           <img
-            src={membership}
-            alt={`${branding.terminology.membership} preview`}
+            src={images.membership.src}
+            alt={images.membership.alt}
             loading="lazy"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
