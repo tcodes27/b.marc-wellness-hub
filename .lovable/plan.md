@@ -1,95 +1,116 @@
-# Community Journeys — Build Plan
+# Image & Accessibility Audit — B.MARC Pilates
 
-A new admin-only automation system at `/admin/journeys` for building onboarding sequences, nurture campaigns, and wellness flows for B.MARC community members. Modeled on ConvertKit / Flodesk / Kajabi, styled to match the existing luxury editorial admin aesthetic.
+A two-track pass: (1) make every image easy for you to swap from one file, with proper alt text; (2) bring the public site, portal, and admin up to WCAG AA on the items that actually fail today. No visual redesign — luxury aesthetic stays intact.
 
-This is large — I'll deliver it in **3 phases** so you can review and steer between each. All phases are additive; nothing existing breaks.
+## Part 1 — Image inventory (current state)
 
----
+All site imagery lives in `src/assets/` and is imported by component. Eleven local images, plus YouTube thumbnails (admin-only) and user-uploaded avatars / featured images (Supabase storage). No CSS background-image usage, no hardcoded external image URLs on public pages.
 
-## Phase 1 — Foundation (DB + Admin shell + Journey CRUD)
+| File | Used in | Purpose | Current alt | Status |
+|---|---|---|---|---|
+| `hero.jpg` | `components/sections/Hero.tsx` | Home hero | "B.MARC Pilates hero" | OK, refine |
+| `about.jpg` | `sections/AboutMovement.tsx`, `routes/about.tsx` | About / movement | "B.MARC studio" / "B.MARC community" | OK, refine |
+| `membership.jpg` | `sections/MembershipPreview.tsx`, `routes/membership.tsx` | Membership | "B.MARC founding wellness community" | OK |
+| `gallery-1…5.jpg` | `sections/Gallery.tsx`, `routes/about.tsx`, `data/instagramPosts.ts` | Community grid + IG feed | Generic ("Reformer Pilates", "Group flow class", etc.) | Refine, dedupe usage |
+| `event-1…3.jpg` | `data/instagramPosts.ts` only (events page itself is now data-driven) | IG feed entries | varies | Keep |
 
-**Database (new tables, idempotent SQL in `db/journeys.sql`):**
-- `journeys` — id, title, description, status (draft/active/paused), trigger_type, trigger_config (jsonb), audience_tags (text[]), audience_interests (text[]), created_at/updated_at, created_by
-- `journey_emails` — id, journey_id, position (int), delay_days, delay_hours, subject, preview_text, body_json (Tiptap), body_html (rendered), featured_image_url, attachments (jsonb), cta_label, cta_url, signature_html, active
-- `journey_enrollments` — id, journey_id, member_id, status (active/paused/completed/unsubscribed), enrolled_at, current_step, next_send_at, completed_at, manual (bool), source
-- `journey_email_sends` — id, enrollment_id, journey_email_id, member_id, scheduled_at, sent_at, status (queued/sent/failed/skipped), provider_message_id, error, opened_at, clicked_at
-- `email_templates` — id, name, category, body_json, body_html, thumbnail_url (reusable blocks/full templates)
-- RLS: admin-only via existing `has_role('admin')`
-- Trigger types stored as enum-like text: `community_signup`, `portal_signup`, `delay_after_join`, `event_registration`, `manual`, `tag_added`, `birthday_month`
+Dynamic images (no local file):
+- YouTube thumbnails — `admin.videos.tsx` (admin-only, decorative `alt=""` is correct)
+- Profile avatars — `portal.profile.tsx` (`alt="Profile"` — fix to user's name)
+- Featured post images — admin/portal content (`alt=""` everywhere — needs post title)
 
-**Admin shell:**
-- New sidebar tab "Community Journeys" → `/admin/journeys` (icon: `Workflow` from lucide)
-- Index route: list of journeys (cards/table), status badges, enrollment count, "New Journey" button, duplicate/pause/delete actions
-- Detail route: `/admin/journeys/$id` — journey settings (title, description, trigger, audience, active toggle) + email sequence list
+No mock/demo images remain after the prior cleanup.
 
----
+## Part 2 — Centralized image config
 
-## Phase 2 — Email Sequence Builder + Default Welcome Journey
+Create `src/config/images.ts` as the single source of truth:
 
-**Sequence builder (inside journey detail):**
-- Ordered list of emails with drag-to-reorder (simple up/down buttons; no heavy DnD lib)
-- Each email editor modal:
-  - Subject + preview text
-  - Delay (days/hours from previous step or from enrollment)
-  - Rich text editor (reuse existing `RichEditor.tsx`)
-  - Featured image upload (Supabase storage `content-media` bucket — reuse existing)
-  - PDF attachment upload
-  - CTA label + URL
-  - Signature block (HTML)
-  - Personalization tokens: `{{first_name}}`, `{{email}}`, `{{city}}`, `{{interests}}` (insert buttons + render preview)
-- Preview pane: ivory bg, serif headings, warm-brown accents — matches B.MARC editorial style
-- "Send test email to…" button
+```ts
+// One import per image. Each entry: { src, alt, role: 'meaningful' | 'decorative' }
+export const images = {
+  hero:        { src: heroJpg,       alt: 'Founder leading a reformer Pilates class in the B.MARC studio at golden hour' },
+  aboutStudio: { src: aboutJpg,      alt: 'B.MARC studio interior with natural light and reformer equipment' },
+  membership:  { src: membershipJpg, alt: 'B.MARC founding members gathered after a community flow class' },
+  founder:     { src: aboutJpg,      alt: 'Brianna Marc, founder of B.MARC Pilates' }, // placeholder until real photo
+  gallery: {
+    reformer:    { src: g1, alt: 'Reformer Pilates session in progress' },
+    groupClass:  { src: g4, alt: 'Group flow class with members on mats' },
+    matcha:      { src: g3, alt: 'Matcha and lifestyle moment from a B.MARC event' },
+    friends:     { src: g2, alt: 'Members connecting after class in the studio' },
+    meditation:  { src: g5, alt: 'Sunset meditation with the B.MARC community' },
+  },
+  events: { e1: {src: e1, alt: '…'}, e2: {…}, e3: {…} },
+  fallback: { decorative: { src: heroJpg, alt: '' } },
+} as const;
+```
 
-**Default seeded journey:**
-- `db/journeys.sql` includes an idempotent seed for "Founding Member Welcome Journey" with the 3 emails you specified (Welcome / More Than Movement / Your Wellness Ritual Starts Here), full copy, day-0/day-2/day-5 timing
-- Trigger: `community_signup`, active=false by default (so you can review before enabling)
+Then refactor `Hero`, `AboutMovement`, `Gallery`, `MembershipPreview`, `routes/about.tsx`, `routes/membership.tsx`, and `data/instagramPosts.ts` to read from `images`. You can swap any image by editing the one import line in `src/config/images.ts`.
 
----
+## Part 3 — Alt text fixes
 
-## Phase 3 — Delivery System + Enrollment + Analytics
+- Replace vague alts ("B.MARC studio", "B.MARC community") with the descriptive copy in the config above.
+- Admin/portal `<img alt="">` for **featured post images** → use the post title.
+- `portal.profile.tsx` avatar → `alt={\`${displayName}'s profile photo\`}`.
+- YouTube thumbnails in admin videos table → keep `alt=""` (decorative; video title is next to it).
+- Featured images that are purely decorative inside an article body (admin content preview) → keep `alt=""`.
 
-**Enrollment:**
-- Hook into `CommunityProvider` signup success: server fn `enrollMemberInJourneys` finds all active journeys with matching trigger + audience, creates `journey_enrollments` rows with `next_send_at` computed
-- Same for portal signup
-- Admin can manually enroll a member from `/admin/members` (new action) or from the journey detail page (multi-select members)
+## Part 4 — Accessibility fixes (the real issues, by file)
 
-**Delivery (queue-based, retry-safe):**
-- Architecture supports Resend / SendGrid / Lovable Email (provider abstracted behind `sendEmail(provider, payload)`)
-- Default provider: **Lovable Emails** (built-in, no API key) — recommend enabling Lovable Cloud email infra
-- Server fn `processJourneyQueue` selects due `journey_email_sends`, renders HTML with member personalization, calls provider, logs result, schedules next step
-- Cron via pg_cron (every 5 min) — or manual "Run queue now" button in admin until cron is wired
-- Retry: failed sends retried up to 3x with exponential backoff
-- Unsubscribe: token-based per-member; sets enrollment status to `unsubscribed` and adds to suppression
-- Open/click tracking: tracking pixel + redirect endpoint at `/api/public/journey-track`
+Sitewide
+- Add a **skip-to-content** link in `__root.tsx` shell (visible on focus).
+- Ensure exactly one `<main>` per page. Public pages use `SiteLayout` — wrap its `<Outlet />` in `<main id="main">`. `admin.tsx` and `portal.tsx` each get their own `<main>`. Remove any duplicates.
+- Add `lang="en"` to `<html>` in `__root.tsx`.
+- Honor reduced motion: in `src/styles.css` add `@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }`.
+- Add a visible focus ring utility (`:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px }`) and stop suppressing focus rings on links/buttons.
 
-**Twilio/SMS:** schema includes `channel` column (`email`|`sms`) on `journey_emails` set to `email` for now — not wired, just future-ready
+Icon-only buttons missing `aria-label` (fix in place)
+- `admin.events.tsx`: copy-link, resync (have `title`, add `aria-label`).
+- `admin.journeys.index.tsx`: edit, duplicate, delete row actions.
+- `admin.journeys.$id.tsx`: move up, move down, preview, edit, delete, close (X) buttons.
+- `admin.content.$id.tsx`: clear featured image, tag toggles, close (X), preview.
+- `admin.videos.tsx`: delete row button.
+- `portal.profile.tsx`: avatar upload/remove buttons.
+- `Navbar.tsx`: mobile menu toggle (verify `aria-expanded` + `aria-controls`).
 
-**Admin features:**
-- Duplicate / pause / activate journeys
-- Manual enroll members
-- Preview email (rendered with sample data)
-- Send test email
-- Reorder sequence
-- Enrollment list per journey with status
-- Delivery log table (latest 100 sends per journey)
+Forms & modals (community signup, portal login/signup/forgot/reset, profile, admin content/events/journeys)
+- Every `<input>` gets an associated `<label htmlFor>` (visible or `sr-only`), not just `placeholder`.
+- Required fields: add `aria-required="true"` and a visible `*`.
+- Error messages: render with `role="alert"` and link via `aria-describedby={errorId}`.
+- Modals: use the existing shadcn `Dialog` (already correct Radix ARIA + focus trap + Esc) — replace any hand-rolled overlays (e.g. `admin.members.tsx` "Close" panel, journey preview/edit overlays) with `Dialog` so focus returns correctly.
+- Toasts: `sonner` already announces — verify `Toaster` is mounted once in `__root.tsx`.
 
----
+Color & contrast
+- Audit `text-clay` / `text-ivory/70` / `text-muted-foreground/50` against their backgrounds. Replace any below 4.5:1 with a slightly darker token (introduce `--clay-strong` in `styles.css` if needed). Hero subtitle `text-ivory/85` on dark gradient — keep.
+- Form errors: keep red color **and** add an icon + text prefix ("Error:").
+- Filter/tag chips (admin content, members): ensure selected state is not color-only — add border weight or check icon.
+- Link underlines: keep `link-underline` utility on body links so links are distinguishable without color.
 
-## Technical Details
+Keyboard / semantics
+- No `onClick` on `<div>` / `<span>` found in scanned routes — verify in `CommunityFeed`, `Testimonials`, `YouTubeShowcase` and convert any to `<button>`.
+- Tab order: confirm mobile nav (`Navbar`) and admin sidebar (`admin.tsx`) close on Esc and return focus to the toggle.
+- Heading order: confirm one `<h1>` per page (Hero has h1; secondary pages — about, membership, events — must each define their own h1, currently they do).
 
-- **Stack:** TanStack Start server functions (`createServerFn` + `requireSupabaseAuth`), Supabase RLS, existing `RichEditor`, existing storage buckets
-- **Email provider:** Lovable Emails by default (will require enabling Lovable Cloud email domain — I'll prompt you when we get to Phase 3 if not set up). Resend/SendGrid pluggable.
-- **Routes added:** `/admin/journeys`, `/admin/journeys/$id`, `/api/public/journey-track`, `/api/public/journey-unsubscribe`
-- **Files added (~):** `db/journeys.sql`, `src/routes/admin.journeys.tsx`, `src/routes/admin.journeys.$id.tsx`, `src/lib/journeys.functions.ts`, `src/lib/journey-delivery.server.ts`, `src/components/admin/JourneyEmailEditor.tsx`, `src/components/admin/JourneyTriggerPicker.tsx`
-- **Files touched:** `src/routes/admin.tsx` (sidebar nav), `src/components/community/CommunityProvider.tsx` (enrollment hook on signup), `src/routes/portal_.signup.tsx` (portal-signup enrollment hook)
-- **Untouched:** Content Studio, portal auth, community signup UI, YouTube, Cal.com, existing CRM
+Images
+- Lazy-loading: already on most. Add `loading="lazy"` + `decoding="async"` to remaining `<img>` (admin tables, portal content) — perf-adjacent a11y win.
+- Decorative images inside hero gradients: `alt=""` and `aria-hidden="true"`.
 
----
+## Part 5 — Deliverable: QA report
 
-## What I need from you before starting
+After the edits I'll output a markdown report in chat (no separate file unless you want one) with:
+- ✅ Fixed (per file, per fix)
+- 🟡 Needs manual review (e.g. real photo of founder for `images.founder`, contrast tweaks you want to keep for brand reasons)
+- 🚨 Critical (none expected post-fix)
+- 🎯 Recommended next (real `<picture>` + AVIF/WEBP, automated axe CI)
+- Launch-readiness score out of 100
 
-1. **Email provider preference** — Lovable Emails (recommended, zero config), Resend, or SendGrid? If unsure, I'll go Lovable Emails.
-2. **Phasing** — ship all 3 phases in one go, or stop after Phase 1 / Phase 2 for review?
-3. **Default welcome journey** — should it be **active by default** after install, or **draft** so you can review the copy first? (I lean draft.)
+## Out of scope (explicit)
 
-Reply with answers (or "go ahead, all 3 phases, Lovable Emails, draft" works) and I'll start building.
+- No visual redesign, no palette change.
+- No changes to Content Studio behavior, Cal.com flow, portal auth, community signup logic, YouTube integration, or CRM/journeys logic. Only labels, ARIA, semantic wrappers, and the image-config refactor touch those files.
+- No new dependencies.
+
+## Technical notes
+
+- Files touched (estimate): `src/config/images.ts` (new), `src/styles.css`, `src/routes/__root.tsx`, `src/components/SiteLayout.tsx`, `Navbar.tsx`, `Footer.tsx`, all `sections/*`, `routes/about.tsx`, `routes/membership.tsx`, `routes/events.tsx`, `routes/portal*.tsx`, `routes/admin*.tsx` (label/aria edits only), `data/instagramPosts.ts`.
+- No DB migrations, no server function changes.
+- No route additions.
