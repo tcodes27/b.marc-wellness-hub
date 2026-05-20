@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import hero from "@/assets/hero.jpg";
 import { useCommunity } from "@/components/community/CommunityProvider";
 import { branding } from "@/config/branding";
+import { images } from "@/config/images";
 
 export function Hero() {
   const { open } = useCommunity();
