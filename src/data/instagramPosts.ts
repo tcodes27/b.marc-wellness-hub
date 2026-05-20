@@ -1,90 +1,57 @@
 /**
- * ============================================================
- *  B.MARC PILATES — INSTAGRAM FEED DATA
- * ============================================================
- *
- *  HOW TO ADD OR UPDATE A POST
- *  ---------------------------
- *  1. Open the @bmarcpilates post on Instagram.
- *  2. Right-click the image → "Save image as…" and drop the file
- *     into `src/assets/` (e.g. `ig-2025-05-reformer.jpg`).
- *     OR paste the public Instagram CDN URL directly into `image`.
- *  3. Copy the post URL (e.g. https://www.instagram.com/p/XXXXXXXX/).
- *  4. Add a new entry at the TOP of the `instagramPosts` array
- *     so newest content appears first.
- *  5. Set `type` to "image" | "carousel" | "reel".
- *
- *  FUTURE UPGRADE PATH
- *  -------------------
- *  This file mirrors the shape returned by the Meta Instagram Graph
- *  API (`/me/media` → media_url, caption, permalink, media_type,
- *  timestamp). When you wire the official API, swap this static
- *  array for a server function that fetches and maps to the same
- *  `InstagramPost` shape — no UI changes required.
- * ============================================================
+ * B.MARC PILATES — INSTAGRAM FEED DATA
+ * See file header history for usage. Imagery now sourced from
+ * branded editorial shoot.
  */
 
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import e1 from "@/assets/event-1.jpg";
-import e2 from "@/assets/event-2.jpg";
-import e3 from "@/assets/event-3.jpg";
-import about from "@/assets/about.jpg";
-import membership from "@/assets/membership.jpg";
+import heroReformer from "@/assets/bmarc-hero-reformer.jpg";
+import founderReformer from "@/assets/bmarc-founder-reformer.jpg";
+import founderSeated from "@/assets/bmarc-founder-seated.jpg";
+import founderMat from "@/assets/bmarc-founder-mat.jpg";
+import community from "@/assets/bmarc-community.jpg";
+import communityAlt from "@/assets/bmarc-community-alt.jpg";
 
 export type InstagramPostType = "image" | "carousel" | "reel";
 
 export interface InstagramPost {
-  /** Local import or full Instagram CDN URL */
   image: string;
-  /** Short caption shown on hover — keep under ~120 chars */
   caption: string;
-  /** Permalink to the original Instagram post */
   link: string;
-  /** image | carousel | reel */
   type: InstagramPostType;
-  /** ISO date string, e.g. "2025-05-12" */
   date: string;
-  /** Optional alt text for accessibility */
   alt?: string;
 }
 
 export const INSTAGRAM_HANDLE = "bmarcpilates";
 export const INSTAGRAM_URL = "https://www.instagram.com/bmarcpilates/";
 
-/* ============================================================
- *  ADD NEW POSTS HERE  ⬇  (newest first)
- * ============================================================ */
 export const instagramPosts: InstagramPost[] = [
   {
-    image: g1,
+    image: heroReformer,
     caption: "Sunday reformer ritual — slow, intentional, ours.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-05-12",
-    alt: "Reformer Pilates in soft morning light",
+    alt: "Founder on the reformer in soft morning light",
   },
   {
-    image: e1,
-    caption: "Golden hour gathering in the park.",
+    image: community,
+    caption: "Golden hour gathering in the studio.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "reel",
     date: "2025-05-08",
-    alt: "B.MARC community event in the park at golden hour",
+    alt: "B.MARC community gathered around a reformer",
   },
   {
-    image: g3,
-    caption: "Slow mornings, matcha and movement.",
+    image: founderMat,
+    caption: "Slow mornings, mat work and intention.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-05-04",
-    alt: "Matcha and a Pilates mat",
+    alt: "Mat practice with B.MARC towel and bottle",
   },
   {
-    image: about,
+    image: communityAlt,
     caption: "The B.MARC women — softness as strength.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "carousel",
@@ -92,31 +59,31 @@ export const instagramPosts: InstagramPost[] = [
     alt: "Studio community portrait",
   },
   {
-    image: g2,
+    image: founderSeated,
     caption: "Movement as identity.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-04-22",
-    alt: "Braided hair and linen",
+    alt: "Founder seated by the studio shelves",
   },
   {
-    image: e2,
-    caption: "Post-flow brunch club.",
+    image: founderReformer,
+    caption: "Post-flow stillness.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-04-18",
-    alt: "Brunch table after Pilates class",
+    alt: "Founder on reformer in neutral light",
   },
   {
-    image: g5,
+    image: community,
     caption: "Soft routines between classes.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "reel",
     date: "2025-04-12",
-    alt: "Café pause",
+    alt: "Community in conversation",
   },
   {
-    image: g4,
+    image: founderMat,
     caption: "Quiet practice, linen light.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "carousel",
@@ -124,22 +91,19 @@ export const instagramPosts: InstagramPost[] = [
     alt: "Linen light and quiet practice",
   },
   {
-    image: e3,
-    caption: "Breathwork at sunrise on the coast.",
+    image: heroReformer,
+    caption: "Breathwork and the long inhale.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-03-30",
-    alt: "Coastal sunrise breathwork",
+    alt: "Reformer breathwork",
   },
   {
-    image: membership,
+    image: founderMat,
     caption: "Practice from anywhere — your home, your hour.",
     link: "https://www.instagram.com/bmarcpilates/",
     type: "image",
     date: "2025-03-24",
-    alt: "Home Pilates practice",
+    alt: "Home-style mat Pilates practice",
   },
 ];
-/* ============================================================
- *  END OF POSTS  ⬆
- * ============================================================ */

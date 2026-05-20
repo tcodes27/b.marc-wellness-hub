@@ -2,35 +2,19 @@
  * ============================================================
  *  B.MARC PILATES — CENTRAL IMAGE CONFIG
  * ============================================================
- *
- *  Every static image used across the public site is registered
- *  here. To swap an image:
- *
- *  1. Drop the new file into `src/assets/` (use a descriptive
- *     filename like `founder-2025.jpg`).
- *  2. Change the `import` line below to point at the new file.
- *  3. Update the `alt` text to describe the new image accurately.
- *
- *  Alt text rules:
- *  - Meaningful images: describe the subject, context, mood.
- *  - Purely decorative images: use `alt: ""` and add
- *    `aria-hidden="true"` on the <img>.
- *  - Never use "image of…" or "photo of…" — screen readers
- *    already announce the element as an image.
+ *  All site imagery is registered here. To swap an image:
+ *  1. Drop the new file into `src/assets/`.
+ *  2. Update the import below.
+ *  3. Update the `alt` text accurately.
  * ============================================================
  */
 
-import heroJpg from "@/assets/hero.jpg";
-import aboutJpg from "@/assets/about.jpg";
-import membershipJpg from "@/assets/membership.jpg";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import g5 from "@/assets/gallery-5.jpg";
-import e1 from "@/assets/event-1.jpg";
-import e2 from "@/assets/event-2.jpg";
-import e3 from "@/assets/event-3.jpg";
+import heroReformer from "@/assets/bmarc-hero-reformer.jpg";
+import founderReformer from "@/assets/bmarc-founder-reformer.jpg";
+import founderSeated from "@/assets/bmarc-founder-seated.jpg";
+import founderMat from "@/assets/bmarc-founder-mat.jpg";
+import community from "@/assets/bmarc-community.jpg";
+import communityAlt from "@/assets/bmarc-community-alt.jpg";
 
 export interface SiteImage {
   src: string;
@@ -40,50 +24,50 @@ export interface SiteImage {
 export const images = {
   /* Hero / homepage */
   hero: {
-    src: heroJpg,
-    alt: "Founder leading a reformer Pilates class in the B.MARC studio at golden hour",
+    src: heroReformer,
+    alt: "B.MARC Pilates founder seated on a reformer in the studio, soft natural light",
   } satisfies SiteImage,
 
   /* Founder / about */
   founder: {
-    src: aboutJpg, // TODO: replace with a real founder portrait
-    alt: "Erra, founder of B.MARC Pilates, in the Atlanta studio",
+    src: founderSeated,
+    alt: "Erra, founder of B.MARC Pilates, seated in the Atlanta studio",
   } satisfies SiteImage,
   aboutStudio: {
-    src: aboutJpg,
-    alt: "B.MARC studio interior with natural light and reformer equipment",
+    src: founderReformer,
+    alt: "Founder on a reformer in the B.MARC studio with warm neutral lighting",
   } satisfies SiteImage,
 
   /* Membership */
   membership: {
-    src: membershipJpg,
-    alt: "B.MARC founding members gathered after a community flow class",
+    src: founderMat,
+    alt: "Founder seated on a mat with B.MARC water bottle and towel — calm studio practice",
   } satisfies SiteImage,
 
   /* Studio vision split cards (About page) */
   selfGuided: {
-    src: g4,
-    alt: "A member moving through a self-guided reformer Pilates session",
+    src: founderMat,
+    alt: "A self-guided mat Pilates moment at the B.MARC studio",
   } satisfies SiteImage,
   liveClass: {
-    src: g5,
-    alt: "An instructor leading a live community Pilates class at sunset",
+    src: community,
+    alt: "Live community Pilates class with members gathered around a reformer",
   } satisfies SiteImage,
 
   /* Community gallery grid */
   gallery: {
-    reformer: { src: g1, alt: "Reformer Pilates session in soft morning light" } satisfies SiteImage,
-    groupClass: { src: g4, alt: "Group flow class with members on mats" } satisfies SiteImage,
-    matcha: { src: g3, alt: "Matcha and a lifestyle moment from a B.MARC event" } satisfies SiteImage,
-    friends: { src: g2, alt: "Members connecting after class in the studio" } satisfies SiteImage,
-    meditation: { src: g5, alt: "Sunset meditation with the B.MARC community" } satisfies SiteImage,
+    reformer: { src: heroReformer, alt: "Reformer Pilates session in soft morning light" } satisfies SiteImage,
+    groupClass: { src: community, alt: "Group flow class with members on reformers" } satisfies SiteImage,
+    matcha: { src: founderMat, alt: "Slow studio moment with mat, towel and water bottle" } satisfies SiteImage,
+    friends: { src: communityAlt, alt: "Members connecting in conversation after class" } satisfies SiteImage,
+    meditation: { src: founderSeated, alt: "Quiet pause and reflection in the B.MARC studio" } satisfies SiteImage,
   },
 
   /* Event archive thumbnails (used by Instagram feed) */
   events: {
-    e1: { src: e1, alt: "B.MARC community event in the park at golden hour" } satisfies SiteImage,
-    e2: { src: e2, alt: "Post-class brunch gathering for members" } satisfies SiteImage,
-    e3: { src: e3, alt: "Coastal sunrise breathwork session" } satisfies SiteImage,
+    e1: { src: community, alt: "B.MARC community event in the studio" } satisfies SiteImage,
+    e2: { src: founderMat, alt: "Post-class gathering for members" } satisfies SiteImage,
+    e3: { src: founderReformer, alt: "Reformer session at the B.MARC studio" } satisfies SiteImage,
   },
 } as const;
 
