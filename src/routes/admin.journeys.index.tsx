@@ -229,26 +229,26 @@ function JourneysPage() {
                   {j.status === "active" ? (
                     <button
                       onClick={() => setStatus(j.id, "paused")}
-                      aria-label={`Pause journey ${j.name}`}
+                      aria-label={`Pause journey ${j.title}`}
                       className="p-2 rounded-lg hover:bg-sand text-clay" title="Pause"
                     ><Pause size={14} aria-hidden="true" /></button>
                   ) : (
                     <button
                       onClick={() => setStatus(j.id, "active")}
-                      aria-label={`Activate journey ${j.name}`}
+                      aria-label={`Activate journey ${j.title}`}
                       className="p-2 rounded-lg hover:bg-sand text-clay" title="Activate"
                     ><Play size={14} aria-hidden="true" /></button>
                   )}
-                  <button onClick={() => duplicate(j)} aria-label={`Duplicate journey ${j.name}`} className="p-2 rounded-lg hover:bg-sand text-clay" title="Duplicate">
+                  <button onClick={() => duplicate(j)} aria-label={`Duplicate journey ${j.title}`} className="p-2 rounded-lg hover:bg-sand text-clay" title="Duplicate">
                     <Copy size={14} aria-hidden="true" />
                   </button>
-                  <button onClick={() => remove(j.id)} aria-label={`Delete journey ${j.name}`} className="p-2 rounded-lg hover:bg-red-50 text-red-600" title="Delete">
+                  <button onClick={() => remove(j.id)} aria-label={`Delete journey ${j.title}`} className="p-2 rounded-lg hover:bg-red-50 text-red-600" title="Delete">
                     <Trash2 size={14} aria-hidden="true" />
                   </button>
                   <Link
                     to="/admin/journeys/$id"
                     params={{ id: j.id }}
-                    aria-label={`Open journey ${j.name}`}
+                    aria-label={`Open journey ${j.title}`}
                     className="p-2 rounded-lg hover:bg-sand text-clay"
                     title="Open"
                   ><ChevronRight size={14} aria-hidden="true" /></Link>
