@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
-import membership from "@/assets/membership.jpg";
+import { images } from "@/config/images";
 import { useCommunity } from "@/components/community/CommunityProvider";
 
 export const Route = createFileRoute("/membership")({
