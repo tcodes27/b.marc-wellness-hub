@@ -29,7 +29,7 @@ function AboutPage() {
       <section className="pb-24">
         <div className="container-luxe grid md:grid-cols-12 gap-10">
           <div className="md:col-span-7 aspect-[4/5] rounded-3xl overflow-hidden">
-            <img src={about} alt="B.MARC community" loading="lazy" className="w-full h-full object-cover" />
+            <img src={images.founder.src} alt={images.founder.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
           </div>
           <div className="md:col-span-5 md:pt-16 space-y-6 text-lg leading-[1.7] text-foreground/85 font-light">
             <p>
