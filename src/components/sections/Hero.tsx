@@ -9,8 +9,8 @@ export function Hero() {
   return (
     <section className="relative min-h-[100svh] sm:min-h-[640px] w-full overflow-hidden">
       <img
-        src={hero}
-        alt={`${branding.fullName} hero`}
+        src={images.hero.src}
+        alt={images.hero.alt}
         className="absolute inset-0 w-full h-full object-cover scale-105"
         width={1920}
         height={1080}
