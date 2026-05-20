@@ -74,7 +74,7 @@ function AboutPage() {
             </div>
             <div className="bg-ivory rounded-3xl overflow-hidden border border-border/60">
               <div className="aspect-[5/3] overflow-hidden">
-                <img src={g5} alt="Live instructor-led community class" loading="lazy" className="w-full h-full object-cover" />
+                <img src={images.liveClass.src} alt={images.liveClass.alt} loading="lazy" decoding="async" className="w-full h-full object-cover" />
               </div>
               <div className="p-8">
                 <span className="eyebrow text-clay">Option Two</span>
