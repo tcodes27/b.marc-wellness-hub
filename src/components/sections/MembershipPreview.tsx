@@ -1,4 +1,4 @@
-import membership from "@/assets/membership.jpg";
+import { images } from "@/config/images";
 import { useCommunity } from "@/components/community/CommunityProvider";
 import { branding } from "@/config/branding";
 
