@@ -142,7 +142,7 @@ function ProfilePage() {
       <div className="bg-white border border-tan/30 rounded-2xl p-6 flex items-center gap-5">
         <div className="relative h-20 w-20 rounded-full overflow-hidden bg-sand flex items-center justify-center border border-tan/40">
           {avatarUrl ? (
-            <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+            <img src={avatarUrl} alt={fullName ? `${fullName}'s profile photo` : "Your profile photo"} className="h-full w-full object-cover" />
           ) : (
             <UserIcon size={28} className="text-clay" />
           )}
