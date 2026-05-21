@@ -117,7 +117,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setSubmitting(true);
-    const { data: inserted, error: insertError } = await supabase
+    const { error: insertError } = await supabase
       .from("community_members")
       .insert({
         first_name: parsed.data.first_name,
@@ -132,11 +132,9 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
         email_consent: parsed.data.email_consent,
         sms_consent: parsed.data.sms_consent,
         consent_timestamp: new Date().toISOString(),
-      })
-      .select("id, first_name")
-      .single();
+      });
     setSubmitting(false);
-    if (insertError || !inserted) {
+    if (insertError) {
       if (insertError?.code === "23505") {
         setWelcomeBack(true);
         toast.success(`Welcome back, ${parsed.data.first_name}.`, {
@@ -148,7 +146,7 @@ export function CommunityProvider({ children }: { children: React.ReactNode }) {
       setError(insertError?.message || "Something went wrong. Please try again.");
       return;
     }
-    toast.success(`Welcome, ${inserted.first_name}.`, {
+    toast.success(`Welcome, ${parsed.data.first_name}.`, {
       description: "Your place in the B.MARC community is confirmed",
       duration: 6000,
     });
