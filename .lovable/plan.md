@@ -1,79 +1,82 @@
-# Shop Feature — B.Marć Pilates
+# Relational Upgrade: Content Studio ↔ Community Journeys
 
-A new `/shop` route plus admin CMS, short-link redirector, and database tables. Built inside the existing site, matching the luxury editorial aesthetic but more content-forward.
+Non-destructive refinement of the existing admin. No table drops, no auth changes, no CMS rebuild, no data loss. Only additive schema + UI revisions.
 
-## Scope
+## 1. Database — extend only (`db/journeys_content_link.sql`, new file)
 
-### 1. Database (new migration `db/shop.sql`)
-Tables:
-- `shop_collections` — id, slug, title, description, sort_order, is_published, created_at
-- `shop_items` — id, slug (unique), collection_id (fk), title, description, category, price (text, optional), platform (text: Amazon/LTK/Target/Etsy/Shopify/other), image_url, thumbnail_url, video_url (YouTube), pinterest_url, button_label, status (`live`|`coming_soon`|`draft`), is_featured, is_digital, sort_order, tags (text[]), created_at, updated_at
-- `shop_item_links` — id, shop_item_id (fk), regular_url, mobile_deep_link, app_link, fallback_url, affiliate_url, utm_source, utm_medium, utm_campaign, open_behavior (`new_tab`|`same_tab`|`app_first`)
-- `shop_digital_products` — id, shop_item_id (fk, nullable), title, description, price, file_url (PDF), checkout_url, cover_image, status
-- `shop_short_links` — id, slug (unique, e.g. `grwm-black-set`), prefix (`shop`|`go`), shop_item_id (fk nullable), target_url, click_count, is_active, created_at
-- `shop_content_posts` — id, slug, title, description, video_url, thumbnail_url, pinterest_url, related_ebook_id, item_ids (uuid[]), published_at, status
+Add to existing `public.content_posts`:
+- `reusable_in_journeys boolean default false`
+- `automation_enabled boolean default false`
+- `campaign_type text check in ('broadcast','evergreen','automation','newsletter') default 'broadcast'`
+- `send_behavior text check in ('manual','scheduled','trigger_based') default 'manual'`
+- `linked_journeys uuid[] default '{}'` (denormalized cache for badges; source of truth = `journey_emails.content_post_id`)
 
-RLS:
-- Public SELECT on published rows (status=live or is_published=true) for `anon, authenticated`
-- Admin full access via `has_role(auth.uid(), 'admin')` (reuse existing pattern)
-- Short link increment via SECURITY DEFINER function `public.shop_increment_click(slug text)`
+Add to existing `public.journey_emails`:
+- `content_post_id uuid references public.content_posts(id) on delete set null` (nullable — null = custom inline, set = reference)
+- `override_subject text`
+- `override_cta_label text`
+- `override_cta_url text`
+- `override_sms_text text`
+- (existing `delay_days`/`delay_hours` already handle delay override)
 
-### 2. Public routes
-- `src/routes/shop.tsx` — hero, CTAs, collection rows (horizontal scroll), featured row, digital products row, content-to-shop posts row. Fetches via `createServerFn` using `supabaseAdmin` scoped to published items.
-- `src/routes/shop.$slug.tsx` — single item detail page (image, description, primary CTA, related items)
-- `src/routes/shop.($prefix).$slug.ts` server route — short-link redirector at `/shop/:slug` and `/go/:slug`. Resolves to the best mobile URL based on User-Agent, increments click count, 302 redirects. Adds UTM params.
-  - Note: `/shop/:slug` overlaps the item detail page. Resolution order: short_link lookup first; if exists, redirect; else render detail page. Implement detail page fetch that falls back to redirect when a short link exists.
+New view `public.journey_email_resolved` — returns each step with effective subject/body/cta resolved from `content_posts` when `content_post_id` is set, else inline fields. Used by the dispatcher and admin preview.
 
-### 3. Mobile deep linking
-Helper `src/lib/shop-links.ts`:
-- Detect platform from User-Agent (iOS/Android, in-app browsers: Instagram, TikTok, Pinterest, YouTube)
-- For known platforms with app schemes (Amazon `com.amazon.mobile.shopping://`, etc.) emit `app_link` when present
-- Fallback chain: `app_link` → `mobile_deep_link` → `affiliate_url` → `fallback_url` → `regular_url`
-- Always append UTM params
-- Client-side card click handler that opens links with `target="_blank" rel="noopener nofollow sponsored"` and uses `window.location` for known in-app browsers to escape
+New table `public.journey_step_sends` (delivery tracking placeholder):
+- `id, journey_email_id, member_id, content_post_id (nullable), channel, status (queued/sent/failed/skipped), provider, error, sent_at, created_at`
+- Extends existing `journey_email_sends` semantics — keep that table intact; new table only if needed for cross-source tracking. Otherwise add `content_post_id` column to `journey_email_sends` and stop.
 
-### 4. Components (`src/components/shop/`)
-- `ShopHero.tsx`
-- `ShopRow.tsx` — horizontal scroll-snap row, Netflix-style
-- `ShopCard.tsx` — image, title, description, category, price, platform badge, CTA button
-- `DigitalProductCard.tsx`
-- `ContentShopPost.tsx` — video thumbnail + product list
+Trigger: when `journey_emails.content_post_id` changes, refresh `content_posts.linked_journeys` cache.
 
-### 5. Admin (`src/routes/admin.shop.tsx`)
-Tabs: Items, Collections, Digital Products, Short Links, Content Posts.
-- CRUD tables with create/edit modals
-- Image upload via Supabase Storage (new bucket `shop-media`, public)
-- Drag-reorder via sort_order
-- Field set per item matches link spec above (regular, mobile, app, fallback, affiliate, UTMs, platform, open behavior)
-- Status toggle: live / coming_soon / draft
-- Short-link manager (slug + prefix + target)
+RLS: reuse existing `has_role(auth.uid(),'admin')` policies — no changes to access model.
 
-Add nav entry in `src/routes/admin.tsx` sidebar.
+## 2. Journey step editor (`src/routes/admin.journeys.$id.tsx`)
 
-### 6. Navbar
-Add `Shop` link to `branding.nav` in `src/config/branding.ts`.
+Per-step "Content Source" toggle:
+```
+( ) Custom email          ( ) Use Content Studio post
+```
+- **Custom**: existing subject/body/cta/media editor (unchanged).
+- **Reference**: searchable dropdown of `content_posts` where `reusable_in_journeys = true`. Shows resolved preview (read-only) + override fields: subject, CTA label/url, SMS text. Delay + channel + active stay as today.
 
-### 7. Storage
-New bucket `shop-media` (public) via SQL migration with read-all and admin write policies.
+Add per-step badge: "Linked: <post title>" with link to the post in Content Studio.
 
-## Files to create
-- `db/shop.sql`
-- `src/routes/shop.tsx`
-- `src/routes/shop.$slug.tsx` (handles detail + short-link fallback)
-- `src/routes/go.$slug.ts` (short-link only, server route)
-- `src/components/shop/ShopHero.tsx`, `ShopRow.tsx`, `ShopCard.tsx`, `DigitalProductCard.tsx`, `ContentShopPost.tsx`
-- `src/lib/shop-links.ts` (URL resolver + UA detection)
-- `src/lib/shop.functions.ts` (server fns: listShop, getShopItem, resolveShortLink, adminCRUD)
-- `src/routes/admin.shop.tsx`
+## 3. Content Studio post editor (`src/routes/admin.content.$id.tsx`)
 
-## Files to edit
-- `src/config/branding.ts` — add Shop to nav
-- `src/routes/admin.tsx` — add Shop sidebar entry
+New "Automation" panel:
+- Toggle `reusable_in_journeys`
+- Toggle `automation_enabled`
+- Select `campaign_type` and `send_behavior`
+- Read-only "Used in journeys" list (from `linked_journeys`) with deep links
+- "Duplicate post" button (clone row, new slug)
+- "Send Test" button (sends rendered email to admin's own address via the existing provider placeholder)
 
-## No fake data
-The page renders empty-state messaging until the admin adds real items. Hero + section headers always show; rows show "No items yet — check back soon" placeholders. No mock products committed.
+Post list (`admin.content.index.tsx`): add badges — "Automation", "Used in N journeys", "Reusable".
 
-## Out of scope
-- Stripe checkout integration for digital products (structure ready; checkout_url accepts external Stripe link for now)
-- Analytics dashboard
-- A/B testing of links
+## 4. Dispatcher behavior (logic only — no provider swap)
+
+Existing journey runner (wherever `journey_emails` get sent) reads from `journey_email_resolved` instead of `journey_emails` directly. Override fields win over post fields when present. Provider placeholders (Resend/SendGrid/Twilio) untouched — abstracted behind the same call site so swap is one-file later.
+
+## 5. Out of scope
+
+- No changes to `community_members`, RLS, admin auth, portal, shop, events, member tiers.
+- No real provider integration (still placeholders).
+- No new email template engine.
+- Existing journey data and existing inline emails keep working unchanged (content_post_id stays null).
+
+## Files
+
+**New:**
+- `db/journeys_content_link.sql` — migration above
+- `src/components/admin/JourneyStepContentPicker.tsx` — dropdown + override fields
+- `src/components/admin/ContentAutomationPanel.tsx` — automation toggles + used-in list
+
+**Edited:**
+- `src/routes/admin.journeys.$id.tsx` — Content Source toggle in step editor; resolved preview
+- `src/routes/admin.content.$id.tsx` — automation panel, duplicate, send test
+- `src/routes/admin.content.index.tsx` — badges
+- `src/integrations/supabase/client.ts` — extend `ContentPost` type with new fields; add `JourneyEmail.content_post_id` + overrides
+- Journey runner / send helper — switch reads to `journey_email_resolved`
+
+## User action after merge
+
+Run `db/journeys_content_link.sql` in Supabase SQL Editor. Existing journeys and posts continue working immediately; new linking is opt-in per step.
