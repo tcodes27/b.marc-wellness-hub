@@ -269,8 +269,15 @@ function JourneyDetailPage() {
                       ? "Immediately"
                       : `After ${e.delay_days}d ${e.delay_hours}h`}
                   </div>
-                  <div className="font-serif text-lg text-espresso truncate">{e.subject || "(no subject)"}</div>
-                  {e.preview_text && <div className="text-sm text-clay truncate mt-0.5">{e.preview_text}</div>}
+                  <div className="font-serif text-lg text-espresso truncate">
+                    {(e.content_post_id ? (e.override_subject || "Linked post") : e.subject) || "(no subject)"}
+                  </div>
+                  {e.content_post_id && (
+                    <div className="inline-flex items-center gap-1 mt-1 text-[10px] uppercase tracking-[0.18em] text-espresso bg-sand px-2 py-0.5 rounded-full">
+                      <Sparkles size={10} /> Content Studio post
+                    </div>
+                  )}
+                  {!e.content_post_id && e.preview_text && <div className="text-sm text-clay truncate mt-0.5">{e.preview_text}</div>}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => moveEmail(idx, -1)} disabled={idx === 0} className="p-1.5 rounded hover:bg-sand text-clay disabled:opacity-30">
