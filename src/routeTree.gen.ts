@@ -34,6 +34,7 @@ import { Route as GoSlugRouteImport } from './routes/go.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminTestingRouteImport } from './routes/admin.testing'
+import { Route as AdminShopRouteImport } from './routes/admin.shop'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPortalMembersRouteImport } from './routes/admin.portal-members'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
@@ -171,6 +172,11 @@ const AdminTestingRoute = AdminTestingRouteImport.update({
   path: '/testing',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminShopRoute = AdminShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/admin/members': typeof AdminMembersRoute
   '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/shop': typeof AdminShopRoute
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
@@ -282,6 +289,7 @@ export interface FileRoutesByTo {
   '/admin/members': typeof AdminMembersRoute
   '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/shop': typeof AdminShopRoute
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
@@ -321,6 +329,7 @@ export interface FileRoutesById {
   '/admin/members': typeof AdminMembersRoute
   '/admin/portal-members': typeof AdminPortalMembersRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/shop': typeof AdminShopRoute
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin_/login': typeof AdminLoginRoute
@@ -361,6 +370,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/portal-members'
     | '/admin/settings'
+    | '/admin/shop'
     | '/admin/testing'
     | '/admin/videos'
     | '/admin/login'
@@ -397,6 +407,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/portal-members'
     | '/admin/settings'
+    | '/admin/shop'
     | '/admin/testing'
     | '/admin/videos'
     | '/admin/login'
@@ -435,6 +446,7 @@ export interface FileRouteTypes {
     | '/admin/members'
     | '/admin/portal-members'
     | '/admin/settings'
+    | '/admin/shop'
     | '/admin/testing'
     | '/admin/videos'
     | '/admin_/login'
@@ -654,6 +666,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTestingRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/shop': {
+      id: '/admin/shop'
+      path: '/shop'
+      fullPath: '/admin/shop'
+      preLoaderRoute: typeof AdminShopRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -741,6 +760,7 @@ interface AdminRouteChildren {
   AdminMembersRoute: typeof AdminMembersRoute
   AdminPortalMembersRoute: typeof AdminPortalMembersRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminShopRoute: typeof AdminShopRoute
   AdminTestingRoute: typeof AdminTestingRoute
   AdminVideosRoute: typeof AdminVideosRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -757,6 +777,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMembersRoute: AdminMembersRoute,
   AdminPortalMembersRoute: AdminPortalMembersRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminShopRoute: AdminShopRoute,
   AdminTestingRoute: AdminTestingRoute,
   AdminVideosRoute: AdminVideosRoute,
   AdminIndexRoute: AdminIndexRoute,
