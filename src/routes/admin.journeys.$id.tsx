@@ -39,6 +39,23 @@ type Email = {
   signature_html: string | null;
   featured_image_url: string | null;
   active: boolean;
+  // Content Studio link (db/journeys_content_link.sql)
+  content_post_id: string | null;
+  override_subject: string | null;
+  override_cta_label: string | null;
+  override_cta_url: string | null;
+  override_sms_text: string | null;
+};
+
+type ReusablePost = {
+  id: string;
+  title: string;
+  slug: string;
+  email_subject: string | null;
+  cta_label: string | null;
+  cta_url: string | null;
+  featured_image_url: string | null;
+  sms_text: string | null;
 };
 
 const TRIGGER_OPTIONS = [
