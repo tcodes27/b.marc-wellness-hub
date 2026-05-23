@@ -471,6 +471,8 @@ function EditPost() {
         </div>
 
         <aside className="space-y-4">
+          <AutomationPanel postId={postId} />
+
           <Panel title="Featured image">
             {form.featured_image_url ? (
               <div className="relative">
