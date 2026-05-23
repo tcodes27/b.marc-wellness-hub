@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PortalRouteImport } from './routes/portal'
 import { Route as MembershipRouteImport } from './routes/membership'
@@ -21,6 +22,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PortalIndexRouteImport } from './routes/portal.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
 import { Route as PortalSignupRouteImport } from './routes/portal_.signup'
 import { Route as PortalResetPasswordRouteImport } from './routes/portal_.reset-password'
 import { Route as PortalLoginRouteImport } from './routes/portal_.login'
@@ -28,6 +30,7 @@ import { Route as PortalForgotPasswordRouteImport } from './routes/portal_.forgo
 import { Route as PortalProfileRouteImport } from './routes/portal.profile'
 import { Route as PortalEventsRouteImport } from './routes/portal.events'
 import { Route as PortalContentRouteImport } from './routes/portal.content'
+import { Route as GoSlugRouteImport } from './routes/go.$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin_.login'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminTestingRouteImport } from './routes/admin.testing'
@@ -46,6 +49,11 @@ import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -103,6 +111,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ShopRoute,
+} as any)
 const PortalSignupRoute = PortalSignupRouteImport.update({
   id: '/portal_/signup',
   path: '/portal/signup',
@@ -137,6 +150,11 @@ const PortalContentRoute = PortalContentRouteImport.update({
   id: '/content',
   path: '/content',
   getParentRoute: () => PortalRoute,
+} as any)
+const GoSlugRoute = GoSlugRouteImport.update({
+  id: '/go/$slug',
+  path: '/go/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin_/login',
@@ -220,6 +238,7 @@ export interface FileRoutesByFullPath {
   '/membership': typeof MembershipRoute
   '/portal': typeof PortalRouteWithChildren
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
@@ -230,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
+  '/go/$slug': typeof GoSlugRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
   '/portal/profile': typeof PortalProfileRoute
@@ -237,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/portal/login': typeof PortalLoginRoute
   '/portal/reset-password': typeof PortalResetPasswordRoute
   '/portal/signup': typeof PortalSignupRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
@@ -253,6 +274,7 @@ export interface FileRoutesByTo {
   '/members': typeof MembersRoute
   '/membership': typeof MembershipRoute
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
@@ -263,6 +285,7 @@ export interface FileRoutesByTo {
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin/login': typeof AdminLoginRoute
+  '/go/$slug': typeof GoSlugRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
   '/portal/profile': typeof PortalProfileRoute
@@ -270,6 +293,7 @@ export interface FileRoutesByTo {
   '/portal/login': typeof PortalLoginRoute
   '/portal/reset-password': typeof PortalResetPasswordRoute
   '/portal/signup': typeof PortalSignupRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/admin': typeof AdminIndexRoute
   '/portal': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
@@ -289,6 +313,7 @@ export interface FileRoutesById {
   '/membership': typeof MembershipRoute
   '/portal': typeof PortalRouteWithChildren
   '/settings': typeof SettingsRoute
+  '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/events': typeof AdminEventsRoute
   '/admin/exports': typeof AdminExportsRoute
@@ -299,6 +324,7 @@ export interface FileRoutesById {
   '/admin/testing': typeof AdminTestingRoute
   '/admin/videos': typeof AdminVideosRoute
   '/admin_/login': typeof AdminLoginRoute
+  '/go/$slug': typeof GoSlugRoute
   '/portal/content': typeof PortalContentRoute
   '/portal/events': typeof PortalEventsRoute
   '/portal/profile': typeof PortalProfileRoute
@@ -306,6 +332,7 @@ export interface FileRoutesById {
   '/portal_/login': typeof PortalLoginRoute
   '/portal_/reset-password': typeof PortalResetPasswordRoute
   '/portal_/signup': typeof PortalSignupRoute
+  '/shop/$slug': typeof ShopSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/portal/': typeof PortalIndexRoute
   '/admin/content/$id': typeof AdminContentIdRoute
@@ -326,6 +353,7 @@ export interface FileRouteTypes {
     | '/membership'
     | '/portal'
     | '/settings'
+    | '/shop'
     | '/sitemap.xml'
     | '/admin/events'
     | '/admin/exports'
@@ -336,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/testing'
     | '/admin/videos'
     | '/admin/login'
+    | '/go/$slug'
     | '/portal/content'
     | '/portal/events'
     | '/portal/profile'
@@ -343,6 +372,7 @@ export interface FileRouteTypes {
     | '/portal/login'
     | '/portal/reset-password'
     | '/portal/signup'
+    | '/shop/$slug'
     | '/admin/'
     | '/portal/'
     | '/admin/content/$id'
@@ -359,6 +389,7 @@ export interface FileRouteTypes {
     | '/members'
     | '/membership'
     | '/settings'
+    | '/shop'
     | '/sitemap.xml'
     | '/admin/events'
     | '/admin/exports'
@@ -369,6 +400,7 @@ export interface FileRouteTypes {
     | '/admin/testing'
     | '/admin/videos'
     | '/admin/login'
+    | '/go/$slug'
     | '/portal/content'
     | '/portal/events'
     | '/portal/profile'
@@ -376,6 +408,7 @@ export interface FileRouteTypes {
     | '/portal/login'
     | '/portal/reset-password'
     | '/portal/signup'
+    | '/shop/$slug'
     | '/admin'
     | '/portal'
     | '/admin/content/$id'
@@ -394,6 +427,7 @@ export interface FileRouteTypes {
     | '/membership'
     | '/portal'
     | '/settings'
+    | '/shop'
     | '/sitemap.xml'
     | '/admin/events'
     | '/admin/exports'
@@ -404,6 +438,7 @@ export interface FileRouteTypes {
     | '/admin/testing'
     | '/admin/videos'
     | '/admin_/login'
+    | '/go/$slug'
     | '/portal/content'
     | '/portal/events'
     | '/portal/profile'
@@ -411,6 +446,7 @@ export interface FileRouteTypes {
     | '/portal_/login'
     | '/portal_/reset-password'
     | '/portal_/signup'
+    | '/shop/$slug'
     | '/admin/'
     | '/portal/'
     | '/admin/content/$id'
@@ -430,8 +466,10 @@ export interface RootRouteChildren {
   MembershipRoute: typeof MembershipRoute
   PortalRoute: typeof PortalRouteWithChildren
   SettingsRoute: typeof SettingsRoute
+  ShopRoute: typeof ShopRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  GoSlugRoute: typeof GoSlugRoute
   PortalForgotPasswordRoute: typeof PortalForgotPasswordRoute
   PortalLoginRoute: typeof PortalLoginRoute
   PortalResetPasswordRoute: typeof PortalResetPasswordRoute
@@ -446,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -525,6 +570,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/shop/$slug': {
+      id: '/shop/$slug'
+      path: '/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/portal_/signup': {
       id: '/portal_/signup'
       path: '/portal/signup'
@@ -573,6 +625,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/portal/content'
       preLoaderRoute: typeof PortalContentRouteImport
       parentRoute: typeof PortalRoute
+    }
+    '/go/$slug': {
+      id: '/go/$slug'
+      path: '/go/$slug'
+      fullPath: '/go/$slug'
+      preLoaderRoute: typeof GoSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin_/login': {
       id: '/admin_/login'
@@ -726,6 +785,16 @@ const PortalRouteChildren: PortalRouteChildren = {
 const PortalRouteWithChildren =
   PortalRoute._addFileChildren(PortalRouteChildren)
 
+interface ShopRouteChildren {
+  ShopSlugRoute: typeof ShopSlugRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopSlugRoute: ShopSlugRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -736,8 +805,10 @@ const rootRouteChildren: RootRouteChildren = {
   MembershipRoute: MembershipRoute,
   PortalRoute: PortalRouteWithChildren,
   SettingsRoute: SettingsRoute,
+  ShopRoute: ShopRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminLoginRoute: AdminLoginRoute,
+  GoSlugRoute: GoSlugRoute,
   PortalForgotPasswordRoute: PortalForgotPasswordRoute,
   PortalLoginRoute: PortalLoginRoute,
   PortalResetPasswordRoute: PortalResetPasswordRoute,
