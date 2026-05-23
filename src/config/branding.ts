@@ -172,6 +172,7 @@ export const branding: BrandingConfig = {
 
   nav: [
     { to: "/", label: "Home" },
+    { to: "/shop", label: "Shop" },
     { to: "/events", label: "Events" },
     { to: "/membership", label: "Membership" },
     { to: "/about", label: "About" },
