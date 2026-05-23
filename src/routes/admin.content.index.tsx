@@ -175,6 +175,17 @@ function ContentList() {
                       <span className="text-[10px] uppercase tracking-[0.2em] text-clay">{p.content_type}</span>
                       <span className="text-[10px] text-clay/70">·</span>
                       <span className="text-[10px] uppercase tracking-[0.2em] text-clay">{p.audience}</span>
+                      {p.reusable_in_journeys && (
+                        <span className="text-[10px] uppercase tracking-[0.18em] bg-sand text-espresso px-2 py-0.5 rounded-full">Reusable</span>
+                      )}
+                      {p.automation_enabled && (
+                        <span className="text-[10px] uppercase tracking-[0.18em] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">Automation</span>
+                      )}
+                      {p.linked_journeys && p.linked_journeys.length > 0 && (
+                        <span className="text-[10px] uppercase tracking-[0.18em] bg-amber-50 text-amber-800 px-2 py-0.5 rounded-full">
+                          Used in {p.linked_journeys.length} journey{p.linked_journeys.length === 1 ? "" : "s"}
+                        </span>
+                      )}
                     </div>
                   </Link>
                 </div>

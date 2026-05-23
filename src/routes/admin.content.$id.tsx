@@ -471,6 +471,8 @@ function EditPost() {
         </div>
 
         <aside className="space-y-4">
+          <AutomationPanel postId={postId} />
+
           <Panel title="Featured image">
             {form.featured_image_url ? (
               <div className="relative">
@@ -900,3 +902,120 @@ function jsonToSimpleHtml(node: any): string {
 function escapeHtml(s: string) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
+
+type AutomationState = {
+  reusable_in_journeys: boolean;
+  automation_enabled: boolean;
+  campaign_type: "broadcast" | "evergreen" | "automation" | "newsletter";
+  send_behavior: "manual" | "scheduled" | "trigger_based";
+  linked_journeys: string[];
+};
+
+type LinkedJourney = { id: string; title: string };
+
+function AutomationPanel({ postId }: { postId: string | null }) {
+  const [state, setState] = useState<AutomationState | null>(null);
+  const [journeys, setJourneys] = useState<LinkedJourney[]>([]);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!postId) { setState(null); return; }
+    (async () => {
+      const { data, error } = await supabase
+        .from("content_posts")
+        .select("reusable_in_journeys,automation_enabled,campaign_type,send_behavior,linked_journeys")
+        .eq("id", postId).single();
+      if (error || !data) return;
+      const s: AutomationState = {
+        reusable_in_journeys: !!data.reusable_in_journeys,
+        automation_enabled: !!data.automation_enabled,
+        campaign_type: (data.campaign_type ?? "broadcast") as AutomationState["campaign_type"],
+        send_behavior: (data.send_behavior ?? "manual") as AutomationState["send_behavior"],
+        linked_journeys: (data.linked_journeys ?? []) as string[],
+      };
+      setState(s);
+      if (s.linked_journeys.length) {
+        const { data: js } = await supabase.from("journeys").select("id,title").in("id", s.linked_journeys);
+        setJourneys((js ?? []) as LinkedJourney[]);
+      } else {
+        setJourneys([]);
+      }
+    })();
+  }, [postId]);
+
+  const patch = async (p: Partial<AutomationState>) => {
+    if (!postId || !state) return;
+    const next = { ...state, ...p };
+    setState(next);
+    setSaving(true);
+    const { error } = await supabase.from("content_posts").update(p).eq("id", postId);
+    setSaving(false);
+    if (error) alert(error.message);
+  };
+
+  if (!postId) {
+    return (
+      <Panel title="Automation">
+        <p className="text-[11px] text-clay">Save this post first to enable journey reuse.</p>
+      </Panel>
+    );
+  }
+  if (!state) {
+    return <Panel title="Automation"><p className="text-[11px] text-clay">Loading…</p></Panel>;
+  }
+
+  return (
+    <Panel title="Automation">
+      <label className="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" checked={state.reusable_in_journeys}
+          onChange={(e) => patch({ reusable_in_journeys: e.target.checked })}
+          className="h-4 w-4 accent-espresso" />
+        <span className="text-sm text-espresso">Reusable in journeys</span>
+      </label>
+      <label className="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" checked={state.automation_enabled}
+          onChange={(e) => patch({ automation_enabled: e.target.checked })}
+          className="h-4 w-4 accent-espresso" />
+        <span className="text-sm text-espresso">Automation enabled</span>
+      </label>
+      <Field label="Campaign type">
+        <select value={state.campaign_type}
+          onChange={(e) => patch({ campaign_type: e.target.value as AutomationState["campaign_type"] })}
+          className={inputCls}>
+          <option value="broadcast">Broadcast</option>
+          <option value="evergreen">Evergreen</option>
+          <option value="automation">Automation</option>
+          <option value="newsletter">Newsletter</option>
+        </select>
+      </Field>
+      <Field label="Send behavior">
+        <select value={state.send_behavior}
+          onChange={(e) => patch({ send_behavior: e.target.value as AutomationState["send_behavior"] })}
+          className={inputCls}>
+          <option value="manual">Manual</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="trigger_based">Trigger-based</option>
+        </select>
+      </Field>
+      <div>
+        <div className="text-[10px] uppercase tracking-[0.25em] text-clay mb-1.5">Used in journeys</div>
+        {journeys.length === 0 ? (
+          <p className="text-[11px] text-clay/70">Not linked to any journey yet.</p>
+        ) : (
+          <ul className="space-y-1">
+            {journeys.map((j) => (
+              <li key={j.id}>
+                <Link to="/admin/journeys/$id" params={{ id: j.id }}
+                  className="text-[11px] text-espresso underline hover:text-clay">
+                  {j.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {saving && <p className="text-[10px] text-clay">Saving…</p>}
+    </Panel>
+  );
+}
+

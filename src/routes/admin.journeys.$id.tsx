@@ -39,6 +39,23 @@ type Email = {
   signature_html: string | null;
   featured_image_url: string | null;
   active: boolean;
+  // Content Studio link (db/journeys_content_link.sql)
+  content_post_id: string | null;
+  override_subject: string | null;
+  override_cta_label: string | null;
+  override_cta_url: string | null;
+  override_sms_text: string | null;
+};
+
+type ReusablePost = {
+  id: string;
+  title: string;
+  slug: string;
+  email_subject: string | null;
+  cta_label: string | null;
+  cta_url: string | null;
+  featured_image_url: string | null;
+  sms_text: string | null;
 };
 
 const TRIGGER_OPTIONS = [
@@ -252,8 +269,15 @@ function JourneyDetailPage() {
                       ? "Immediately"
                       : `After ${e.delay_days}d ${e.delay_hours}h`}
                   </div>
-                  <div className="font-serif text-lg text-espresso truncate">{e.subject || "(no subject)"}</div>
-                  {e.preview_text && <div className="text-sm text-clay truncate mt-0.5">{e.preview_text}</div>}
+                  <div className="font-serif text-lg text-espresso truncate">
+                    {(e.content_post_id ? (e.override_subject || "Linked post") : e.subject) || "(no subject)"}
+                  </div>
+                  {e.content_post_id && (
+                    <div className="inline-flex items-center gap-1 mt-1 text-[10px] uppercase tracking-[0.18em] text-espresso bg-sand px-2 py-0.5 rounded-full">
+                      <Sparkles size={10} /> Content Studio post
+                    </div>
+                  )}
+                  {!e.content_post_id && e.preview_text && <div className="text-sm text-clay truncate mt-0.5">{e.preview_text}</div>}
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => moveEmail(idx, -1)} disabled={idx === 0} className="p-1.5 rounded hover:bg-sand text-clay disabled:opacity-30">
@@ -309,6 +333,20 @@ function EmailEditor({ email, onClose, onSaved }: {
 }) {
   const [draft, setDraft] = useState<Email>(email);
   const [saving, setSaving] = useState(false);
+  const [posts, setPosts] = useState<ReusablePost[]>([]);
+  const sourceMode: "custom" | "linked" = draft.content_post_id ? "linked" : "custom";
+  const linkedPost = posts.find((p) => p.id === draft.content_post_id);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("content_posts")
+        .select("id,title,slug,email_subject,cta_label,cta_url,featured_image_url,sms_text")
+        .eq("reusable_in_journeys", true)
+        .order("updated_at", { ascending: false });
+      setPosts((data ?? []) as ReusablePost[]);
+    })();
+  }, []);
 
   const save = async () => {
     setSaving(true);
@@ -322,6 +360,11 @@ function EmailEditor({ email, onClose, onSaved }: {
         featured_image_url: draft.featured_image_url,
         delay_days: Number(draft.delay_days) || 0,
         delay_hours: Number(draft.delay_hours) || 0,
+        content_post_id: draft.content_post_id,
+        override_subject: draft.override_subject || null,
+        override_cta_label: draft.override_cta_label || null,
+        override_cta_url: draft.override_cta_url || null,
+        override_sms_text: draft.override_sms_text || null,
       })
       .eq("id", draft.id)
       .select("*").single();
@@ -343,6 +386,38 @@ function EmailEditor({ email, onClose, onSaved }: {
           <button onClick={onClose} className="p-2 rounded hover:bg-sand text-clay"><X size={18} /></button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {/* Content source toggle */}
+          <div className="bg-sand/40 border border-tan/30 rounded-xl p-3 space-y-2">
+            <div className="text-[0.65rem] uppercase tracking-[0.2em] text-clay">Content source</div>
+            <div className="flex gap-2">
+              <button type="button"
+                onClick={() => setDraft({ ...draft, content_post_id: null })}
+                className={`flex-1 text-xs uppercase tracking-[0.18em] px-3 py-2 rounded-lg border ${sourceMode === "custom" ? "bg-espresso text-ivory border-espresso" : "border-tan/40 text-espresso bg-ivory"}`}>
+                Custom email
+              </button>
+              <button type="button"
+                onClick={() => setDraft({ ...draft, content_post_id: posts[0]?.id ?? null })}
+                disabled={posts.length === 0}
+                title={posts.length === 0 ? "Mark a Content Studio post as 'Reusable in journeys' first" : ""}
+                className={`flex-1 text-xs uppercase tracking-[0.18em] px-3 py-2 rounded-lg border disabled:opacity-50 ${sourceMode === "linked" ? "bg-espresso text-ivory border-espresso" : "border-tan/40 text-espresso bg-ivory"}`}>
+                Existing post
+              </button>
+            </div>
+            {sourceMode === "linked" && (
+              <select
+                value={draft.content_post_id ?? ""}
+                onChange={(e) => setDraft({ ...draft, content_post_id: e.target.value || null })}
+                className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white">
+                {posts.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+              </select>
+            )}
+            {sourceMode === "linked" && linkedPost && (
+              <div className="text-[11px] text-clay">
+                Inherits subject, body, CTA, and media from <strong className="text-espresso">{linkedPost.title}</strong>. Override below if needed.
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <Field label="Delay days">
               <input type="number" min={0} value={draft.delay_days}
@@ -355,45 +430,76 @@ function EmailEditor({ email, onClose, onSaved }: {
                 className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
             </Field>
           </div>
-          <Field label="Subject">
-            <input value={draft.subject ?? ""} onChange={(e) => setDraft({ ...draft, subject: e.target.value })}
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
-          </Field>
-          <Field label="Preview text">
-            <input value={draft.preview_text ?? ""} onChange={(e) => setDraft({ ...draft, preview_text: e.target.value })}
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
-          </Field>
-          <Field label="Featured image URL">
-            <input value={draft.featured_image_url ?? ""} onChange={(e) => setDraft({ ...draft, featured_image_url: e.target.value })}
-              placeholder="https://…"
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
-          </Field>
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[0.65rem] uppercase tracking-[0.2em] text-clay">Body</span>
-              <div className="flex gap-1 flex-wrap justify-end">
-                {TOKENS.map((t) => (
-                  <button key={t} type="button" onClick={() => insertToken(t)}
-                    className="text-[0.65rem] px-2 py-0.5 rounded-full bg-sand hover:bg-tan/40 text-espresso">
-                    {t}
-                  </button>
-                ))}
+
+          {sourceMode === "linked" ? (
+            <>
+              <Field label={`Subject override (default: ${linkedPost?.email_subject || "—"})`}>
+                <input value={draft.override_subject ?? ""} onChange={(e) => setDraft({ ...draft, override_subject: e.target.value })}
+                  placeholder="Leave blank to use post subject"
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+              </Field>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="CTA label override">
+                  <input value={draft.override_cta_label ?? ""} onChange={(e) => setDraft({ ...draft, override_cta_label: e.target.value })}
+                    placeholder={linkedPost?.cta_label ?? ""}
+                    className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+                </Field>
+                <Field label="CTA URL override">
+                  <input value={draft.override_cta_url ?? ""} onChange={(e) => setDraft({ ...draft, override_cta_url: e.target.value })}
+                    placeholder={linkedPost?.cta_url ?? ""}
+                    className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+                </Field>
               </div>
-            </div>
-            <textarea
-              value={draft.body_markdown ?? ""}
-              onChange={(e) => setDraft({ ...draft, body_markdown: e.target.value })}
-              rows={12}
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white font-mono"
-              placeholder="Write your email here. Use blank lines between paragraphs."
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="CTA label"><input value={draft.cta_label ?? ""} onChange={(e) => setDraft({ ...draft, cta_label: e.target.value })}
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" /></Field>
-            <Field label="CTA URL"><input value={draft.cta_url ?? ""} onChange={(e) => setDraft({ ...draft, cta_url: e.target.value })}
-              className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" /></Field>
-          </div>
+              <Field label="SMS preview override">
+                <textarea value={draft.override_sms_text ?? ""} onChange={(e) => setDraft({ ...draft, override_sms_text: e.target.value })}
+                  rows={2}
+                  placeholder={linkedPost?.sms_text ?? "Leave blank to use post SMS text"}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+              </Field>
+            </>
+          ) : (
+            <>
+              <Field label="Subject">
+                <input value={draft.subject ?? ""} onChange={(e) => setDraft({ ...draft, subject: e.target.value })}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+              </Field>
+              <Field label="Preview text">
+                <input value={draft.preview_text ?? ""} onChange={(e) => setDraft({ ...draft, preview_text: e.target.value })}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+              </Field>
+              <Field label="Featured image URL">
+                <input value={draft.featured_image_url ?? ""} onChange={(e) => setDraft({ ...draft, featured_image_url: e.target.value })}
+                  placeholder="https://…"
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" />
+              </Field>
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[0.65rem] uppercase tracking-[0.2em] text-clay">Body</span>
+                  <div className="flex gap-1 flex-wrap justify-end">
+                    {TOKENS.map((t) => (
+                      <button key={t} type="button" onClick={() => insertToken(t)}
+                        className="text-[0.65rem] px-2 py-0.5 rounded-full bg-sand hover:bg-tan/40 text-espresso">
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <textarea
+                  value={draft.body_markdown ?? ""}
+                  onChange={(e) => setDraft({ ...draft, body_markdown: e.target.value })}
+                  rows={12}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white font-mono"
+                  placeholder="Write your email here. Use blank lines between paragraphs."
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="CTA label"><input value={draft.cta_label ?? ""} onChange={(e) => setDraft({ ...draft, cta_label: e.target.value })}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" /></Field>
+                <Field label="CTA URL"><input value={draft.cta_url ?? ""} onChange={(e) => setDraft({ ...draft, cta_url: e.target.value })}
+                  className="w-full border border-tan/40 rounded-lg px-3 py-2 text-sm bg-white" /></Field>
+              </div>
+            </>
+          )}
         </div>
         <div className="px-6 py-4 border-t border-tan/30 flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 text-xs uppercase tracking-[0.2em] text-clay hover:text-espresso">Cancel</button>
