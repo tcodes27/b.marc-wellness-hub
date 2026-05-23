@@ -111,7 +111,16 @@ export type ContentPost = {
   cta_url: string | null;
   send_status: SendStatus;
   sent_at: string | null;
+  // Automation / journey reuse (added in db/journeys_content_link.sql)
+  reusable_in_journeys?: boolean;
+  automation_enabled?: boolean;
+  campaign_type?: "broadcast" | "evergreen" | "automation" | "newsletter";
+  send_behavior?: "manual" | "scheduled" | "trigger_based";
+  linked_journeys?: string[];
 };
+
+export const CAMPAIGN_TYPES = ["broadcast", "evergreen", "automation", "newsletter"] as const;
+export const SEND_BEHAVIORS = ["manual", "scheduled", "trigger_based"] as const;
 
 export type ContentDelivery = {
   id: string;
