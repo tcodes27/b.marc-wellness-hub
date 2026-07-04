@@ -698,11 +698,14 @@ flowchart TB
     Storage[(Buckets)]
   end
 
-  UI --> Router --> Loaders
+  UI --> Router
+  Router --> Loaders
   Loaders --> Query
   UI --> Query
   UI --> ServerFns
-  ServerFns --> Middleware --> RLS --> Tables
+  ServerFns --> Middleware
+  Middleware --> RLS
+  RLS --> Tables
   APIRoutes --> RLS
   ServerFns --> Storage
 ```
