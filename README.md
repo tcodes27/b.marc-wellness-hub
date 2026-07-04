@@ -804,9 +804,9 @@ flowchart TB
   Step2 --> Cond{Condition met?}
   Cond -->|Yes| Path1[Branch A: Upgrade prompt]
   Cond -->|No| Path2[Branch B: Nurture]
-  Path1 --> End
+  Path1 --> Done[Complete]
   Path2 --> Step3[Step: SMS]
-  Step3 --> End
+  Step3 --> Done
 ```
 
 ---
