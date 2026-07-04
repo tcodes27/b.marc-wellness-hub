@@ -786,11 +786,11 @@ flowchart LR
 ```mermaid
 flowchart LR
   Shop[Public Shop Page] --> Card[Product Card]
-  Card -->|External product| Short[/go/$slug redirect/]
+  Card -->|External product| Short["/go/:slug redirect"]
   Short --> Click[shop_short_links click log]
   Click --> Merchant[External Merchant]
   Card -->|Digital product| Checkout[Stripe Checkout]
-  Checkout --> Webhook[/api/public/webhooks/stripe/]
+  Checkout --> Webhook["/api/public/webhooks/stripe"]
   Webhook --> Entitlement[Grant entitlement + email download]
 ```
 
