@@ -669,7 +669,6 @@ flowchart LR
 
   Visitor -->|HTTPS| CDN
   CDN --> Worker
-  Worker -->|SSR + Server Fns| Worker
   Worker --> SupaAuth
   Worker --> SupaDB
   Worker --> SupaStorage
