@@ -822,7 +822,11 @@ flowchart LR
   Community[Community<br/>Channels + Challenges]
   Retention[Retention<br/>Journeys + Events + Upgrades]
 
-  Discovery --> Lead --> Signup --> Membership --> Community --> Retention
+  Discovery --> Lead
+  Lead --> Signup
+  Signup --> Membership
+  Membership --> Community
+  Community --> Retention
   Retention -->|Referral loop| Discovery
 ```
 
