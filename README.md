@@ -669,7 +669,6 @@ flowchart LR
 
   Visitor -->|HTTPS| CDN
   CDN --> Worker
-  Worker -->|SSR + Server Fns| Worker
   Worker --> SupaAuth
   Worker --> SupaDB
   Worker --> SupaStorage
@@ -699,11 +698,14 @@ flowchart TB
     Storage[(Buckets)]
   end
 
-  UI --> Router --> Loaders
+  UI --> Router
+  Router --> Loaders
   Loaders --> Query
   UI --> Query
   UI --> ServerFns
-  ServerFns --> Middleware --> RLS --> Tables
+  ServerFns --> Middleware
+  Middleware --> RLS
+  RLS --> Tables
   APIRoutes --> RLS
   ServerFns --> Storage
 ```
@@ -784,11 +786,11 @@ flowchart LR
 ```mermaid
 flowchart LR
   Shop[Public Shop Page] --> Card[Product Card]
-  Card -->|External product| Short[/go/$slug redirect/]
+  Card -->|External product| Short["/go/:slug redirect"]
   Short --> Click[shop_short_links click log]
   Click --> Merchant[External Merchant]
   Card -->|Digital product| Checkout[Stripe Checkout]
-  Checkout --> Webhook[/api/public/webhooks/stripe/]
+  Checkout --> Webhook["/api/public/webhooks/stripe"]
   Webhook --> Entitlement[Grant entitlement + email download]
 ```
 
@@ -802,9 +804,9 @@ flowchart TB
   Step2 --> Cond{Condition met?}
   Cond -->|Yes| Path1[Branch A: Upgrade prompt]
   Cond -->|No| Path2[Branch B: Nurture]
-  Path1 --> End
+  Path1 --> Done[Complete]
   Path2 --> Step3[Step: SMS]
-  Step3 --> End
+  Step3 --> Done
 ```
 
 ---
@@ -820,7 +822,11 @@ flowchart LR
   Community[Community<br/>Channels + Challenges]
   Retention[Retention<br/>Journeys + Events + Upgrades]
 
-  Discovery --> Lead --> Signup --> Membership --> Community --> Retention
+  Discovery --> Lead
+  Lead --> Signup
+  Signup --> Membership
+  Membership --> Community
+  Community --> Retention
   Retention -->|Referral loop| Discovery
 ```
 
