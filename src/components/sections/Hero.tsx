@@ -11,7 +11,7 @@ export function Hero() {
       <img
         src={images.hero.src}
         alt={images.hero.alt}
-        className="absolute inset-0 w-full h-full object-cover object-right md:object-center"
+        className="absolute inset-0 w-full h-full object-cover object-[82%_center] md:object-center"
         fetchPriority="high"
         decoding="async"
         width={1920}
