@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
+import { CommunityAccess } from "@/components/sections/CommunityAccess";
 import { images } from "@/config/images";
 import { useCommunity } from "@/components/community/CommunityProvider";
 
@@ -120,6 +121,7 @@ function MembershipPage() {
           </div>
         </div>
       </section>
+      <CommunityAccess />
 
       <section id="plans" className="py-32 md:py-40 bg-gradient-to-b from-ivory via-sand/30 to-ivory">
         <div className="container-luxe">

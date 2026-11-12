@@ -9,6 +9,7 @@ import { CommunityFeed } from "@/components/sections/CommunityFeed";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { EmailSignup } from "@/components/sections/EmailSignup";
 import { branding } from "@/config/branding";
+import { CommunityAccess } from "@/components/sections/CommunityAccess";
 import { Gallery } from "@/components/sections/Gallery";
 import { StudioEditorial, MovementEditorial, WellnessEditorial } from "@/components/sections/WellnessEditorial";
 
@@ -36,6 +37,7 @@ function Index() {
       <EventsPreview />
       <Gallery />
       <MembershipPreview />
+      <CommunityAccess />
       <YouTubeShowcase />
       <WellnessEditorial />
       <CommunityFeed />
