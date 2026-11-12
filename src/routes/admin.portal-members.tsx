@@ -6,6 +6,7 @@ import { Search, Loader2, Crown, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/portal-members")({
+  head: () => ({ meta: [{"title": "Member Access \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Member Access at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Member Access \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Member Access at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: PortalMembersAdmin,
 });
 

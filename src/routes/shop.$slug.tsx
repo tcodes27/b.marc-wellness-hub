@@ -16,6 +16,7 @@ import { ExternalLink, ArrowLeft } from "lucide-react";
  */
 
 export const Route = createFileRoute("/shop/$slug")({
+  head: () => ({ meta: [{"title": "Shop Find \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Shop $Slug at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Shop Find \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Shop $Slug at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}] }),
   loader: async ({ params }) => {
     const { slug } = params;
 

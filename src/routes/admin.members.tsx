@@ -5,6 +5,7 @@ import { supabase, type CommunityMember, type MemberStatus } from "@/integration
 import { Search, Loader2, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin/members")({
+  head: () => ({ meta: [{"title": "Community CRM \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Community CRM at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Community CRM \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Community CRM at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: MembersPage,
 });
 

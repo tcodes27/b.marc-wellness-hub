@@ -8,6 +8,7 @@ import { Plus, Loader2, Trash2, Save, Search, PlayCircle, Lock, ExternalLink } f
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/videos")({
+  head: () => ({ meta: [{"title": "Video Library Studio \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Video Library Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Video Library Studio \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Video Library Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: VideosAdmin,
 });
 

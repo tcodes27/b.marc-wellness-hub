@@ -6,6 +6,7 @@ import { Plus, Trash2, Save, Upload, Loader2, ExternalLink } from "lucide-react"
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/shop")({
+  head: () => ({ meta: [{"title": "Shop Studio \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Shop Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Shop Studio \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Shop Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: AdminShop,
 });
 

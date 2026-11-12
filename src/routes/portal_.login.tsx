@@ -6,7 +6,12 @@ import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/portal_/login")({
   head: () => ({
-    meta: [{ title: "Sign in — B.MARC Member Portal" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [
+      { name: "description", content: "Explore Portal Login at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:title", content: "Sign in — B.MARC Member Portal" },
+      { property: "og:description", content: "Explore Portal Login at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },{ title: "Sign in — B.MARC Member Portal" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: PortalLogin,
 });

@@ -5,6 +5,7 @@ import { getCalEventTypes, type CalEventType } from "@/lib/cal.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/")({
+  head: () => ({ meta: [{"title": "Admin Dashboard \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Admin Dashboard at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Admin Dashboard \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Admin Dashboard at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: Overview,
 });
 

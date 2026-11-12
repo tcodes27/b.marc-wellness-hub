@@ -22,6 +22,11 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
+      { name: "description", content: "Explore Admin at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:title", content: "B.MARC Admin" },
+      { property: "og:description", content: "Explore Admin at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "B.MARC Admin" },
       { name: "robots", content: "noindex, nofollow" },
     ],

@@ -5,6 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/admin_/login")({
   head: () => ({
     meta: [
+      { name: "description", content: "Explore Admin Login at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:title", content: "Admin Login, B.MARC Pilates" },
+      { property: "og:description", content: "Explore Admin Login at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Admin Login, B.MARC Pilates" },
       { name: "robots", content: "noindex, nofollow" },
     ],

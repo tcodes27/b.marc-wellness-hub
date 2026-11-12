@@ -9,6 +9,7 @@ import { resolveShopUrl, detectEnv } from "@/lib/shop-links";
  * for the visitor's environment.
  */
 export const Route = createFileRoute("/go/$slug")({
+  head: () => ({ meta: [{"title": "Shop Find \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Go $Slug at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Shop Find \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Go $Slug at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}] }),
   loader: async ({ params }) => {
     const { slug } = params;
 

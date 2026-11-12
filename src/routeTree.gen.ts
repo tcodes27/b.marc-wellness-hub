@@ -9,87 +9,47 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ShopRouteImport } from './routes/shop'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as PortalRouteImport } from './routes/portal'
-import { Route as MembershipRouteImport } from './routes/membership'
-import { Route as MembersRouteImport } from './routes/members'
-import { Route as LeadsRouteImport } from './routes/leads'
-import { Route as EventsRouteImport } from './routes/events'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as LeadsRouteImport } from './routes/leads'
+import { Route as MembersRouteImport } from './routes/members'
+import { Route as MembershipRouteImport } from './routes/membership'
+import { Route as PortalRouteImport } from './routes/portal'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
-import { Route as PortalSignupRouteImport } from './routes/portal_.signup'
-import { Route as PortalResetPasswordRouteImport } from './routes/portal_.reset-password'
-import { Route as PortalLoginRouteImport } from './routes/portal_.login'
-import { Route as PortalForgotPasswordRouteImport } from './routes/portal_.forgot-password'
-import { Route as PortalProfileRouteImport } from './routes/portal.profile'
-import { Route as PortalEventsRouteImport } from './routes/portal.events'
-import { Route as PortalContentRouteImport } from './routes/portal.content'
-import { Route as GoSlugRouteImport } from './routes/go.$slug'
-import { Route as AdminLoginRouteImport } from './routes/admin_.login'
-import { Route as AdminVideosRouteImport } from './routes/admin.videos'
-import { Route as AdminTestingRouteImport } from './routes/admin.testing'
-import { Route as AdminShopRouteImport } from './routes/admin.shop'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminPortalMembersRouteImport } from './routes/admin.portal-members'
-import { Route as AdminMembersRouteImport } from './routes/admin.members'
-import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
-import { Route as AdminExportsRouteImport } from './routes/admin.exports'
 import { Route as AdminEventsRouteImport } from './routes/admin.events'
-import { Route as AdminJourneysIndexRouteImport } from './routes/admin.journeys.index'
+import { Route as AdminExportsRouteImport } from './routes/admin.exports'
+import { Route as AdminLeadsRouteImport } from './routes/admin.leads'
+import { Route as AdminMembersRouteImport } from './routes/admin.members'
+import { Route as AdminPortalMembersRouteImport } from './routes/admin.portal-members'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminShopRouteImport } from './routes/admin.shop'
+import { Route as AdminTestingRouteImport } from './routes/admin.testing'
+import { Route as AdminVideosRouteImport } from './routes/admin.videos'
+import { Route as AdminLoginRouteImport } from './routes/admin_.login'
+import { Route as GoSlugRouteImport } from './routes/go.$slug'
+import { Route as PortalIndexRouteImport } from './routes/portal.index'
+import { Route as PortalContentRouteImport } from './routes/portal.content'
+import { Route as PortalEventsRouteImport } from './routes/portal.events'
+import { Route as PortalProfileRouteImport } from './routes/portal.profile'
+import { Route as PortalForgotPasswordRouteImport } from './routes/portal_.forgot-password'
+import { Route as PortalLoginRouteImport } from './routes/portal_.login'
+import { Route as PortalResetPasswordRouteImport } from './routes/portal_.reset-password'
+import { Route as PortalSignupRouteImport } from './routes/portal_.signup'
+import { Route as ShopSlugRouteImport } from './routes/shop.$slug'
 import { Route as AdminContentIndexRouteImport } from './routes/admin.content.index'
-import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
-import { Route as AdminJourneysIdRouteImport } from './routes/admin.journeys.$id'
 import { Route as AdminContentIdRouteImport } from './routes/admin.content.$id'
+import { Route as AdminJourneysIndexRouteImport } from './routes/admin.journeys.index'
+import { Route as AdminJourneysIdRouteImport } from './routes/admin.journeys.$id'
+import { Route as ApiPublicTwilioSmsWebhookRouteImport } from './routes/api/public/twilio-sms-webhook'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalRoute = PortalRouteImport.update({
-  id: '/portal',
-  path: '/portal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MembershipRoute = MembershipRouteImport.update({
-  id: '/membership',
-  path: '/membership',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MembersRoute = MembersRouteImport.update({
-  id: '/members',
-  path: '/members',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeadsRoute = LeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EventsRoute = EventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -97,109 +57,54 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortalIndexRoute = PortalIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PortalRoute,
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadsRoute = LeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersRoute = MembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const ShopSlugRoute = ShopSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ShopRoute,
-} as any)
-const PortalSignupRoute = PortalSignupRouteImport.update({
-  id: '/portal_/signup',
-  path: '/portal/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalResetPasswordRoute = PortalResetPasswordRouteImport.update({
-  id: '/portal_/reset-password',
-  path: '/portal/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalLoginRoute = PortalLoginRouteImport.update({
-  id: '/portal_/login',
-  path: '/portal/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalForgotPasswordRoute = PortalForgotPasswordRouteImport.update({
-  id: '/portal_/forgot-password',
-  path: '/portal/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortalProfileRoute = PortalProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalEventsRoute = PortalEventsRouteImport.update({
-  id: '/events',
-  path: '/events',
-  getParentRoute: () => PortalRoute,
-} as any)
-const PortalContentRoute = PortalContentRouteImport.update({
-  id: '/content',
-  path: '/content',
-  getParentRoute: () => PortalRoute,
-} as any)
-const GoSlugRoute = GoSlugRouteImport.update({
-  id: '/go/$slug',
-  path: '/go/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin_/login',
-  path: '/admin/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminVideosRoute = AdminVideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTestingRoute = AdminTestingRouteImport.update({
-  id: '/testing',
-  path: '/testing',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminShopRoute = AdminShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPortalMembersRoute = AdminPortalMembersRouteImport.update({
-  id: '/portal-members',
-  path: '/portal-members',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMembersRoute = AdminMembersRouteImport.update({
-  id: '/members',
-  path: '/members',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminLeadsRoute = AdminLeadsRouteImport.update({
-  id: '/leads',
-  path: '/leads',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminExportsRoute = AdminExportsRouteImport.update({
-  id: '/exports',
-  path: '/exports',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEventsRoute = AdminEventsRouteImport.update({
@@ -207,14 +112,119 @@ const AdminEventsRoute = AdminEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminExportsRoute = AdminExportsRouteImport.update({
+  id: '/exports',
+  path: '/exports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLeadsRoute = AdminLeadsRouteImport.update({
+  id: '/leads',
+  path: '/leads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMembersRoute = AdminMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPortalMembersRoute = AdminPortalMembersRouteImport.update({
+  id: '/portal-members',
+  path: '/portal-members',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminShopRoute = AdminShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestingRoute = AdminTestingRouteImport.update({
+  id: '/testing',
+  path: '/testing',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVideosRoute = AdminVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin_/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoSlugRoute = GoSlugRouteImport.update({
+  id: '/go/$slug',
+  path: '/go/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalIndexRoute = PortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalContentRoute = PortalContentRouteImport.update({
+  id: '/content',
+  path: '/content',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalEventsRoute = PortalEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalProfileRoute = PortalProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => PortalRoute,
+} as any)
+const PortalForgotPasswordRoute = PortalForgotPasswordRouteImport.update({
+  id: '/portal_/forgot-password',
+  path: '/portal/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalLoginRoute = PortalLoginRouteImport.update({
+  id: '/portal_/login',
+  path: '/portal/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalResetPasswordRoute = PortalResetPasswordRouteImport.update({
+  id: '/portal_/reset-password',
+  path: '/portal/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalSignupRoute = PortalSignupRouteImport.update({
+  id: '/portal_/signup',
+  path: '/portal/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ShopRoute,
+} as any)
+const AdminContentIndexRoute = AdminContentIndexRouteImport.update({
+  id: '/content/',
+  path: '/content/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContentIdRoute = AdminContentIdRouteImport.update({
+  id: '/content/$id',
+  path: '/content/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminJourneysIndexRoute = AdminJourneysIndexRouteImport.update({
   id: '/journeys/',
   path: '/journeys/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminContentIndexRoute = AdminContentIndexRouteImport.update({
-  id: '/content/',
-  path: '/content/',
+const AdminJourneysIdRoute = AdminJourneysIdRouteImport.update({
+  id: '/journeys/$id',
+  path: '/journeys/$id',
   getParentRoute: () => AdminRoute,
 } as any)
 const ApiPublicTwilioSmsWebhookRoute =
@@ -223,16 +233,6 @@ const ApiPublicTwilioSmsWebhookRoute =
     path: '/api/public/twilio-sms-webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminJourneysIdRoute = AdminJourneysIdRouteImport.update({
-  id: '/journeys/$id',
-  path: '/journeys/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminContentIdRoute = AdminContentIdRouteImport.update({
-  id: '/content/$id',
-  path: '/content/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -491,67 +491,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal': {
-      id: '/portal'
-      path: '/portal'
-      fullPath: '/portal'
-      preLoaderRoute: typeof PortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/membership': {
-      id: '/membership'
-      path: '/membership'
-      fullPath: '/membership'
-      preLoaderRoute: typeof MembershipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/members': {
-      id: '/members'
-      path: '/members'
-      fullPath: '/members'
-      preLoaderRoute: typeof MembersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/leads': {
-      id: '/leads'
-      path: '/leads'
-      fullPath: '/leads'
-      preLoaderRoute: typeof LeadsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/events': {
-      id: '/events'
-      path: '/events'
-      fullPath: '/events'
-      preLoaderRoute: typeof EventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -561,151 +505,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/portal/': {
-      id: '/portal/'
-      path: '/'
-      fullPath: '/portal/'
-      preLoaderRoute: typeof PortalIndexRouteImport
-      parentRoute: typeof PortalRoute
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leads': {
+      id: '/leads'
+      path: '/leads'
+      fullPath: '/leads'
+      preLoaderRoute: typeof LeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members': {
+      id: '/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof MembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/shop/$slug': {
-      id: '/shop/$slug'
-      path: '/$slug'
-      fullPath: '/shop/$slug'
-      preLoaderRoute: typeof ShopSlugRouteImport
-      parentRoute: typeof ShopRoute
-    }
-    '/portal_/signup': {
-      id: '/portal_/signup'
-      path: '/portal/signup'
-      fullPath: '/portal/signup'
-      preLoaderRoute: typeof PortalSignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal_/reset-password': {
-      id: '/portal_/reset-password'
-      path: '/portal/reset-password'
-      fullPath: '/portal/reset-password'
-      preLoaderRoute: typeof PortalResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal_/login': {
-      id: '/portal_/login'
-      path: '/portal/login'
-      fullPath: '/portal/login'
-      preLoaderRoute: typeof PortalLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal_/forgot-password': {
-      id: '/portal_/forgot-password'
-      path: '/portal/forgot-password'
-      fullPath: '/portal/forgot-password'
-      preLoaderRoute: typeof PortalForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portal/profile': {
-      id: '/portal/profile'
-      path: '/profile'
-      fullPath: '/portal/profile'
-      preLoaderRoute: typeof PortalProfileRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/portal/events': {
-      id: '/portal/events'
-      path: '/events'
-      fullPath: '/portal/events'
-      preLoaderRoute: typeof PortalEventsRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/portal/content': {
-      id: '/portal/content'
-      path: '/content'
-      fullPath: '/portal/content'
-      preLoaderRoute: typeof PortalContentRouteImport
-      parentRoute: typeof PortalRoute
-    }
-    '/go/$slug': {
-      id: '/go/$slug'
-      path: '/go/$slug'
-      fullPath: '/go/$slug'
-      preLoaderRoute: typeof GoSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin_/login': {
-      id: '/admin_/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/videos': {
-      id: '/admin/videos'
-      path: '/videos'
-      fullPath: '/admin/videos'
-      preLoaderRoute: typeof AdminVideosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/testing': {
-      id: '/admin/testing'
-      path: '/testing'
-      fullPath: '/admin/testing'
-      preLoaderRoute: typeof AdminTestingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/shop': {
-      id: '/admin/shop'
-      path: '/shop'
-      fullPath: '/admin/shop'
-      preLoaderRoute: typeof AdminShopRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/portal-members': {
-      id: '/admin/portal-members'
-      path: '/portal-members'
-      fullPath: '/admin/portal-members'
-      preLoaderRoute: typeof AdminPortalMembersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/members': {
-      id: '/admin/members'
-      path: '/members'
-      fullPath: '/admin/members'
-      preLoaderRoute: typeof AdminMembersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/leads': {
-      id: '/admin/leads'
-      path: '/leads'
-      fullPath: '/admin/leads'
-      preLoaderRoute: typeof AdminLeadsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/exports': {
-      id: '/admin/exports'
-      path: '/exports'
-      fullPath: '/admin/exports'
-      preLoaderRoute: typeof AdminExportsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/events': {
@@ -715,12 +582,138 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEventsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/journeys/': {
-      id: '/admin/journeys/'
-      path: '/journeys'
-      fullPath: '/admin/journeys/'
-      preLoaderRoute: typeof AdminJourneysIndexRouteImport
+    '/admin/exports': {
+      id: '/admin/exports'
+      path: '/exports'
+      fullPath: '/admin/exports'
+      preLoaderRoute: typeof AdminExportsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/leads': {
+      id: '/admin/leads'
+      path: '/leads'
+      fullPath: '/admin/leads'
+      preLoaderRoute: typeof AdminLeadsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/members': {
+      id: '/admin/members'
+      path: '/members'
+      fullPath: '/admin/members'
+      preLoaderRoute: typeof AdminMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/portal-members': {
+      id: '/admin/portal-members'
+      path: '/portal-members'
+      fullPath: '/admin/portal-members'
+      preLoaderRoute: typeof AdminPortalMembersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/shop': {
+      id: '/admin/shop'
+      path: '/shop'
+      fullPath: '/admin/shop'
+      preLoaderRoute: typeof AdminShopRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testing': {
+      id: '/admin/testing'
+      path: '/testing'
+      fullPath: '/admin/testing'
+      preLoaderRoute: typeof AdminTestingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/videos': {
+      id: '/admin/videos'
+      path: '/videos'
+      fullPath: '/admin/videos'
+      preLoaderRoute: typeof AdminVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin_/login': {
+      id: '/admin_/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/go/$slug': {
+      id: '/go/$slug'
+      path: '/go/$slug'
+      fullPath: '/go/$slug'
+      preLoaderRoute: typeof GoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal/': {
+      id: '/portal/'
+      path: '/'
+      fullPath: '/portal/'
+      preLoaderRoute: typeof PortalIndexRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/content': {
+      id: '/portal/content'
+      path: '/content'
+      fullPath: '/portal/content'
+      preLoaderRoute: typeof PortalContentRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/events': {
+      id: '/portal/events'
+      path: '/events'
+      fullPath: '/portal/events'
+      preLoaderRoute: typeof PortalEventsRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal/profile': {
+      id: '/portal/profile'
+      path: '/profile'
+      fullPath: '/portal/profile'
+      preLoaderRoute: typeof PortalProfileRouteImport
+      parentRoute: typeof PortalRoute
+    }
+    '/portal_/forgot-password': {
+      id: '/portal_/forgot-password'
+      path: '/portal/forgot-password'
+      fullPath: '/portal/forgot-password'
+      preLoaderRoute: typeof PortalForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal_/login': {
+      id: '/portal_/login'
+      path: '/portal/login'
+      fullPath: '/portal/login'
+      preLoaderRoute: typeof PortalLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal_/reset-password': {
+      id: '/portal_/reset-password'
+      path: '/portal/reset-password'
+      fullPath: '/portal/reset-password'
+      preLoaderRoute: typeof PortalResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal_/signup': {
+      id: '/portal_/signup'
+      path: '/portal/signup'
+      fullPath: '/portal/signup'
+      preLoaderRoute: typeof PortalSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/$slug': {
+      id: '/shop/$slug'
+      path: '/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
+      parentRoute: typeof ShopRoute
     }
     '/admin/content/': {
       id: '/admin/content/'
@@ -729,12 +722,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContentIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/twilio-sms-webhook': {
-      id: '/api/public/twilio-sms-webhook'
-      path: '/api/public/twilio-sms-webhook'
-      fullPath: '/api/public/twilio-sms-webhook'
-      preLoaderRoute: typeof ApiPublicTwilioSmsWebhookRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/content/$id': {
+      id: '/admin/content/$id'
+      path: '/content/$id'
+      fullPath: '/admin/content/$id'
+      preLoaderRoute: typeof AdminContentIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/journeys/': {
+      id: '/admin/journeys/'
+      path: '/journeys'
+      fullPath: '/admin/journeys/'
+      preLoaderRoute: typeof AdminJourneysIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/journeys/$id': {
       id: '/admin/journeys/$id'
@@ -743,12 +743,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminJourneysIdRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/content/$id': {
-      id: '/admin/content/$id'
-      path: '/content/$id'
-      fullPath: '/admin/content/$id'
-      preLoaderRoute: typeof AdminContentIdRouteImport
-      parentRoute: typeof AdminRoute
+    '/api/public/twilio-sms-webhook': {
+      id: '/api/public/twilio-sms-webhook'
+      path: '/api/public/twilio-sms-webhook'
+      fullPath: '/api/public/twilio-sms-webhook'
+      preLoaderRoute: typeof ApiPublicTwilioSmsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -839,3 +839,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

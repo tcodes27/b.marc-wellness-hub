@@ -4,6 +4,7 @@ import type { CommunityMember } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
 
 export const Route = createFileRoute("/admin/exports")({
+  head: () => ({ meta: [{"title": "Export Community \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Export Community at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Export Community \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Export Community at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: ExportsPage,
 });
 

@@ -8,6 +8,11 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/portal")({
   head: () => ({
     meta: [
+      { name: "description", content: "Explore Portal at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:title", content: "Member Portal — B.MARC" },
+      { property: "og:description", content: "Explore Portal at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Member Portal — B.MARC" },
       { name: "robots", content: "noindex, nofollow" },
     ],

@@ -8,6 +8,7 @@ import { Loader2, Upload, Trash2, User as UserIcon } from "lucide-react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/portal/profile")({
+  head: () => ({ meta: [{"title": "Member Profile \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Member Profile at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Member Profile \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Member Profile at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: ProfilePage,
 });
 

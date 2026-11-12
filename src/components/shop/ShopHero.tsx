@@ -1,5 +1,6 @@
 import { branding } from "@/config/branding";
 import { ShoppingBag, BookOpen } from "lucide-react";
+import { images } from "@/config/images";
 
 export function ShopHero() {
   const scrollTo = (id: string) => {
@@ -36,6 +37,16 @@ export function ShopHero() {
         <p className="mt-6 text-[0.6rem] uppercase tracking-[0.25em] text-clay/70">
           Some links are affiliate links — we may earn a small commission at no cost to you.
         </p>
+      </div>
+      <div className="container-luxe mt-10 md:mt-14">
+        <div className="grid grid-cols-2 gap-3 md:gap-5">
+          {[images.wellness.skincare, images.movement.essentials].map((image) => (
+            <div key={image.src} className="aspect-[4/3] md:aspect-[16/9] overflow-hidden">
+              <img src={image.src} alt={image.alt} width={1536} height={1024} loading="lazy" decoding="async" className="w-full h-full object-cover" />
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-sm text-muted-foreground text-center">Our movement and self-care moodboard. Available finds are listed below.</p>
       </div>
     </section>
   );

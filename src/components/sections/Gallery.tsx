@@ -14,9 +14,9 @@ export function Gallery() {
       <div className="container-luxe">
         <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
           <div>
-            <span className="eyebrow">The Community</span>
+            <span className="eyebrow">Community & Connection</span>
             <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl max-w-2xl">
-              Moments from <em className="font-light">our world.</em>
+              A vision of <em className="font-light">our world.</em>
             </h2>
           </div>
           <a
@@ -34,7 +34,7 @@ export function Gallery() {
           {items.map((i, idx) => (
             <div
               key={idx}
-              className={`relative overflow-hidden rounded-2xl group ${i.span}`}
+              className={`relative overflow-hidden group ${i.span}`}
             >
               <img
                 src={i.src}

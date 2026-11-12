@@ -11,6 +11,7 @@ import { useAdmin } from "./admin";
 import { NewEventModal } from "@/components/admin/NewEventModal";
 
 export const Route = createFileRoute("/admin/events")({
+  head: () => ({ meta: [{"title": "Manage Events \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Manage Events at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Manage Events \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Manage Events at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: EventsPage,
 });
 

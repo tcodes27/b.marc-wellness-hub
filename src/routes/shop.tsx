@@ -11,6 +11,8 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/shop")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: `Shop — ${branding.fullName}` },
       {
         name: "description",

@@ -7,6 +7,7 @@ import { BookOpen, Lock, PlayCircle, Youtube, ExternalLink, Crown } from "lucide
 import { YOUTUBE_CHANNEL_URL, embedVideoUrl, videoThumbnail, type VideoLibraryEntry } from "@/lib/youtube";
 
 export const Route = createFileRoute("/portal/content")({
+  head: () => ({ meta: [{"title": "Member Content \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Member Content at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Member Content \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Member Content at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: ContentPage,
 });
 

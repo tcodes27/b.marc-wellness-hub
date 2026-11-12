@@ -7,6 +7,8 @@ import { useCommunity } from "@/components/community/CommunityProvider";
 export const Route = createFileRoute("/membership")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Founding Community — B.MARC Pilates" },
       { name: "description", content: "B.MARC is currently onboarding founding members. Join the wellness community for free during our growth phase — portal access, early event invitations, and insider updates." },
       { property: "og:title", content: "Founding Community — B.MARC Pilates" },

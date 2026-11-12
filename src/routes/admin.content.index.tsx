@@ -8,6 +8,7 @@ import { NewPostModal } from "@/components/admin/NewPostModal";
 import { Plus, Loader2, Trash2, Eye, Pencil, Copy, Search, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/")({
+  head: () => ({ meta: [{"title": "Content Studio \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Content Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Content Studio \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Content Studio at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: ContentList,
 });
 

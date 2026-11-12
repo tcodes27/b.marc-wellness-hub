@@ -5,6 +5,8 @@ import { images } from "@/config/images";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "About, B.MARC Pilates" },
       { name: "description", content: "B.MARC is a hybrid wellness community — online today, in-studio soon. Self-guided digital reformer sessions, live instructor-led classes, and pop-up events designed for beginners and modern lifestyles." },
       { property: "og:title", content: "About, B.MARC Pilates" },

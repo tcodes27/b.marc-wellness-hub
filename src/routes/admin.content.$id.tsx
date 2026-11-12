@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/content/$id")({
+  head: () => ({ meta: [{"title": "Edit Content \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Edit Content at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Edit Content \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Edit Content at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: EditPost,
 });
 

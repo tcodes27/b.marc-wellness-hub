@@ -7,7 +7,12 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/portal_/signup")({
   head: () => ({
-    meta: [{ title: "Create account — B.MARC Member Portal" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [
+      { name: "description", content: "Explore Portal Signup at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:title", content: "Create account — B.MARC Member Portal" },
+      { property: "og:description", content: "Explore Portal Signup at B.MARC Pilates, a movement and wellness community." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },{ title: "Create account — B.MARC Member Portal" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: PortalSignup,
 });

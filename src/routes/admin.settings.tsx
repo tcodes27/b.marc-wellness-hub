@@ -6,6 +6,7 @@ import { getIntegrationStatus, type IntegrationStatus } from "@/lib/integrations
 import { CheckCircle2, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/admin/settings")({
+  head: () => ({ meta: [{"title": "Admin Settings \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Admin Settings at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Admin Settings \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Admin Settings at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: SettingsPage,
 });
 

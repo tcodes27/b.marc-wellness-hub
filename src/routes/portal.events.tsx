@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarDays } from "lucide-react";
 
 export const Route = createFileRoute("/portal/events")({
+  head: () => ({ meta: [{"title": "Member Events \u2014 B.MARC Pilates"}, {"name": "description", "content": "Explore Member Events at B.MARC Pilates, a movement and wellness community."}, {"property": "og:title", "content": "Member Events \u2014 B.MARC Pilates"}, {"property": "og:description", "content": "Explore Member Events at B.MARC Pilates, a movement and wellness community."}, {"property": "og:type", "content": "website"}, {"name": "twitter:card", "content": "summary_large_image"}, {"name": "robots", "content": "noindex, nofollow"}] }),
   component: EventsPage,
 });
 

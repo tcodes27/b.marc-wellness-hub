@@ -14,6 +14,8 @@ import { useCommunity } from "@/components/community/CommunityProvider";
 export const Route = createFileRoute("/events")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Events, B.MARC Pilates" },
       { name: "description", content: "Pop-up wellness events, beginner workshops, mobility meetups, and community activations — how B.MARC is building the wellness community before our studio opens." },
       { property: "og:title", content: "Events, B.MARC Pilates" },
